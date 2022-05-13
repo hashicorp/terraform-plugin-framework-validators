@@ -1,0 +1,49 @@
+name: Feature Request
+description: Something is missing or could be improved.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this feature request! Please note that this issue tracker is only used for bug reports and feature requests. Other issues will be closed.
+
+        If you have a question, please go back to the issue chooser and select one of the question links.
+  - type: textarea
+    id: versions
+    attributes:
+      label: Terraform CLI and Framework Versions
+      description: What versions of Terraform CLI and terraform-plugin-framework?
+      placeholder: Output of `terraform version` from configuration directory and `go list -m github.com/hashicorp/terraform-plugin-framework`
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Cases or Problem Statement
+      description: What use cases or problems are you trying to solve?
+      placeholder: Description of use cases or problems. Please note that feature requests that would be satisfied by creating a custom type (implementing the `attr.TypeWithValidators` interface), such as Base64, JSON, RFC 3339, or other string-specific validation will be closed.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What solutions would you prefer?
+      placeholder: Description of proposed solutions.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional Information
+      description: Are there any additional details about your environment, workflow, or recent changes that might be relevant? Have you discovered a workaround? Are there links to other related issues?
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Community Guidelines](https://www.hashicorp.com/community-guidelines).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
