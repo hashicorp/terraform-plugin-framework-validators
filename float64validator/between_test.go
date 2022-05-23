@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func TestFloatBetweenValidator(t *testing.T) {
+func TestBetweenValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -117,7 +117,7 @@ func TestFloatBetweenValidator(t *testing.T) {
 				AttributeConfig: val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			FloatBetween(test.min, test.max).Validate(ctx, request, &response)
+			Between(test.min, test.max).Validate(ctx, request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

@@ -9,25 +9,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// floatAtMostValidator validates that an float Attribute's value is at most a certain value.
-type floatAtMostValidator struct {
+// atMostValidator validates that an float Attribute's value is at most a certain value.
+type atMostValidator struct {
 	tfsdk.AttributeValidator
 
 	max float64
 }
 
 // Description describes the validation in plain text formatting.
-func (validator floatAtMostValidator) Description(_ context.Context) string {
+func (validator atMostValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("value must be at most %f", validator.max)
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (validator floatAtMostValidator) MarkdownDescription(ctx context.Context) string {
+func (validator atMostValidator) MarkdownDescription(ctx context.Context) string {
 	return validator.Description(ctx)
 }
 
 // Validate performs the validation.
-func (validator floatAtMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
 	f, ok := validateFloat(ctx, request, response)
 	if !ok {
 		return
@@ -44,9 +44,9 @@ func (validator floatAtMostValidator) Validate(ctx context.Context, request tfsd
 	}
 }
 
-// FloatAtMost returns a new float value at nost validator.
-func FloatAtMost(max float64) tfsdk.AttributeValidator {
-	return floatAtMostValidator{
+// AtMost returns a new float value at nost validator.
+func AtMost(max float64) tfsdk.AttributeValidator {
+	return atMostValidator{
 		max: max,
 	}
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func TestFloatAtLeastValidator(t *testing.T) {
+func TestAtLeastValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -88,7 +88,7 @@ func TestFloatAtLeastValidator(t *testing.T) {
 				AttributeConfig: val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			FloatAtLeast(test.min).Validate(ctx, request, &response)
+			AtLeast(test.min).Validate(ctx, request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

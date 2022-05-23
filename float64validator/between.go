@@ -8,25 +8,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
-// floatBetweenValidator validates that an float Attribute's value is in a range.
-type floatBetweenValidator struct {
+// betweenValidator validates that an float Attribute's value is in a range.
+type betweenValidator struct {
 	tfsdk.AttributeValidator
 
 	min, max float64
 }
 
 // Description describes the validation in plain text formatting.
-func (validator floatBetweenValidator) Description(_ context.Context) string {
+func (validator betweenValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("value must be between %f and %f", validator.min, validator.max)
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (validator floatBetweenValidator) MarkdownDescription(ctx context.Context) string {
+func (validator betweenValidator) MarkdownDescription(ctx context.Context) string {
 	return validator.Description(ctx)
 }
 
 // Validate performs the validation.
-func (validator floatBetweenValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
 	f, ok := validateFloat(ctx, request, response)
 	if !ok {
 		return
@@ -43,13 +43,13 @@ func (validator floatBetweenValidator) Validate(ctx context.Context, request tfs
 	}
 }
 
-// FloatBetween returns a new float value between validator.
-func FloatBetween(min, max float64) tfsdk.AttributeValidator {
+// Between returns a new float value between validator.
+func Between(min, max float64) tfsdk.AttributeValidator {
 	if min > max {
 		return nil
 	}
 
-	return floatBetweenValidator{
+	return betweenValidator{
 		min: min,
 		max: max,
 	}

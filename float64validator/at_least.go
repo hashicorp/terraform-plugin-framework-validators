@@ -8,25 +8,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
-// floatAtLeastValidator validates that an float Attribute's value is at least a certain value.
-type floatAtLeastValidator struct {
+// atLeastValidator validates that an float Attribute's value is at least a certain value.
+type atLeastValidator struct {
 	tfsdk.AttributeValidator
 
 	min float64
 }
 
 // Description describes the validation in plain text formatting.
-func (validator floatAtLeastValidator) Description(_ context.Context) string {
+func (validator atLeastValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("value must be at least %f", validator.min)
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (validator floatAtLeastValidator) MarkdownDescription(ctx context.Context) string {
+func (validator atLeastValidator) MarkdownDescription(ctx context.Context) string {
 	return validator.Description(ctx)
 }
 
 // Validate performs the validation.
-func (validator floatAtLeastValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
 	f, ok := validateFloat(ctx, request, response)
 	if !ok {
 		return
@@ -43,9 +43,9 @@ func (validator floatAtLeastValidator) Validate(ctx context.Context, request tfs
 	}
 }
 
-// FloatAtLeast returns a new float value at least validator.
-func FloatAtLeast(min float64) tfsdk.AttributeValidator {
-	return floatAtLeastValidator{
+// AtLeast returns a new float value at least validator.
+func AtLeast(min float64) tfsdk.AttributeValidator {
+	return atLeastValidator{
 		min: min,
 	}
 }

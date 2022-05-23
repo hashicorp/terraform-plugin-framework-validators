@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func TestFloatAtMostValidator(t *testing.T) {
+func TestAtMostValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -88,7 +88,7 @@ func TestFloatAtMostValidator(t *testing.T) {
 				AttributeConfig: val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			FloatAtMost(test.max).Validate(ctx, request, &response)
+			AtMost(test.max).Validate(ctx, request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
