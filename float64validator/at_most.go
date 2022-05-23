@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -34,17 +34,17 @@ func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.Val
 	}
 
 	if f > validator.max {
-		response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+		response.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
 			request.AttributePath,
-			"Invalid value",
-			fmt.Sprintf("expected value to be at most %f, got %f", validator.max, f),
+			validator.Description(ctx),
+			fmt.Sprintf("%f", f),
 		))
 
 		return
 	}
 }
 
-// AtMost returns a new float value at nost validator.
+// AtMost returns a new float value at most validator.
 func AtMost(max float64) tfsdk.AttributeValidator {
 	return atMostValidator{
 		max: max,

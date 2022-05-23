@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
@@ -33,10 +33,10 @@ func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.Va
 	}
 
 	if f < validator.min {
-		response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+		response.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
 			request.AttributePath,
-			"Invalid value",
-			fmt.Sprintf("expected value to be at least %f, got %f", validator.min, f),
+			validator.Description(ctx),
+			fmt.Sprintf("%f", f),
 		))
 
 		return

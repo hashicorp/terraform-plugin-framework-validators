@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
@@ -33,10 +33,10 @@ func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.Va
 	}
 
 	if f < validator.min || f > validator.max {
-		response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+		response.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
 			request.AttributePath,
-			"Invalid value",
-			fmt.Sprintf("expected value to be in the range [%f, %f], got %f", validator.min, validator.max, f),
+			validator.Description(ctx),
+			fmt.Sprintf("%f", f),
 		))
 
 		return
