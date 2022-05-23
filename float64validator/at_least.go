@@ -27,8 +27,11 @@ func (validator atLeastValidator) MarkdownDescription(ctx context.Context) strin
 
 // Validate performs the validation.
 func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	f, ok := validateFloat(ctx, request, response)
-	if !ok {
+	f, diags := validateFloat(ctx, validator, request)
+
+	if diags.HasError() {
+		response.Diagnostics.Append(diags...)
+
 		return
 	}
 

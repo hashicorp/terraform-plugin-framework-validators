@@ -23,17 +23,21 @@ func TestBetweenValidator(t *testing.T) {
 	tests := map[string]testCase{
 		"not a number": {
 			val:         types.Bool{Value: true},
+			min:         0.90,
+			max:         3.10,
 			expectError: true,
 		},
 		"unknown number": {
-			val: types.Float64{Unknown: true},
-			min: 0.90,
-			max: 3.10,
+			val:         types.Float64{Unknown: true},
+			min:         0.90,
+			max:         3.10,
+			expectError: true,
 		},
 		"null number": {
-			val: types.Number{Null: true},
-			min: 0.90,
-			max: 3.10,
+			val:         types.Number{Null: true},
+			min:         0.90,
+			max:         3.10,
+			expectError: true,
 		},
 		"valid integer as Number": {
 			val: types.Number{Value: big.NewFloat(2)},
