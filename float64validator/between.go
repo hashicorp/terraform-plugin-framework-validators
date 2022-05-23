@@ -8,10 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
+var _ tfsdk.AttributeValidator = betweenValidator{}
+
 // betweenValidator validates that an float Attribute's value is in a range.
 type betweenValidator struct {
-	tfsdk.AttributeValidator
-
 	min, max float64
 }
 

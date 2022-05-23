@@ -9,10 +9,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+var _ tfsdk.AttributeValidator = atMostValidator{}
+
 // atMostValidator validates that an float Attribute's value is at most a certain value.
 type atMostValidator struct {
-	tfsdk.AttributeValidator
-
 	max float64
 }
 

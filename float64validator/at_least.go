@@ -8,10 +8,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
+var _ tfsdk.AttributeValidator = atLeastValidator{}
+
 // atLeastValidator validates that an float Attribute's value is at least a certain value.
 type atLeastValidator struct {
-	tfsdk.AttributeValidator
-
 	min float64
 }
 
