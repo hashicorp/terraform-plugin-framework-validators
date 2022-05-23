@@ -2,6 +2,7 @@ package float64validator
 
 import (
 	"context"
+	"math/big"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -14,60 +15,49 @@ func TestAtMostValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val         tftypes.Value
-		f           func(context.Context, tftypes.Value) (attr.Value, error)
+		val         attr.Value
 		max         float64
 		expectError bool
 	}
 	tests := map[string]testCase{
 		"not a number": {
-			val:         tftypes.NewValue(tftypes.Bool, true),
-			f:           types.BoolType.ValueFromTerraform,
+			val:         types.Bool{Value: true},
 			expectError: true,
 		},
 		"unknown number": {
-			val: tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
-			f:   types.NumberType.ValueFromTerraform,
+			val: types.Number{Unknown: true},
 			max: 2.00,
 		},
 		"null number": {
-			val: tftypes.NewValue(tftypes.Number, nil),
-			f:   types.NumberType.ValueFromTerraform,
+			val: types.Float64{Null: true},
 			max: 2.00,
 		},
 		"valid integer as Number": {
-			val: tftypes.NewValue(tftypes.Number, 1),
-			f:   types.NumberType.ValueFromTerraform,
+			val: types.Number{Value: big.NewFloat(1)},
 			max: 2.00,
 		},
 		"valid integer as Float64": {
-			val: tftypes.NewValue(tftypes.Number, 1),
-			f:   types.Float64Type.ValueFromTerraform,
+			val: types.Float64{Value: 1},
 			max: 2.00,
 		},
 		"valid float as Number": {
-			val: tftypes.NewValue(tftypes.Number, 1.1),
-			f:   types.NumberType.ValueFromTerraform,
+			val: types.Number{Value: big.NewFloat(1.1)},
 			max: 2.00,
 		},
 		"valid float as Float64": {
-			val: tftypes.NewValue(tftypes.Number, 1.1),
-			f:   types.Float64Type.ValueFromTerraform,
+			val: types.Float64{Value: 1.1},
 			max: 2.00,
 		},
 		"valid float as Number max": {
-			val: tftypes.NewValue(tftypes.Number, 2.00),
-			f:   types.NumberType.ValueFromTerraform,
+			val: types.Number{Value: big.NewFloat(2.0)},
 			max: 2.00,
 		},
 		"valid float as Float64 max": {
-			val: tftypes.NewValue(tftypes.Number, 2.00),
-			f:   types.Float64Type.ValueFromTerraform,
+			val: types.Float64{Value: 2.0},
 			max: 2.00,
 		},
 		"too large float as Number": {
-			val:         tftypes.NewValue(tftypes.Number, 3.00),
-			f:           types.NumberType.ValueFromTerraform,
+			val:         types.Number{Value: big.NewFloat(3.0)},
 			max:         2.00,
 			expectError: true,
 		},
@@ -76,19 +66,12 @@ func TestAtMostValidator(t *testing.T) {
 	for name, test := range tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			ctx := context.TODO()
-			val, err := test.f(ctx, test.val)
-
-			if err != nil {
-				t.Fatalf("got unexpected error: %s", err)
-			}
-
 			request := tfsdk.ValidateAttributeRequest{
 				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
-				AttributeConfig: val,
+				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			AtMost(test.max).Validate(ctx, request, &response)
+			AtMost(test.max).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
