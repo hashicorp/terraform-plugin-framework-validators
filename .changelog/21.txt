@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `int64validator` package with `AtLeast()`, `AtMost()`, and `Between()` validation functions
+```
