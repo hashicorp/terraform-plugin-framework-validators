@@ -22,18 +22,15 @@ func TestAtMostValidator(t *testing.T) {
 	tests := map[string]testCase{
 		"not a number": {
 			val:         types.Bool{Value: true},
-			max:         2.00,
 			expectError: true,
 		},
 		"unknown number": {
-			val:         types.Number{Unknown: true},
-			max:         2.00,
-			expectError: true,
+			val: types.Number{Unknown: true},
+			max: 2.00,
 		},
 		"null number": {
-			val:         types.Float64{Null: true},
-			max:         2.00,
-			expectError: true,
+			val: types.Float64{Null: true},
+			max: 2.00,
 		},
 		"valid integer as Number": {
 			val: types.Number{Value: big.NewFloat(1)},

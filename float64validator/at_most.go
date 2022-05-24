@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -29,11 +28,8 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 
 // Validate performs the validation.
 func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	f, diags := validateFloat(ctx, validator, request)
-
-	if diags.HasError() {
-		response.Diagnostics.Append(diags...)
-
+	f, ok := validateFloat(ctx, request, response)
+	if !ok {
 		return
 	}
 
@@ -61,7 +57,7 @@ func AtMost(max float64) tfsdk.AttributeValidator {
 	}
 }
 
-func validateFloat(ctx context.Context, validator tfsdk.AttributeValidator, request tfsdk.ValidateAttributeRequest) (float64, diag.Diagnostics) {
+func validateFloat(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (float64, bool) {
 	var n types.Float64
 
 	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &n)
@@ -72,54 +68,23 @@ func validateFloat(ctx context.Context, validator tfsdk.AttributeValidator, requ
 		diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &n)
 
 		if diags.HasError() {
-			return 0, diags
-		}
+			response.Diagnostics = append(response.Diagnostics, diags...)
 
-		if n.Unknown {
-			return 0, []diag.Diagnostic{
-				validatordiag.AttributeValueDiagnostic(
-					request.AttributePath,
-					validator.Description(ctx),
-					"Unknown",
-				),
+			return 0, false
+		} else {
+			if n.Unknown || n.Null {
+				return 0, false
 			}
+
+			f, _ := n.Value.Float64()
+
+			return f, true
+		}
+	} else {
+		if n.Unknown || n.Null {
+			return 0, false
 		}
 
-		if n.Null {
-			return 0, []diag.Diagnostic{
-				validatordiag.AttributeValueDiagnostic(
-					request.AttributePath,
-					validator.Description(ctx),
-					"Null",
-				),
-			}
-		}
-
-		f, _ := n.Value.Float64()
-
-		return f, nil
-
+		return n.Value, true
 	}
-
-	if n.Unknown {
-		return 0, []diag.Diagnostic{
-			validatordiag.AttributeValueDiagnostic(
-				request.AttributePath,
-				validator.Description(ctx),
-				"Unknown",
-			),
-		}
-	}
-
-	if n.Null {
-		return 0, []diag.Diagnostic{
-			validatordiag.AttributeValueDiagnostic(
-				request.AttributePath,
-				validator.Description(ctx),
-				"Null",
-			),
-		}
-	}
-
-	return n.Value, nil
 }
