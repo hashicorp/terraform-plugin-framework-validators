@@ -46,7 +46,13 @@ func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.Va
 	}
 }
 
-// Between returns a new float value between validator.
+// Between returns an AttributeValidator which ensures that any configured
+// attribute value:
+//
+//     - Is a number, which can be represented by a 64-bit floating point.
+//     - Is exclusively greater than the given minimum and less than the given maximum.
+//
+// Null (unconfigured) and unknown (known after apply) values are skipped.
 func Between(min, max float64) tfsdk.AttributeValidator {
 	if min > max {
 		return nil
