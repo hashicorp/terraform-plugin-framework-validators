@@ -29,6 +29,7 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 // Validate performs the validation.
 func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
 	f, ok := validateFloat(ctx, request, response)
+
 	if !ok {
 		return
 	}
@@ -57,34 +58,21 @@ func AtMost(max float64) tfsdk.AttributeValidator {
 	}
 }
 
+// validateFloat ensures that the request contains a Float64 value.
 func validateFloat(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (float64, bool) {
 	var n types.Float64
 
 	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &n)
 
 	if diags.HasError() {
-		var n types.Number
+		response.Diagnostics = append(response.Diagnostics, diags...)
 
-		diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &n)
-
-		if diags.HasError() {
-			response.Diagnostics = append(response.Diagnostics, diags...)
-
-			return 0, false
-		} else {
-			if n.Unknown || n.Null {
-				return 0, false
-			}
-
-			f, _ := n.Value.Float64()
-
-			return f, true
-		}
-	} else {
-		if n.Unknown || n.Null {
-			return 0, false
-		}
-
-		return n.Value, true
+		return 0, false
 	}
+
+	if n.Unknown || n.Null {
+		return 0, false
+	}
+
+	return n.Value, true
 }

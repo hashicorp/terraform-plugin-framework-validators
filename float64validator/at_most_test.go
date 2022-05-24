@@ -2,7 +2,6 @@ package float64validator
 
 import (
 	"context"
-	"math/big"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -20,44 +19,32 @@ func TestAtMostValidator(t *testing.T) {
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"not a number": {
+		"not a Float64": {
 			val:         types.Bool{Value: true},
 			expectError: true,
 		},
-		"unknown number": {
-			val: types.Number{Unknown: true},
+		"unknown Float64": {
+			val: types.Float64{Unknown: true},
 			max: 2.00,
 		},
-		"null number": {
+		"null Float64": {
 			val: types.Float64{Null: true},
-			max: 2.00,
-		},
-		"valid integer as Number": {
-			val: types.Number{Value: big.NewFloat(1)},
 			max: 2.00,
 		},
 		"valid integer as Float64": {
 			val: types.Float64{Value: 1},
 			max: 2.00,
 		},
-		"valid float as Number": {
-			val: types.Number{Value: big.NewFloat(1.1)},
-			max: 2.00,
-		},
 		"valid float as Float64": {
 			val: types.Float64{Value: 1.1},
-			max: 2.00,
-		},
-		"valid float as Number max": {
-			val: types.Number{Value: big.NewFloat(2.0)},
 			max: 2.00,
 		},
 		"valid float as Float64 max": {
 			val: types.Float64{Value: 2.0},
 			max: 2.00,
 		},
-		"too large float as Number": {
-			val:         types.Number{Value: big.NewFloat(3.0)},
+		"too large float as Float64": {
+			val:         types.Float64{Value: 3.0},
 			max:         2.00,
 			expectError: true,
 		},

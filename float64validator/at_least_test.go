@@ -2,7 +2,6 @@ package float64validator
 
 import (
 	"context"
-	"math/big"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -20,44 +19,32 @@ func TestAtLeastValidator(t *testing.T) {
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"not a number": {
+		"not a Float64": {
 			val:         types.Bool{Value: true},
 			expectError: true,
 		},
-		"unknown number": {
+		"unknown Float64": {
 			val: types.Float64{Unknown: true},
 			min: 0.90,
 		},
-		"null number": {
-			val: types.Number{Null: true},
-			min: 0.90,
-		},
-		"valid integer as Number": {
-			val: types.Number{Value: big.NewFloat(2)},
+		"null Float64": {
+			val: types.Float64{Null: true},
 			min: 0.90,
 		},
 		"valid integer as Float64": {
 			val: types.Float64{Value: 2},
 			min: 0.90,
 		},
-		"valid float as Number": {
-			val: types.Number{Value: big.NewFloat(2.2)},
-			min: 0.90,
-		},
 		"valid float as Float64": {
 			val: types.Float64{Value: 2.2},
-			min: 0.90,
-		},
-		"valid float as Number min": {
-			val: types.Float64{Value: 0.9},
 			min: 0.90,
 		},
 		"valid float as Float64 min": {
 			val: types.Float64{Value: 0.9},
 			min: 0.90,
 		},
-		"too small float as Number": {
-			val:         types.Number{Value: big.NewFloat(-1.1111)},
+		"too small float as Float64": {
+			val:         types.Float64{Value: -1.1111},
 			min:         0.90,
 			expectError: true,
 		},
