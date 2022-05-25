@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `stringvalidator` package with `LengthAtLeast()`, `LengthAtMost()`, and `LengthBetween()` validation functions
+```
