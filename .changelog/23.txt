@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `stringvalidator.RegexMatches()` validation function
+```
