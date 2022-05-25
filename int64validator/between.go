@@ -1,4 +1,4 @@
-package validate
+package int64validator
 
 import (
 	"context"
