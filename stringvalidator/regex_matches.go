@@ -54,6 +54,8 @@ func (validator regexMatchesValidator) Validate(ctx context.Context, request tfs
 //     - Matches the given regular expression https://github.com/google/re2/wiki/Syntax.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
+// Optionally an error message can be provided to return something friendlier
+// than "value must match regular expression 'regexp'".
 func RegexMatches(regexp *regexp.Regexp, message string) tfsdk.AttributeValidator {
 	return regexMatchesValidator{
 		regexp:  regexp,
