@@ -26,6 +26,15 @@ func AttributeValueLengthDiagnostic(path *tftypes.AttributePath, description str
 	)
 }
 
+// AttributeValueMatchesDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid match.
+func AttributeValueMatchesDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+	return diag.NewAttributeErrorDiagnostic(
+		path,
+		"Invalid Attribute Value Match",
+		capitalize(description)+", got: "+value,
+	)
+}
+
 // capitalize will uppercase the first letter in a UTF-8 string.
 func capitalize(str string) string {
 	if str == "" {
