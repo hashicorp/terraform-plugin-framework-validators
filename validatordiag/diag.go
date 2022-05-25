@@ -8,11 +8,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-// AttributeValueDiagnostic returns an error Diagnostic to be used when an attribute has an unexpected value.
+// AttributeValueDiagnostic returns an error Diagnostic to be used when an attribute has an invalid value.
 func AttributeValueDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value",
+		capitalize(description)+", got: "+value,
+	)
+}
+
+// AttributeValueLengthDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid length.
+func AttributeValueLengthDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+	return diag.NewAttributeErrorDiagnostic(
+		path,
+		"Invalid Attribute Value Length",
 		capitalize(description)+", got: "+value,
 	)
 }
