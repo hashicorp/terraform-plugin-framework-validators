@@ -51,7 +51,7 @@ func (validator regexMatchesValidator) Validate(ctx context.Context, request tfs
 // attribute value:
 //
 //     - Is a string.
-//     - Matches the given regular expression.
+//     - Matches the given regular expression https://github.com/google/re2/wiki/Syntax.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func RegexMatches(regexp *regexp.Regexp, message string) tfsdk.AttributeValidator {
