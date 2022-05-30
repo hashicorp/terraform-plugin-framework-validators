@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `combination` package with `RequiredWith()` validation functions
+```
