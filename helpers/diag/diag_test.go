@@ -1,4 +1,4 @@
-package validatordiag
+package diag
 
 import (
 	"testing"

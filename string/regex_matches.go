@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/diag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
