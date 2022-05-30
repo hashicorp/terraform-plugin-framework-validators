@@ -3,14 +3,14 @@ module github.com/hashicorp/terraform-plugin-framework-validators
 go 1.17
 
 require (
-	github.com/hashicorp/terraform-plugin-framework v0.8.0
+	github.com/google/go-cmp v0.5.8
+	github.com/hashicorp/terraform-plugin-framework v0.8.1-0.20220530084530-b097d2f7da26
 	github.com/hashicorp/terraform-plugin-go v0.9.1
 )
 
 require (
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/hashicorp/go-hclog v1.2.0 // indirect
 	github.com/hashicorp/terraform-plugin-log v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
