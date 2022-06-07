@@ -1,3 +1,9 @@
+# 0.2.0 (June 7, 2022)
+
+BREAKING CHANGES:
+
+* Fixed package naming for `int64validator`: was misnamed `validate` ([#25](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/25))
+
 # 0.1.0 (May 25, 2022)
 
 FEATURES:
