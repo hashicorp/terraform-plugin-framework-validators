@@ -44,6 +44,7 @@ func (validator atMostSumOfValidator) Validate(ctx context.Context, request tfsd
 	}
 
 	var sumOfAttribs int64
+	var numUnknownAttribsToSum int
 
 	for _, path := range validator.attributesToSumPaths {
 		var attribToSum types.Int64
@@ -53,7 +54,20 @@ func (validator atMostSumOfValidator) Validate(ctx context.Context, request tfsd
 			return
 		}
 
+		if attribToSum.Null {
+			continue
+		}
+
+		if attribToSum.Unknown {
+			numUnknownAttribsToSum++
+			continue
+		}
+
 		sumOfAttribs += attribToSum.Value
+	}
+
+	if numUnknownAttribsToSum == len(validator.attributesToSumPaths) {
+		return
 	}
 
 	if i > sumOfAttribs {
@@ -75,7 +89,7 @@ func (validator atMostSumOfValidator) Validate(ctx context.Context, request tfsd
 //     - Is exclusively at most the sum of the given attributes.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtMostSumOf(attributesToSum []*tftypes.AttributePath) tfsdk.AttributeValidator {
+func AtMostSumOf(attributesToSum ...*tftypes.AttributePath) tfsdk.AttributeValidator {
 	return atMostSumOfValidator{
 		attributesToSumPaths: attributesToSum,
 	}

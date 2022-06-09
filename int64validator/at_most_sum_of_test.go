@@ -86,6 +86,18 @@ func TestAtMostSumOfValidator(t *testing.T) {
 				"two": tftypes.NewValue(tftypes.Number, nil),
 			},
 		},
+		"valid integer as Int64 returns error when all attributes to sum are null": {
+			val: types.Int64{Value: 1},
+			attributesToSumPaths: []*tftypes.AttributePath{
+				tftypes.NewAttributePath().WithAttributeName("one"),
+				tftypes.NewAttributePath().WithAttributeName("two"),
+			},
+			requestConfigRaw: map[string]tftypes.Value{
+				"one": tftypes.NewValue(tftypes.Number, nil),
+				"two": tftypes.NewValue(tftypes.Number, nil),
+			},
+			expectError: true,
+		},
 		"valid integer as Int64 less than sum of attributes, when one summed attribute is unknown": {
 			val: types.Int64{Value: 8},
 			attributesToSumPaths: []*tftypes.AttributePath{
@@ -107,6 +119,29 @@ func TestAtMostSumOfValidator(t *testing.T) {
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
 				"two": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
 			},
+		},
+		"valid integer as Int64 does not return error when all attributes to sum are unknown": {
+			val: types.Int64{Value: 1},
+			attributesToSumPaths: []*tftypes.AttributePath{
+				tftypes.NewAttributePath().WithAttributeName("one"),
+				tftypes.NewAttributePath().WithAttributeName("two"),
+			},
+			requestConfigRaw: map[string]tftypes.Value{
+				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
+				"two": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
+			},
+		},
+		"error when attribute to sum is not Number": {
+			val: types.Int64{Value: 9},
+			attributesToSumPaths: []*tftypes.AttributePath{
+				tftypes.NewAttributePath().WithAttributeName("one"),
+				tftypes.NewAttributePath().WithAttributeName("two"),
+			},
+			requestConfigRaw: map[string]tftypes.Value{
+				"one": tftypes.NewValue(tftypes.Bool, true),
+				"two": tftypes.NewValue(tftypes.Number, 9),
+			},
+			expectError: true,
 		},
 	}
 
@@ -130,7 +165,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 
 			response := tfsdk.ValidateAttributeResponse{}
 
-			AtMostSumOf(test.attributesToSumPaths).Validate(context.Background(), request, &response)
+			AtMostSumOf(test.attributesToSumPaths...).Validate(context.Background(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
