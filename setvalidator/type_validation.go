@@ -10,9 +10,9 @@ import (
 
 // validateSet ensures that the request contains a Set value.
 func validateSet(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) ([]attr.Value, bool) {
-	var n types.Set
+	var s types.Set
 
-	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &n)
+	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &s)
 
 	if diags.HasError() {
 		response.Diagnostics = append(response.Diagnostics, diags...)
@@ -20,9 +20,9 @@ func validateSet(ctx context.Context, request tfsdk.ValidateAttributeRequest, re
 		return nil, false
 	}
 
-	if n.Unknown || n.Null {
+	if s.Unknown || s.Null {
 		return nil, false
 	}
 
-	return n.Elems, true
+	return s.Elems, true
 }
