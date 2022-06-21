@@ -35,6 +35,16 @@ func AttributeValueMatchesDiagnostic(path *tftypes.AttributePath, description st
 	)
 }
 
+// AttributeValueTerraformValueDiagnostic returns an error Diagnostic to be used when an attribute's value cannot be
+// converted to terraform value.
+func AttributeValueTerraformValueDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+	return diag.NewAttributeErrorDiagnostic(
+		path,
+		"Invalid Attribute Value Terraform Value",
+		capitalize(description)+", err: "+value,
+	)
+}
+
 // capitalize will uppercase the first letter in a UTF-8 string.
 func capitalize(str string) string {
 	if str == "" {
