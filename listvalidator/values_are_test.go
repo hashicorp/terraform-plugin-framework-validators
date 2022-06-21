@@ -22,17 +22,25 @@ func TestValuesAreValidator(t *testing.T) {
 		expectError         bool
 	}
 	tests := map[string]testCase{
-		"List unknown": {
-			val: types.List{
-				Unknown: true,
+		"not List": {
+			val: types.Set{
+				ElemType: types.StringType,
 			},
 			expectError: true,
 		},
+		"List unknown": {
+			val: types.List{
+				Unknown:  true,
+				ElemType: types.StringType,
+			},
+			expectError: false,
+		},
 		"List null": {
 			val: types.List{
-				Null: true,
+				Null:     true,
+				ElemType: types.StringType,
 			},
-			expectError: true,
+			expectError: false,
 		},
 		"List elems invalid": {
 			val: types.List{
