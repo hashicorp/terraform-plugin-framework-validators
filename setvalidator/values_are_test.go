@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-func TestAtLeastValidator(t *testing.T) {
+func TestValuesAreValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
