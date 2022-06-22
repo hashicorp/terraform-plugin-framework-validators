@@ -46,13 +46,17 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 
 		for _, validator := range v.valueValidators {
 			validator.Validate(ctx, request, resp)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 }
 
+// ValuesAre returns an AttributeValidator which ensures that any configured
+// attribute value:
+//
+//     - Is a List.
+//     - That contains list elements, each of which validate against each value validator.
+//
+// Null (unconfigured) and unknown (known after apply) values are skipped.
 func ValuesAre(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return valuesAreValidator{
 		valueValidators: valueValidators,
