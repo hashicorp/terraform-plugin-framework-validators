@@ -1,3 +1,8 @@
+# 0.3.0 (unreleased)
+
+FEATURES:
+* Introduced `setvalidator` package with `ValuesAre()` validation function ([#12](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/12))
+
 # 0.2.0 (June 7, 2022)
 
 BREAKING CHANGES:
