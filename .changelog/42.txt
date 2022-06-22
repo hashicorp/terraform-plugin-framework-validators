@@ -1,0 +1,19 @@
+```release-note:enhancement
+floatvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`
+```
+
+```release-note:enhancement
+int64validator: 2 new validation functions, `OneOf()` and `NoneOf()`
+```
+
+```release-note:feature
+numbervalidator: New package that starts with 2 validation functions, `OneOf()` and `NoneOf()`
+```
+
+```release-note:enhancement
+stringvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`, similar to the ones in `genericvalidator` but option to control case-sensitivity
+```
+
+```release-note:note
+Introduced a new package `primitivevalidator`, holding the shared code used by type-specific validators (ex. `OneOf()` and `NoneOf()`)
+```
