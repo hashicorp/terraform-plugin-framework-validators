@@ -7,13 +7,13 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
-	"github.com/hashicorp/terraform-plugin-framework-validators/primitivevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/internal/primitivevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func TestOneOfValidator(t *testing.T) {
+func TestNoneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -36,28 +36,29 @@ func TestOneOfValidator(t *testing.T) {
 	testCases := map[string]testCase{
 		"simple-match": {
 			in: types.String{Value: "foo"},
-			validator: primitivevalidator.OneOf(
-				types.String{Value: "foo"},
-				types.String{Value: "bar"},
-				types.String{Value: "baz"},
-			),
-		},
-		"simple-mismatch": {
-			in: types.String{Value: "foz"},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.String{Value: "foo"},
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},
 			),
 			expErrors: 1,
 		},
+		"simple-mismatch": {
+			in: types.String{Value: "foz"},
+			validator: primitivevalidator.NoneOf(
+				types.String{Value: "foo"},
+				types.String{Value: "bar"},
+				types.String{Value: "baz"},
+			),
+		},
 		"mixed": {
 			in: types.Float64{Value: 1.234},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.String{Value: "foo"},
 				types.Int64{Value: 567},
 				types.Float64{Value: 1.234},
 			),
+			expErrors: 1,
 		},
 		"list-not-allowed": {
 			in: types.List{
@@ -68,7 +69,7 @@ func TestOneOfValidator(t *testing.T) {
 					types.Int64{Value: 30},
 				},
 			},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.Int64{Value: 10},
 				types.Int64{Value: 20},
 				types.Int64{Value: 30},
@@ -86,7 +87,7 @@ func TestOneOfValidator(t *testing.T) {
 					types.String{Value: "baz"},
 				},
 			},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.String{Value: "bob"},
 				types.String{Value: "alice"},
 				types.String{Value: "john"},
@@ -105,7 +106,7 @@ func TestOneOfValidator(t *testing.T) {
 					"five.four":  types.Number{Value: big.NewFloat(5.4)},
 				},
 			},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.Number{Value: big.NewFloat(1.1)},
 				types.Number{Value: big.NewFloat(math.MaxFloat64)},
 				types.Number{Value: big.NewFloat(math.SmallestNonzeroFloat64)},
@@ -128,7 +129,7 @@ func TestOneOfValidator(t *testing.T) {
 					"Address": types.String{Value: "1200 Park Avenue Emeryville"},
 				},
 			},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.Object{
 					AttrTypes: map[string]attr.Type{},
 					Attrs:     map[string]attr.Value{},
@@ -148,7 +149,7 @@ func TestOneOfValidator(t *testing.T) {
 		},
 		"skip-validation-on-null": {
 			in: types.String{Null: true},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.String{Value: "foo"},
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},
@@ -156,7 +157,7 @@ func TestOneOfValidator(t *testing.T) {
 		},
 		"skip-validation-on-unknown": {
 			in: types.String{Unknown: true},
-			validator: primitivevalidator.OneOf(
+			validator: primitivevalidator.NoneOf(
 				types.String{Value: "foo"},
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},

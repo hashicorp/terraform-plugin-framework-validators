@@ -1,7 +1,7 @@
 package int64validator
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework-validators/primitivevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/internal/primitivevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
