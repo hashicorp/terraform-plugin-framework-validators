@@ -71,7 +71,7 @@ func TestValidateMap(t *testing.T) {
 			gotMapElems, gotOk := validateMap(context.Background(), testCase.request, &tfsdk.ValidateAttributeResponse{})
 
 			if diff := cmp.Diff(gotMapElems, testCase.expectedMap); diff != "" {
-				t.Errorf("unexpected float64 difference: %s", diff)
+				t.Errorf("unexpected map difference: %s", diff)
 			}
 
 			if diff := cmp.Diff(gotOk, testCase.expectedOk); diff != "" {
