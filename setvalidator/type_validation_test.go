@@ -71,7 +71,7 @@ func TestValidateSet(t *testing.T) {
 			gotSetElems, gotOk := validateSet(context.Background(), testCase.request, &tfsdk.ValidateAttributeResponse{})
 
 			if diff := cmp.Diff(gotSetElems, testCase.expectedSetElems); diff != "" {
-				t.Errorf("unexpected float64 difference: %s", diff)
+				t.Errorf("unexpected set difference: %s", diff)
 			}
 
 			if diff := cmp.Diff(gotOk, testCase.expectedOk); diff != "" {

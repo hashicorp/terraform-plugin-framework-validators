@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = valuesAreValidator{}
@@ -39,14 +37,16 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 		return
 	}
 
-	for k, elem := range elems {
+	for _, elem := range elems {
 		value, err := elem.ToTerraformValue(ctx)
 		if err != nil {
-			resp.Diagnostics.Append(validatordiag.AttributeValueTerraformValueDiagnostic(
-				req.AttributePath,
-				fmt.Sprintf("element at index: %d cannot be converted to Terraform value", k),
-				err.Error(),
-			))
+			resp.Diagnostics.AddError(
+				"Attribute Conversion Error During Set Element Validation",
+				"An unexpected error was encountered when handling the a Set element. "+
+					"This is always an issue in terraform-plugin-framework used to implement the provider and should be reported to the provider developers.\n\n"+
+					"Please report this to the provider developer:\n\n"+
+					"Attribute Conversion Error During Set Element Validation.",
+			)
 			return
 		}
 
@@ -58,13 +58,17 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 
 		for _, validator := range v.valueValidators {
 			validator.Validate(ctx, request, resp)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 }
 
+// ValuesAre returns an AttributeValidator which ensures that any configured
+// attribute value:
+//
+//     - Is a Set.
+//     - Contains Set elements, each of which validate against each value validator.
+//
+// Null (unconfigured) and unknown (known after apply) values are skipped.
 func ValuesAre(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return valuesAreValidator{
 		valueValidators: valueValidators,
