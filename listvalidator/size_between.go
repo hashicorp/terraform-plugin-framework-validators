@@ -46,6 +46,13 @@ func (v sizeBetweenValidator) Validate(ctx context.Context, req tfsdk.ValidateAt
 	}
 }
 
+// SizeBetween returns an AttributeValidator which ensures that any configured
+// attribute value:
+//
+//     - Is a List.
+//     - Contains at least min elements and at most max elements.
+//
+// Null (unconfigured) and unknown (known after apply) values are skipped.
 func SizeBetween(min, max int) tfsdk.AttributeValidator {
 	return sizeBetweenValidator{
 		min: min,
