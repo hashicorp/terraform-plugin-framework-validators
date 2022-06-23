@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-func TestAnyValidator(t *testing.T) {
+func TestAllValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -32,7 +32,7 @@ func TestAnyValidator(t *testing.T) {
 		"String invalid": {
 			val: types.String{Value: "one"},
 			valueValidators: []tfsdk.AttributeValidator{
-				stringvalidator.LengthAtLeast(4),
+				stringvalidator.LengthAtLeast(3),
 				stringvalidator.LengthAtLeast(5),
 			},
 			expectError: true,
@@ -40,24 +40,8 @@ func TestAnyValidator(t *testing.T) {
 		"String valid": {
 			val: types.String{Value: "one"},
 			valueValidators: []tfsdk.AttributeValidator{
-				stringvalidator.LengthAtLeast(5),
+				stringvalidator.LengthAtLeast(2),
 				stringvalidator.LengthAtLeast(3),
-			},
-			expectError: false,
-		},
-		"String invalid in all nested validators": {
-			val: types.String{Value: "one"},
-			valueValidators: []tfsdk.AttributeValidator{
-				All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
-				All(stringvalidator.LengthAtLeast(5), stringvalidator.LengthAtLeast(3)),
-			},
-			expectError: true,
-		},
-		"String in one of the nested validators": {
-			val: types.String{Value: "one"},
-			valueValidators: []tfsdk.AttributeValidator{
-				All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
-				All(stringvalidator.LengthAtLeast(2), stringvalidator.LengthAtLeast(3)),
 			},
 			expectError: false,
 		},
@@ -71,7 +55,7 @@ func TestAnyValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			Any(test.valueValidators...).Validate(context.TODO(), request, &response)
+			All(test.valueValidators...).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
