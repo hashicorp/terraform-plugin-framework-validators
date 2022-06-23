@@ -1,0 +1,3 @@
+```release-note:feature
+Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions to `mapvalidator` package
+```
