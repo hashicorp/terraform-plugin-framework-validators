@@ -53,7 +53,7 @@ func TestAnyValidator(t *testing.T) {
 			},
 			expectError: true,
 		},
-		"String in one of the nested validators": {
+		"String valid in one of the nested validators": {
 			val: types.String{Value: "one"},
 			valueValidators: []tfsdk.AttributeValidator{
 				All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
