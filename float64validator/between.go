@@ -34,7 +34,7 @@ func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.Va
 	}
 
 	if f < validator.min || f > validator.max {
-		response.Diagnostics.Append(validatordiag.InvalidValueDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%f", f),

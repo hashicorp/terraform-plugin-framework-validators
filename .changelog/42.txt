@@ -11,5 +11,5 @@ numbervalidator: New package that starts with 2 validation functions, `OneOf()` 
 ```
 
 ```release-note:enhancement
-stringvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`, similar to the ones in `genericvalidator` but option to control case-sensitivity
+stringvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`, that offer case-sensitivity control
 ```

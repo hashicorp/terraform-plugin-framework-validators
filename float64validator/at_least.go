@@ -34,7 +34,7 @@ func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.Va
 	}
 
 	if f < validator.min {
-		response.Diagnostics.Append(validatordiag.InvalidValueDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%f", f),

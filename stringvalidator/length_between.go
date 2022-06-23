@@ -34,7 +34,7 @@ func (validator lengthBetweenValidator) Validate(ctx context.Context, request tf
 	}
 
 	if l := len(s); l < validator.minLength || l > validator.maxLength {
-		response.Diagnostics.Append(validatordiag.InvalidValueLengthDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueLengthDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%d", l),

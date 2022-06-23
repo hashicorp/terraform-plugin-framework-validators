@@ -38,7 +38,7 @@ func (av *acceptableStringsAttributeValidator) Validate(ctx context.Context, req
 
 	if av.shouldMatch && !av.isAcceptableValue(value) || //< EITHER should match but it does not
 		!av.shouldMatch && av.isAcceptableValue(value) { //< OR should not match but it does
-		res.Diagnostics.Append(validatordiag.InvalidValueMatchDiagnostic(
+		res.Diagnostics.Append(validatordiag.InvalidAttributeValueMatchDiagnostic(
 			req.AttributePath,
 			av.Description(ctx),
 			value,

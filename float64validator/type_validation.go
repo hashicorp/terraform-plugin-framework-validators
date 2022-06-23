@@ -12,7 +12,7 @@ import (
 func validateFloat(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (float64, bool) {
 	t := request.AttributeConfig.Type(ctx)
 	if t != types.Float64Type {
-		response.Diagnostics.Append(validatordiag.InvalidTypeDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeTypeDiagnostic(
 			request.AttributePath,
 			"Expected value of type float64",
 			t.String(),

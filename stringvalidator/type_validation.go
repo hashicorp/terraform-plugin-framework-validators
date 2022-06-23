@@ -12,7 +12,7 @@ import (
 func validateString(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (string, bool) {
 	t := request.AttributeConfig.Type(ctx)
 	if t != types.StringType {
-		response.Diagnostics.Append(validatordiag.InvalidTypeDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeTypeDiagnostic(
 			request.AttributePath,
 			"Expected value of type string",
 			t.String(),

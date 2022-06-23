@@ -34,7 +34,7 @@ func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.Val
 	}
 
 	if f > validator.max {
-		response.Diagnostics.Append(validatordiag.InvalidValueDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%f", f),

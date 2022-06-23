@@ -39,7 +39,7 @@ func (validator regexMatchesValidator) Validate(ctx context.Context, request tfs
 	}
 
 	if ok := validator.regexp.MatchString(s); !ok {
-		response.Diagnostics.Append(validatordiag.InvalidValueMatchDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueMatchDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			s,

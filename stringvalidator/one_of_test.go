@@ -35,6 +35,7 @@ func TestOneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 		"simple-match-case-insensitive": {
 			in: types.String{Value: "foo"},
@@ -44,6 +45,7 @@ func TestOneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 		"simple-mismatch": {
 			in: types.String{Value: "foz"},
@@ -139,6 +141,7 @@ func TestOneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
 			in: types.String{Unknown: true},
@@ -148,6 +151,7 @@ func TestOneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 	}
 

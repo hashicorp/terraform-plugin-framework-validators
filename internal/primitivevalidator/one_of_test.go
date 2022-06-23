@@ -41,6 +41,7 @@ func TestOneOfValidator(t *testing.T) {
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},
 			),
+			expErrors: 0,
 		},
 		"simple-mismatch": {
 			in: types.String{Value: "foz"},
@@ -58,6 +59,7 @@ func TestOneOfValidator(t *testing.T) {
 				types.Int64{Value: 567},
 				types.Float64{Value: 1.234},
 			),
+			expErrors: 0,
 		},
 		"list-not-allowed": {
 			in: types.List{
@@ -153,6 +155,7 @@ func TestOneOfValidator(t *testing.T) {
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},
 			),
+			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
 			in: types.String{Unknown: true},
@@ -161,6 +164,7 @@ func TestOneOfValidator(t *testing.T) {
 				types.String{Value: "bar"},
 				types.String{Value: "baz"},
 			),
+			expErrors: 0,
 		},
 	}
 

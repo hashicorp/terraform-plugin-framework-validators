@@ -55,6 +55,7 @@ func TestNoneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 		"list-not-allowed": {
 			in: types.List{
@@ -140,6 +141,7 @@ func TestNoneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
 			in: types.String{Unknown: true},
@@ -149,6 +151,7 @@ func TestNoneOfValidator(t *testing.T) {
 				"bar",
 				"baz",
 			),
+			expErrors: 0,
 		},
 	}
 

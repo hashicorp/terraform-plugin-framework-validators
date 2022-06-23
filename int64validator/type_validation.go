@@ -12,7 +12,7 @@ import (
 func validateInt(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (int64, bool) {
 	t := request.AttributeConfig.Type(ctx)
 	if t != types.Int64Type {
-		response.Diagnostics.Append(validatordiag.InvalidTypeDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeTypeDiagnostic(
 			request.AttributePath,
 			"Expected value of type int64",
 			t.String(),
