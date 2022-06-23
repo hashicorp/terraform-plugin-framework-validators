@@ -1,8 +1,3 @@
-# 0.3.0 (unreleased)
-
-FEATURES:
-* Introduced `listvalidator` package with `ValuesAre()` validation functions ([#11](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/11))
-
 # 0.2.0 (June 7, 2022)
 
 BREAKING CHANGES:
