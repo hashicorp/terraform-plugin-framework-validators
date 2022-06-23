@@ -32,6 +32,9 @@ func (v keysAreValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 // Validate performs the validation.
+// Note that the AttributePath specified in the ValidateAttributeRequest refers to the value in the Map with key `k`,
+// whereas the AttributeConfig refers to the key itself (i.e., `k`). This is intentional as the validation being
+// performed is for the keys of the Map.
 func (v keysAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
 	elems, ok := validateMap(ctx, req, resp)
 	if !ok {
