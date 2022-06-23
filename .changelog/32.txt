@@ -1,0 +1,7 @@
+```release-note:breaking-change
+Renaming package `validatordiag` to be at `helpers/validatordiag`
+```
+
+```release-note:feature
+Introduced `schemavalidator` package with 4 new validation functions: `RequiredWith()`, `ConflictsWith()`, `AtLeastOneOf()`, `ExactlyOneOf()`
+```
