@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
@@ -39,7 +39,7 @@ func (validator regexMatchesValidator) Validate(ctx context.Context, request tfs
 	}
 
 	if ok := validator.regexp.MatchString(s); !ok {
-		response.Diagnostics.Append(validatordiag.AttributeValueMatchesDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueMatchDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			s,

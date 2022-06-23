@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = sizeBetweenValidator{}
@@ -36,7 +35,7 @@ func (v sizeBetweenValidator) Validate(ctx context.Context, req tfsdk.ValidateAt
 	}
 
 	if len(elems) < v.min || len(elems) > v.max {
-		resp.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
+		resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			req.AttributePath,
 			v.Description(ctx),
 			fmt.Sprintf("%d", len(elems)),

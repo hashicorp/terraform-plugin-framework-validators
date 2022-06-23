@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = sizeAtMostValidator{}
@@ -34,7 +33,7 @@ func (v sizeAtMostValidator) Validate(ctx context.Context, req tfsdk.ValidateAtt
 	}
 
 	if len(elems) > v.max {
-		resp.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
+		resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			req.AttributePath,
 			v.Description(ctx),
 			fmt.Sprintf("%d", len(elems)),

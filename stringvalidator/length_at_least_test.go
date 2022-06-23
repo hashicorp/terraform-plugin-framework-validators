@@ -1,9 +1,10 @@
-package stringvalidator
+package stringvalidator_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -50,7 +51,7 @@ func TestLengthAtLeastValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			LengthAtLeast(test.minLength).Validate(context.TODO(), request, &response)
+			stringvalidator.LengthAtLeast(test.minLength).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
