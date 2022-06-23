@@ -18,7 +18,7 @@ type sizeBetweenValidator struct {
 }
 
 // Description describes the validation in plain text formatting.
-func (v sizeBetweenValidator) Description(ctx context.Context) string {
+func (v sizeBetweenValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("map must contain at least %d elements and at most %d elements", v.min, v.max)
 }
 
