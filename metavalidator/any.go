@@ -32,15 +32,21 @@ func (v anyValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 // Validate performs the validation.
-// If the number of iterations (i.e., k + 1) is greater than the number of diagnostics in the response then
-// at least one of the validations has passed and, we return without any diagnostics.
+// If the diagnostics returned from the validator does not contain an error
+// we return without any diagnostics.
 func (v anyValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
-	for k, validator := range v.valueValidators {
-		validator.Validate(ctx, req, resp)
-		if k+1 > len(resp.Diagnostics) {
+	for _, validator := range v.valueValidators {
+		validatorResp := &tfsdk.ValidateAttributeResponse{
+			Diagnostics: diag.Diagnostics{},
+		}
+
+		validator.Validate(ctx, req, validatorResp)
+		if !validatorResp.Diagnostics.HasError() {
 			resp.Diagnostics = []diag.Diagnostic{}
 			return
 		}
+
+		resp.Diagnostics.Append(validatorResp.Diagnostics...)
 	}
 }
 
