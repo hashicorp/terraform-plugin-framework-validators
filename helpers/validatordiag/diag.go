@@ -79,6 +79,32 @@ func WarningsCount(diags diag.Diagnostics) int {
 	return count
 }
 
+// GetErrors returns all the diag.Diagnostic in diag.Diagnostics that are diag.SeverityError.
+func GetErrors(diags diag.Diagnostics) diag.Diagnostics {
+	var dd diag.Diagnostics
+
+	for _, d := range diags {
+		if diag.SeverityError == d.Severity() {
+			dd = append(dd, d)
+		}
+	}
+
+	return dd
+}
+
+// GetWarnings returns all the diag.Diagnostic in diag.Diagnostics that are diag.SeverityWarning.
+func GetWarnings(diags diag.Diagnostics) diag.Diagnostics {
+	var dd diag.Diagnostics
+
+	for _, d := range diags {
+		if diag.SeverityWarning == d.Severity() {
+			dd = append(dd, d)
+		}
+	}
+
+	return dd
+}
+
 // capitalize will uppercase the first letter in a UTF-8 string.
 func capitalize(str string) string {
 	if str == "" {
