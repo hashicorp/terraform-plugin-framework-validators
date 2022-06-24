@@ -23,7 +23,7 @@ func (v allValidator) Description(ctx context.Context) string {
 		descriptions = append(descriptions, validator.Description(ctx))
 	}
 
-	return fmt.Sprintf("value must satisfy all of the validations: %s", strings.Join(descriptions, " + "))
+	return fmt.Sprintf("Value must satisfy all of the validations: %s", strings.Join(descriptions, " + "))
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
