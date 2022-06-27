@@ -9,7 +9,3 @@ int64validator: 2 new validation functions, `OneOf()` and `NoneOf()`
 ```release-note:feature
 numbervalidator: New package that starts with 2 validation functions, `OneOf()` and `NoneOf()`
 ```
-
-```release-note:enhancement
-stringvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`, that offer case-sensitivity control
-```

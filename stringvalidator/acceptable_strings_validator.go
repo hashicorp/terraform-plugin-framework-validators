@@ -9,20 +9,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
-// acceptableStringsAttributeValidator is the underlying struct implementing OneOf and NoneOf.
-type acceptableStringsAttributeValidator struct {
+// acceptableStringsCaseInsensitiveAttributeValidator is the underlying struct implementing OneOf and NoneOf.
+type acceptableStringsCaseInsensitiveAttributeValidator struct {
 	acceptableStrings []string
-	caseSensitive     bool
 	shouldMatch       bool
 }
 
-var _ tfsdk.AttributeValidator = (*acceptableStringsAttributeValidator)(nil)
+var _ tfsdk.AttributeValidator = (*acceptableStringsCaseInsensitiveAttributeValidator)(nil)
 
-func (av *acceptableStringsAttributeValidator) Description(ctx context.Context) string {
+func (av *acceptableStringsCaseInsensitiveAttributeValidator) Description(ctx context.Context) string {
 	return av.MarkdownDescription(ctx)
 }
 
-func (av *acceptableStringsAttributeValidator) MarkdownDescription(_ context.Context) string {
+func (av *acceptableStringsCaseInsensitiveAttributeValidator) MarkdownDescription(_ context.Context) string {
 	if av.shouldMatch {
 		return fmt.Sprintf("String must match one of: %q", av.acceptableStrings)
 	} else {
@@ -30,7 +29,7 @@ func (av *acceptableStringsAttributeValidator) MarkdownDescription(_ context.Con
 	}
 }
 
-func (av *acceptableStringsAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+func (av *acceptableStringsCaseInsensitiveAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
 	value, ok := validateString(ctx, req, res)
 	if !ok {
 		return
@@ -46,16 +45,10 @@ func (av *acceptableStringsAttributeValidator) Validate(ctx context.Context, req
 	}
 }
 
-func (av *acceptableStringsAttributeValidator) isAcceptableValue(v string) bool {
+func (av *acceptableStringsCaseInsensitiveAttributeValidator) isAcceptableValue(v string) bool {
 	for _, acceptableV := range av.acceptableStrings {
-		if av.caseSensitive {
-			if v == acceptableV {
-				return true
-			}
-		} else {
-			if strings.EqualFold(v, acceptableV) {
-				return true
-			}
+		if strings.EqualFold(v, acceptableV) {
+			return true
 		}
 	}
 
