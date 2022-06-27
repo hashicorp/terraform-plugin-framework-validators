@@ -1,4 +1,4 @@
-package metavalidator
+package metavalidator_test
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/metavalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
@@ -55,7 +56,7 @@ func TestAllValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			All(test.valueValidators...).Validate(context.TODO(), request, &response)
+			metavalidator.All(test.valueValidators...).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

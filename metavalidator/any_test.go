@@ -1,4 +1,4 @@
-package metavalidator
+package metavalidator_test
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/metavalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
@@ -48,16 +49,16 @@ func TestAnyValidator(t *testing.T) {
 		"String invalid in all nested validators": {
 			val: types.String{Value: "one"},
 			valueValidators: []tfsdk.AttributeValidator{
-				All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
-				All(stringvalidator.LengthAtLeast(5), stringvalidator.LengthAtLeast(3)),
+				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
+				metavalidator.All(stringvalidator.LengthAtLeast(5), stringvalidator.LengthAtLeast(3)),
 			},
 			expectError: true,
 		},
 		"String valid in one of the nested validators": {
 			val: types.String{Value: "one"},
 			valueValidators: []tfsdk.AttributeValidator{
-				All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
-				All(stringvalidator.LengthAtLeast(2), stringvalidator.LengthAtLeast(3)),
+				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
+				metavalidator.All(stringvalidator.LengthAtLeast(2), stringvalidator.LengthAtLeast(3)),
 			},
 			expectError: false,
 		},
@@ -71,7 +72,7 @@ func TestAnyValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			Any(test.valueValidators...).Validate(context.TODO(), request, &response)
+			metavalidator.Any(test.valueValidators...).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
