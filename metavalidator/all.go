@@ -11,7 +11,8 @@ import (
 var _ tfsdk.AttributeValidator = allValidator{}
 
 // allValidator validates that value validates against all the value validators and is for use in
-// conjunction with the anyValidator, as the default behaviour is to validate all at the top-level.
+// conjunction with the anyValidator or anyWithAllWarningsValidator, as the default behaviour is
+// to validate all at the top-level.
 type allValidator struct {
 	valueValidators []tfsdk.AttributeValidator
 }
@@ -43,8 +44,8 @@ func (v allValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeR
 //
 //     - Validates against all the value validators.
 //
-// Use of All is only necessary when used in conjunction with Any as the []tfsdk.AttributeValidator field automatically
-// applies a logical AND.
+// Use of All is only necessary when used in conjunction with AnyValidator or AnyWithAllWarnings
+// as the []tfsdk.AttributeValidator field automatically applies a logical AND.
 func All(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return allValidator{
 		valueValidators: valueValidators,

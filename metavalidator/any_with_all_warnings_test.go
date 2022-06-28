@@ -17,7 +17,24 @@ import (
 
 var _ tfsdk.AttributeValidator = warningValidator{}
 
-func TestAnyValidator(t *testing.T) {
+type warningValidator struct {
+	summary string
+	detail  string
+}
+
+func (validator warningValidator) Description(_ context.Context) string {
+	return "description"
+}
+
+func (validator warningValidator) MarkdownDescription(ctx context.Context) string {
+	return validator.Description(ctx)
+}
+
+func (validator warningValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+	response.Diagnostics.Append(diag.NewWarningDiagnostic(validator.summary, validator.detail))
+}
+
+func TestAnyWithAllWarningsValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -137,7 +154,10 @@ func TestAnyValidator(t *testing.T) {
 			expectError:  false,
 			inspectDiags: true,
 			expectedValidatorDiags: diag.Diagnostics{
+				diag.NewWarningDiagnostic("Warning", "Warning from first failed validation"),
 				diag.NewWarningDiagnostic("Warning", "Warning from first successful validation"),
+				diag.NewWarningDiagnostic("Warning", "Warning from second failed validation"),
+				diag.NewWarningDiagnostic("Warning", "Warning from second successful validation"),
 			},
 		},
 	}
@@ -150,7 +170,7 @@ func TestAnyValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			metavalidator.Any(test.valueValidators...).Validate(context.TODO(), request, &response)
+			metavalidator.AnyWithAllWarnings(test.valueValidators...).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
