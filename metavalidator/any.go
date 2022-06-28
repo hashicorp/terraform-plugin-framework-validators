@@ -33,7 +33,7 @@ func (v anyValidator) MarkdownDescription(ctx context.Context) string {
 
 // Validate performs the validation.
 // If the diagnostics returned from the validator does not contain an error
-// we return without any diagnostics.
+// we return all accumulated warning diagnostics.
 func (v anyValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
 	for _, validator := range v.valueValidators {
 		validatorResp := &tfsdk.ValidateAttributeResponse{
@@ -41,8 +41,19 @@ func (v anyValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeR
 		}
 
 		validator.Validate(ctx, req, validatorResp)
+
 		if !validatorResp.Diagnostics.HasError() {
-			resp.Diagnostics = []diag.Diagnostic{}
+			diagWarnings := diag.Diagnostics{}
+
+			for _, d := range resp.Diagnostics {
+				if d.Severity() == diag.SeverityWarning {
+					diagWarnings.Append(d)
+				}
+			}
+
+			diagWarnings.Append(validatorResp.Diagnostics...)
+
+			resp.Diagnostics = diagWarnings
 			return
 		}
 
