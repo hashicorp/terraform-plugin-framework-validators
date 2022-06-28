@@ -2,7 +2,6 @@ package metavalidator_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -24,7 +23,7 @@ type warningValidator struct {
 }
 
 func (validator warningValidator) Description(_ context.Context) string {
-	return fmt.Sprintf("description")
+	return "description"
 }
 
 func (validator warningValidator) MarkdownDescription(ctx context.Context) string {
