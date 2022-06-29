@@ -1,11 +1,11 @@
 ```release-note:enhancement
-floatvalidator: 2 new validation functions, `OneOf()` and `NoneOf()`
+floatvalidator: Added `OneOf()` and `NoneOf()` validation functions
 ```
 
 ```release-note:enhancement
-int64validator: 2 new validation functions, `OneOf()` and `NoneOf()`
+int64validator: Added `OneOf()` and `NoneOf()` validation functions
 ```
 
 ```release-note:feature
-numbervalidator: New package that starts with 2 validation functions, `OneOf()` and `NoneOf()`
+Introduced `numbervalidator` package with `OneOf()` and `NoneOf()` validation functions
 ```

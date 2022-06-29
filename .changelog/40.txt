@@ -1,3 +1,3 @@
-```release-note:feature
-Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions to `setvalidator` package
+```release-note:enhancement
+setvalidator: Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions
 ```
