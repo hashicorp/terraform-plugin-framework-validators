@@ -1,3 +1,21 @@
+# 0.3.0 (June 29, 2022)
+
+FEATURES:
+
+* Introduced `listvalidator` package with `ValuesAre()` validation functions ([#37](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/37))
+* Introduced `mapvalidator` package with `KeysAre()` and `ValuesAre()` validation functions ([#38](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/38))
+* Introduced `numbervalidator` package with `OneOf()` and `NoneOf()` validation functions ([#42](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/42))
+* Introduced `setvalidator` package with `ValuesAre()` validation function ([#36](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/36))
+
+ENHANCEMENTS:
+
+* float64validator: Added `OneOf()` and `NoneOf()` validation functions ([#42](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/42))
+* int64validator: Added `OneOf()` and `NoneOf()` validation functions ([#42](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/42))
+* listvalidator: Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions ([#41](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/41))
+* mapvalidator: Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions ([#39](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/39))
+* setvalidator: Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions ([#40](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/40))
+* stringvalidator: Added `OneOf()` and `NoneOf()` (case sensitive), and `OneOfCaseInsensitive()` and `NoneOfCaseInsensitive()` (case insensitive) validation functions ([#45](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/45))
+
 # 0.2.0 (June 7, 2022)
 
 BREAKING CHANGES:
