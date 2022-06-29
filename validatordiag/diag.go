@@ -5,11 +5,11 @@ import (
 	"unicode/utf8"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 )
 
 // AttributeValueDiagnostic returns an error Diagnostic to be used when an attribute has an invalid value.
-func AttributeValueDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func AttributeValueDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value",
@@ -18,7 +18,7 @@ func AttributeValueDiagnostic(path *tftypes.AttributePath, description string, v
 }
 
 // AttributeValueLengthDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid length.
-func AttributeValueLengthDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func AttributeValueLengthDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Length",
@@ -27,7 +27,7 @@ func AttributeValueLengthDiagnostic(path *tftypes.AttributePath, description str
 }
 
 // AttributeValueMatchesDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid match.
-func AttributeValueMatchesDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func AttributeValueMatchesDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Match",

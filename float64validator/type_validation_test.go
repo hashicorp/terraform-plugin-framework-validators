@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 func TestValidateFloat(t *testing.T) {
@@ -21,7 +21,7 @@ func TestValidateFloat(t *testing.T) {
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,
@@ -29,7 +29,7 @@ func TestValidateFloat(t *testing.T) {
 		"float64-null": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Float64{Null: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,
@@ -37,7 +37,7 @@ func TestValidateFloat(t *testing.T) {
 		"float64-value": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Float64{Value: 1.2},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedFloat64: 1.2,
 			expectedOk:      true,
@@ -45,7 +45,7 @@ func TestValidateFloat(t *testing.T) {
 		"float64-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Float64{Unknown: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,

@@ -7,9 +7,9 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/metavalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -48,12 +48,12 @@ func TestAnyValidator(t *testing.T) {
 			inspectDiags: true,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
-					tftypes.NewAttributePath().WithAttributeName("test"),
+					path.Root("test"),
 					"Invalid Attribute Value Length",
 					"String length must be at least 4, got: 3",
 				),
 				diag.NewAttributeErrorDiagnostic(
-					tftypes.NewAttributePath().WithAttributeName("test"),
+					path.Root("test"),
 					"Invalid Attribute Value Length",
 					"String length must be at least 5, got: 3",
 				),
@@ -79,12 +79,12 @@ func TestAnyValidator(t *testing.T) {
 			inspectDiags: true,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
-					tftypes.NewAttributePath().WithAttributeName("test"),
+					path.Root("test"),
 					"Invalid Attribute Value Length",
 					"String length must be at least 6, got: 3",
 				),
 				diag.NewAttributeErrorDiagnostic(
-					tftypes.NewAttributePath().WithAttributeName("test"),
+					path.Root("test"),
 					"Invalid Attribute Value Length",
 					"String length must be at least 5, got: 3",
 				),
@@ -146,7 +146,7 @@ func TestAnyValidator(t *testing.T) {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}

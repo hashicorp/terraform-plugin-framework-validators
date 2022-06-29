@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 func TestValidateInt(t *testing.T) {
@@ -21,7 +21,7 @@ func TestValidateInt(t *testing.T) {
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedInt64: 0.0,
 			expectedOk:    false,
@@ -29,7 +29,7 @@ func TestValidateInt(t *testing.T) {
 		"int64-null": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Int64{Null: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedInt64: 0.0,
 			expectedOk:    false,
@@ -37,7 +37,7 @@ func TestValidateInt(t *testing.T) {
 		"int64-value": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Int64{Value: 123},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedInt64: 123,
 			expectedOk:    true,
@@ -45,7 +45,7 @@ func TestValidateInt(t *testing.T) {
 		"int64-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Int64{Unknown: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedInt64: 0.0,
 			expectedOk:    false,

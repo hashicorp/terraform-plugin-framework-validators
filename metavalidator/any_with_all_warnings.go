@@ -52,16 +52,7 @@ func (v anyWithAllWarningsValidator) Validate(ctx context.Context, req tfsdk.Val
 	}
 
 	if anyValid {
-		diagWarnings := diag.Diagnostics{}
-
-		for _, d := range resp.Diagnostics {
-			if d.Severity() == diag.SeverityWarning {
-				diagWarnings.Append(d)
-			}
-		}
-
-		resp.Diagnostics = diagWarnings
-		return
+		resp.Diagnostics = resp.Diagnostics.Warnings()
 	}
 }
 
