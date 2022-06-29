@@ -1,5 +1,5 @@
 ```release-note:enhancement
-floatvalidator: Added `OneOf()` and `NoneOf()` validation functions
+float64validator: Added `OneOf()` and `NoneOf()` validation functions
 ```
 
 ```release-note:enhancement
