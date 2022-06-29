@@ -32,8 +32,9 @@ func (v anyWithAllWarningsValidator) MarkdownDescription(ctx context.Context) st
 }
 
 // Validate performs the validation.
-// If the diagnostics returned from the validator do not contain an error we return all accumulated warning
-// diagnostics from the passing validator(s) and  any failing validator(s).
+// The validator will pass if it encounters a value validator that returns no errors and, will then return all
+// accumulated warning diagnostics from the passing validator(s) and  any failing validator(s).
+// Using All validator as value validators will pass if all the validators supplied in an All validator pass.
 func (v anyWithAllWarningsValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
 	anyValid := false
 
