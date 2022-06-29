@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
@@ -34,7 +34,7 @@ func (validator lengthAtLeastValidator) Validate(ctx context.Context, request tf
 	}
 
 	if l := len(s); l < validator.minLength {
-		response.Diagnostics.Append(validatordiag.AttributeValueLengthDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueLengthDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%d", l),

@@ -1,9 +1,10 @@
-package float64validator
+package float64validator_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -58,7 +59,7 @@ func TestAtMostValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			AtMost(test.max).Validate(context.TODO(), request, &response)
+			float64validator.AtMost(test.max).Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

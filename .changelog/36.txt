@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `setvalidator` package with `ValuesAre()` validation function
+```

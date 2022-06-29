@@ -1,4 +1,4 @@
-package stringvalidator
+package stringvalidator_test
 
 import (
 	"context"
@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
 func TestRegexMatchesValidator(t *testing.T) {
@@ -51,7 +53,7 @@ func TestRegexMatchesValidator(t *testing.T) {
 				AttributeConfig: test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
-			RegexMatches(test.regexp, "").Validate(context.TODO(), request, &response)
+			stringvalidator.RegexMatches(test.regexp, "").Validate(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
