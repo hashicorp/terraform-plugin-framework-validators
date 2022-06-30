@@ -24,7 +24,6 @@ func TestAnyValidator(t *testing.T) {
 		val                    attr.Value
 		valueValidators        []tfsdk.AttributeValidator
 		expectError            bool
-		inspectDiags           bool
 		expectedValidatorDiags diag.Diagnostics
 	}
 	tests := map[string]testCase{
@@ -35,8 +34,13 @@ func TestAnyValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(5),
 			},
 			expectError: true,
-			// We can't test the diags returned as they are in the /internal/reflect pkg.
-			inspectDiags: false,
+			expectedValidatorDiags: diag.Diagnostics{
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test"),
+					"Invalid Attribute Type",
+					"Expected value of type string, got: types.Int64Type",
+				),
+			},
 		},
 		"String invalid": {
 			val: types.String{Value: "one"},
@@ -44,8 +48,7 @@ func TestAnyValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(4),
 				stringvalidator.LengthAtLeast(5),
 			},
-			expectError:  true,
-			inspectDiags: true,
+			expectError: true,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
@@ -66,7 +69,6 @@ func TestAnyValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(3),
 			},
 			expectError:            false,
-			inspectDiags:           true,
 			expectedValidatorDiags: diag.Diagnostics{},
 		},
 		"String invalid in all nested validators": {
@@ -75,8 +77,7 @@ func TestAnyValidator(t *testing.T) {
 				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
 				metavalidator.All(stringvalidator.LengthAtLeast(5), stringvalidator.LengthAtLeast(3)),
 			},
-			expectError:  true,
-			inspectDiags: true,
+			expectError: true,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
@@ -97,7 +98,6 @@ func TestAnyValidator(t *testing.T) {
 				metavalidator.All(stringvalidator.LengthAtLeast(2), stringvalidator.LengthAtLeast(3)),
 			},
 			expectError:            false,
-			inspectDiags:           true,
 			expectedValidatorDiags: diag.Diagnostics{},
 		},
 		"String valid in one of the nested validators with warning": {
@@ -109,8 +109,7 @@ func TestAnyValidator(t *testing.T) {
 					detail:  "Warning",
 				}),
 			},
-			expectError:  false,
-			inspectDiags: true,
+			expectError: false,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewWarningDiagnostic("Warning", "Warning")},
 		},
@@ -134,8 +133,7 @@ func TestAnyValidator(t *testing.T) {
 					detail:  "Warning from second successful validation",
 				}),
 			},
-			expectError:  false,
-			inspectDiags: true,
+			expectError: false,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewWarningDiagnostic("Warning", "Warning from first successful validation"),
 			},
@@ -160,10 +158,8 @@ func TestAnyValidator(t *testing.T) {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
 			}
 
-			if test.inspectDiags {
-				if diff := cmp.Diff(response.Diagnostics, test.expectedValidatorDiags); diff != "" {
-					t.Errorf("unexpected diags difference: %s", diff)
-				}
+			if diff := cmp.Diff(response.Diagnostics, test.expectedValidatorDiags); diff != "" {
+				t.Errorf("unexpected diags difference: %s", diff)
 			}
 		})
 	}

@@ -22,7 +22,6 @@ func TestAllValidator(t *testing.T) {
 		val                    attr.Value
 		valueValidators        []tfsdk.AttributeValidator
 		expectError            bool
-		inspectDiags           bool
 		expectedValidatorDiags diag.Diagnostics
 	}
 	tests := map[string]testCase{
@@ -33,8 +32,13 @@ func TestAllValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(5),
 			},
 			expectError: true,
-			// We can't test the diags returned as they are in the /internal/reflect pkg.
-			inspectDiags: false,
+			expectedValidatorDiags: diag.Diagnostics{
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test"),
+					"Invalid Attribute Type",
+					"Expected value of type string, got: types.Int64Type",
+				),
+			},
 		},
 		"String invalid": {
 			val: types.String{Value: "one"},
@@ -42,8 +46,7 @@ func TestAllValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(3),
 				stringvalidator.LengthAtLeast(5),
 			},
-			expectError:  true,
-			inspectDiags: true,
+			expectError: true,
 			expectedValidatorDiags: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
@@ -59,7 +62,6 @@ func TestAllValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(3),
 			},
 			expectError:            false,
-			inspectDiags:           true,
 			expectedValidatorDiags: nil,
 		},
 	}
@@ -82,10 +84,8 @@ func TestAllValidator(t *testing.T) {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
 			}
 
-			if test.inspectDiags {
-				if diff := cmp.Diff(response.Diagnostics, test.expectedValidatorDiags); diff != "" {
-					t.Errorf("unexpected diags difference: %s", diff)
-				}
+			if diff := cmp.Diff(response.Diagnostics, test.expectedValidatorDiags); diff != "" {
+				t.Errorf("unexpected diags difference: %s", diff)
 			}
 		})
 	}
