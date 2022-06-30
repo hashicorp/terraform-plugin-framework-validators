@@ -15,8 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-var _ tfsdk.AttributeValidator = warningValidator{}
-
 func TestAnyValidator(t *testing.T) {
 	t.Parallel()
 
