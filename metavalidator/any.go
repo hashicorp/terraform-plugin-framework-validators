@@ -56,6 +56,11 @@ func (v anyValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeR
 // attribute value:
 //
 //     - Validates against at least one of the value validators.
+//
+// To prevent practitioner confusion should non-passing validators have
+// conflicting logic, only warnings from the passing validator are returned.
+// Use AnyWithAllWarnings() to return warnings from non-passing validators
+// as well.
 func Any(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return anyValidator{
 		valueValidators: valueValidators,

@@ -44,7 +44,7 @@ func (v allValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeR
 //
 //     - Validates against all the value validators.
 //
-// Use of All is only necessary when used in conjunction with AnyValidator or AnyWithAllWarnings
+// Use of All is only necessary when used in conjunction with Any or AnyWithAllWarnings
 // as the []tfsdk.AttributeValidator field automatically applies a logical AND.
 func All(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return allValidator{

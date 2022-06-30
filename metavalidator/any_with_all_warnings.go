@@ -62,6 +62,8 @@ func (v anyWithAllWarningsValidator) Validate(ctx context.Context, req tfsdk.Val
 //
 //     - Validates against at least one of the value validators.
 //     - Returns all warnings for all passing and failing validators when at least one of the validators passes.
+//
+// Use Any() to only return warnings from the passing validator.
 func AnyWithAllWarnings(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
 	return anyWithAllWarningsValidator{
 		valueValidators: valueValidators,
