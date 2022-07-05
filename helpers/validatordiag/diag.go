@@ -5,11 +5,11 @@ import (
 	"unicode/utf8"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 )
 
 // InvalidAttributeValueDiagnostic returns an error Diagnostic to be used when an attribute has an invalid value.
-func InvalidAttributeValueDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func InvalidAttributeValueDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value",
@@ -18,7 +18,7 @@ func InvalidAttributeValueDiagnostic(path *tftypes.AttributePath, description st
 }
 
 // InvalidAttributeValueLengthDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid length.
-func InvalidAttributeValueLengthDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func InvalidAttributeValueLengthDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Length",
@@ -27,7 +27,7 @@ func InvalidAttributeValueLengthDiagnostic(path *tftypes.AttributePath, descript
 }
 
 // InvalidAttributeValueMatchDiagnostic returns an error Diagnostic to be used when an attribute's value has an invalid match.
-func InvalidAttributeValueMatchDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func InvalidAttributeValueMatchDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Match",
@@ -36,7 +36,7 @@ func InvalidAttributeValueMatchDiagnostic(path *tftypes.AttributePath, descripti
 }
 
 // InvalidAttributeSchemaDiagnostic returns an error Diagnostic to be used when a schemavalidator of attributes is invalid.
-func InvalidAttributeSchemaDiagnostic(path *tftypes.AttributePath, description string) diag.Diagnostic {
+func InvalidAttributeSchemaDiagnostic(path path.Path, description string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Combination",
@@ -45,7 +45,7 @@ func InvalidAttributeSchemaDiagnostic(path *tftypes.AttributePath, description s
 }
 
 // InvalidAttributeTypeDiagnostic returns an error Diagnostic to be used when an attribute has an invalid type.
-func InvalidAttributeTypeDiagnostic(path *tftypes.AttributePath, description string, value string) diag.Diagnostic {
+func InvalidAttributeTypeDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Type",

@@ -38,20 +38,8 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 	}
 
 	for _, elem := range elems {
-		value, err := elem.ToTerraformValue(ctx)
-		if err != nil {
-			resp.Diagnostics.AddError(
-				"Attribute Conversion Error During Set Element Validation",
-				"An unexpected error was encountered when handling the a Set element. "+
-					"This is always an issue in terraform-plugin-framework used to implement the provider and should be reported to the provider developers.\n\n"+
-					"Please report this to the provider developer:\n\n"+
-					"Attribute Conversion Error During Set Element Validation.",
-			)
-			return
-		}
-
 		request := tfsdk.ValidateAttributeRequest{
-			AttributePath:   req.AttributePath.WithElementKeyValue(value),
+			AttributePath:   req.AttributePath.AtSetValue(elem),
 			AttributeConfig: elem,
 			Config:          req.Config,
 		}

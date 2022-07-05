@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 func TestValidateMap(t *testing.T) {
@@ -22,7 +22,7 @@ func TestValidateMap(t *testing.T) {
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
@@ -30,7 +30,7 @@ func TestValidateMap(t *testing.T) {
 		"map-null": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Map{Null: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
@@ -38,7 +38,7 @@ func TestValidateMap(t *testing.T) {
 		"map-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Map{Unknown: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
@@ -52,7 +52,7 @@ func TestValidateMap(t *testing.T) {
 						"two": types.String{Value: "second"},
 					},
 				},
-				AttributePath: tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath: path.Root("test"),
 			},
 			expectedMap: map[string]attr.Value{
 				"one": types.String{Value: "first"},

@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `metavalidator` package with `Any()`, `AnyWithAllWarnings()`, and `All()` validation functions
+```

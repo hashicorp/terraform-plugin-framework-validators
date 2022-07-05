@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 func TestValidateList(t *testing.T) {
@@ -22,7 +22,7 @@ func TestValidateList(t *testing.T) {
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
@@ -30,7 +30,7 @@ func TestValidateList(t *testing.T) {
 		"list-null": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.List{Null: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
@@ -38,7 +38,7 @@ func TestValidateList(t *testing.T) {
 		"list-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
 				AttributeConfig: types.List{Unknown: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
@@ -52,7 +52,7 @@ func TestValidateList(t *testing.T) {
 						types.String{Value: "second"},
 					},
 				},
-				AttributePath: tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath: path.Root("test"),
 			},
 			expectedListElems: []attr.Value{
 				types.String{Value: "first"},

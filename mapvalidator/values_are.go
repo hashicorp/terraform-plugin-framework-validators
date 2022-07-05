@@ -39,7 +39,7 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 
 	for k, elem := range elems {
 		request := tfsdk.ValidateAttributeRequest{
-			AttributePath:   req.AttributePath.WithElementKeyString(k),
+			AttributePath:   req.AttributePath.AtMapKey(k),
 			AttributeConfig: elem,
 			Config:          req.Config,
 		}
