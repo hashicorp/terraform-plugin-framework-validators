@@ -20,32 +20,36 @@ func TestValidateFloat(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Bool{Value: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,
 		},
 		"float64-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Float64{Null: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Float64{Null: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,
 		},
 		"float64-value": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Float64{Value: 1.2},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Float64{Value: 1.2},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedFloat64: 1.2,
 			expectedOk:      true,
 		},
 		"float64-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Float64{Unknown: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Float64{Unknown: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedFloat64: 0.0,
 			expectedOk:      false,

@@ -38,10 +38,12 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 	}
 
 	for k, elem := range elems {
+		attrPath := req.AttributePath.AtMapKey(k)
 		request := tfsdk.ValidateAttributeRequest{
-			AttributePath:   req.AttributePath.AtMapKey(k),
-			AttributeConfig: elem,
-			Config:          req.Config,
+			AttributePath:           attrPath,
+			AttributePathExpression: attrPath.Expression(),
+			AttributeConfig:         elem,
+			Config:                  req.Config,
 		}
 
 		for _, validator := range v.valueValidators {

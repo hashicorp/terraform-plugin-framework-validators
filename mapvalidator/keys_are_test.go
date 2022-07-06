@@ -101,8 +101,9 @@ func TestKeysAreValidator(t *testing.T) {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:   path.Root("test"),
-				AttributeConfig: test.val,
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
+				AttributeConfig:         test.val,
 			}
 			response := tfsdk.ValidateAttributeResponse{}
 			KeysAre(test.keysAreValidators...).Validate(context.TODO(), request, &response)
