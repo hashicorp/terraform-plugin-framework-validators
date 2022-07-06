@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = equalToSumOfValidator{}
@@ -17,14 +17,14 @@ var _ tfsdk.AttributeValidator = equalToSumOfValidator{}
 // equalToSumOfValidator validates that an integer Attribute's value equals the sum of one
 // or more integer Attributes.
 type equalToSumOfValidator struct {
-	attributesToSumPaths []*tftypes.AttributePath
+	attributesToSumPaths []path.Path
 }
 
 // Description describes the validation in plain text formatting.
 func (validator equalToSumOfValidator) Description(_ context.Context) string {
 	var attributePaths []string
-	for _, path := range validator.attributesToSumPaths {
-		attributePaths = append(attributePaths, path.String())
+	for _, p := range validator.attributesToSumPaths {
+		attributePaths = append(attributePaths, p.String())
 	}
 
 	return fmt.Sprintf("value must be equal to the sum of %s", strings.Join(attributePaths, " + "))
@@ -46,10 +46,10 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 	var sumOfAttribs int64
 	var numUnknownAttribsToSum int
 
-	for _, path := range validator.attributesToSumPaths {
+	for _, p := range validator.attributesToSumPaths {
 		var attribToSum types.Int64
 
-		response.Diagnostics.Append(request.Config.GetAttribute(ctx, path, &attribToSum)...)
+		response.Diagnostics.Append(request.Config.GetAttribute(ctx, p, &attribToSum)...)
 		if response.Diagnostics.HasError() {
 			return
 		}
@@ -71,7 +71,7 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 	}
 
 	if i != sumOfAttribs {
-		response.Diagnostics.Append(validatordiag.AttributeValueDiagnostic(
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			request.AttributePath,
 			validator.Description(ctx),
 			fmt.Sprintf("%d", i),
@@ -88,7 +88,7 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 //     - Is equal to the sum of the given attributes.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func EqualToSumOf(attributesToSum ...*tftypes.AttributePath) tfsdk.AttributeValidator {
+func EqualToSumOf(attributesToSum ...path.Path) tfsdk.AttributeValidator {
 	return equalToSumOfValidator{
 		attributesToSumPaths: attributesToSum,
 	}

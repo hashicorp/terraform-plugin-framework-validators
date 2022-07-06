@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -15,7 +16,7 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 
 	type testCase struct {
 		val                  attr.Value
-		attributesToSumPaths []*tftypes.AttributePath
+		attributesToSumPaths []path.Path
 		requestConfigRaw     map[string]tftypes.Value
 		expectError          bool
 	}
@@ -32,9 +33,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 less than sum of attributes": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 15),
@@ -44,9 +45,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 equal to sum of attributes": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 5),
@@ -55,9 +56,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 greater than sum of attributes": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 4),
@@ -66,9 +67,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 greater than sum of attributes, when one summed attribute is null": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -77,9 +78,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes are null": {
 			val: types.Int64{Null: true},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -88,9 +89,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 returns error when all attributes to sum are null": {
 			val: types.Int64{Value: -1},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -100,9 +101,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 greater than sum of attributes, when one summed attribute is unknown": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -111,9 +112,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes are unknown": {
 			val: types.Int64{Unknown: true},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -122,9 +123,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes to sum are unknown": {
 			val: types.Int64{Value: -1},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -133,9 +134,9 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		},
 		"error when attribute to sum is not Number": {
 			val: types.Int64{Value: 9},
-			attributesToSumPaths: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("one"),
-				tftypes.NewAttributePath().WithAttributeName("two"),
+			attributesToSumPaths: []path.Path{
+				path.Root("one"),
+				path.Root("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Bool, true),
@@ -149,7 +150,7 @@ func TestAtLeastSumOfValidator(t *testing.T) {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("test"),
+				AttributePath:   path.Root("test"),
 				AttributeConfig: test.val,
 				Config: tfsdk.Config{
 					Raw: tftypes.NewValue(tftypes.Object{}, test.requestConfigRaw),
