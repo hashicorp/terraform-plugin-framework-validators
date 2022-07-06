@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework-validators/schemavalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -16,15 +16,16 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 
 	type testCase struct {
 		req       tfsdk.ValidateAttributeRequest
-		in        []*tftypes.AttributePath
+		in        path.Expressions
 		expErrors int
 	}
 
 	testCases := map[string]testCase{
 		"base": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "bar value"},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -47,14 +48,15 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
 			},
 		},
 		"self-is-null": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Null: true},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Null: true},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -77,14 +79,15 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
 			},
 		},
 		"error_none-set": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "bar value"},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -112,16 +115,17 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
-				tftypes.NewAttributePath().WithAttributeName("baz"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
 			},
 			expErrors: 1,
 		},
 		"multiple-set": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "bar value"},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -149,15 +153,16 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
-				tftypes.NewAttributePath().WithAttributeName("baz"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
 			},
 		},
 		"allow-duplicate-input": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "bar value"},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -185,16 +190,17 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
-				tftypes.NewAttributePath().WithAttributeName("bar"),
-				tftypes.NewAttributePath().WithAttributeName("baz"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("bar"),
+				path.MatchRoot("baz"),
 			},
 		},
 		"unknowns": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "bar value"},
-				AttributePath:   tftypes.NewAttributePath().WithAttributeName("bar"),
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: tfsdk.Schema{
 						Attributes: map[string]tfsdk.Attribute{
@@ -222,10 +228,42 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 					}),
 				},
 			},
-			in: []*tftypes.AttributePath{
-				tftypes.NewAttributePath().WithAttributeName("foo"),
-				tftypes.NewAttributePath().WithAttributeName("baz"),
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
 			},
+		},
+		"matches-no-attribute-in-schema": {
+			req: tfsdk.ValidateAttributeRequest{
+				AttributeConfig:         types.String{Value: "bar value"},
+				AttributePath:           path.Root("bar"),
+				AttributePathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: tfsdk.Schema{
+						Attributes: map[string]tfsdk.Attribute{
+							"foo": {
+								Type: types.Int64Type,
+							},
+							"bar": {
+								Type: types.StringType,
+							},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.Number,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.Number, 42),
+						"bar": tftypes.NewValue(tftypes.String, nil),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("fooz"),
+			},
+			expErrors: 1,
 		},
 	}
 
@@ -239,12 +277,12 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 				t.Fatal("expected error(s), got none")
 			}
 
-			if test.expErrors > 0 && test.expErrors != validatordiag.ErrorsCount(res.Diagnostics) {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, validatordiag.ErrorsCount(res.Diagnostics), res.Diagnostics)
+			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
+				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
 			}
 
 			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", validatordiag.ErrorsCount(res.Diagnostics), res.Diagnostics)
+				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
 			}
 		})
 	}

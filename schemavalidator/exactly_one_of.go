@@ -4,25 +4,24 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/attributepath"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/pathutils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 // exactlyOneOfAttributeValidator is the underlying struct implementing ExactlyOneOf.
 type exactlyOneOfAttributeValidator struct {
-	attrPaths []*tftypes.AttributePath
+	pathExpressions path.Expressions
 }
 
-// ExactlyOneOf checks that of a set of *tftypes.AttributePath,
+// ExactlyOneOf checks that of a set of path.Expression,
 // including the attribute it's applied to, one and only one attribute out of all specified is configured.
 // It will also cause a validation error if none are specified.
 //
-// The provided tftypes.AttributePath must be "absolute",
-// and starting with top level attribute names.
-func ExactlyOneOf(attributePaths ...*tftypes.AttributePath) tfsdk.AttributeValidator {
+// Relative path.Expression will be resolved against the validated attribute.
+func ExactlyOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {
 	return &exactlyOneOfAttributeValidator{attributePaths}
 }
 
@@ -33,22 +32,21 @@ func (av exactlyOneOfAttributeValidator) Description(ctx context.Context) string
 }
 
 func (av exactlyOneOfAttributeValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that one and only one attribute from this collection is set: %q", av.attrPaths)
+	return fmt.Sprintf("Ensure that one and only one attribute from this collection is set: %q", av.pathExpressions)
 }
 
 func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	// Assemble a slice of paths, ensuring we don't repeat the attribute this validator is applied to
-	var paths []*tftypes.AttributePath
-	if attributepath.Contains(req.AttributePath, av.attrPaths...) {
-		paths = av.attrPaths
-	} else {
-		paths = append(av.attrPaths, req.AttributePath)
+	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
+	res.Diagnostics.Append(diags...)
+	if diags.HasError() {
+		return
 	}
 
+	// Validate values at the matching paths
 	count := 0
-	for _, path := range paths {
+	for _, p := range matchingPaths {
 		var v attr.Value
-		diags := req.Config.GetAttribute(ctx, path, &v)
+		diags := req.Config.GetAttribute(ctx, p, &v)
 		res.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return
@@ -60,16 +58,16 @@ func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 	}
 
 	if count == 0 {
-		res.Diagnostics.Append(validatordiag.InvalidAttributeSchemaDiagnostic(
+		res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 			req.AttributePath,
-			fmt.Sprintf("No attribute specified when one (and only one) of %q is required", attributepath.JoinToString(paths...)),
+			fmt.Sprintf("No attribute specified when one (and only one) of %q is required", matchingPaths),
 		))
 	}
 
 	if count > 1 {
-		res.Diagnostics.Append(validatordiag.InvalidAttributeSchemaDiagnostic(
+		res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 			req.AttributePath,
-			fmt.Sprintf("%d attributes specified when one (and only one) of %q is required", count, attributepath.JoinToString(paths...)),
+			fmt.Sprintf("%d attributes specified when one (and only one) of %q is required", count, matchingPaths),
 		))
 	}
 }
