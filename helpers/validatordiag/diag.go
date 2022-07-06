@@ -35,8 +35,8 @@ func InvalidAttributeValueMatchDiagnostic(path path.Path, description string, va
 	)
 }
 
-// InvalidAttributeSchemaDiagnostic returns an error Diagnostic to be used when a schemavalidator of attributes is invalid.
-func InvalidAttributeSchemaDiagnostic(path path.Path, description string) diag.Diagnostic {
+// InvalidAttributeCombinationDiagnostic returns an error Diagnostic to be used when a schemavalidator of attributes is invalid.
+func InvalidAttributeCombinationDiagnostic(path path.Path, description string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Combination",
@@ -53,30 +53,10 @@ func InvalidAttributeTypeDiagnostic(path path.Path, description string, value st
 	)
 }
 
-// ErrorsCount returns the amount of diag.Diagnostic in diag.Diagnostics that are diag.SeverityError.
-func ErrorsCount(diags diag.Diagnostics) int {
-	count := 0
-
-	for _, d := range diags {
-		if diag.SeverityError == d.Severity() {
-			count++
-		}
-	}
-
-	return count
-}
-
-// WarningsCount returns the amount of diag.Diagnostic in diag.Diagnostics that are diag.SeverityWarning.
-func WarningsCount(diags diag.Diagnostics) int {
-	count := 0
-
-	for _, d := range diags {
-		if diag.SeverityWarning == d.Severity() {
-			count++
-		}
-	}
-
-	return count
+func BugInProviderDiagnostic(summary string) diag.Diagnostic {
+	return diag.NewErrorDiagnostic(summary,
+		"This is a bug in the provider, which should be reported in the provider's own issue tracker",
+	)
 }
 
 // capitalize will uppercase the first letter in a UTF-8 string.
