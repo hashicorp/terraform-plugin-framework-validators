@@ -31,7 +31,7 @@ func (av atLeastOneOfAttributeValidator) Description(ctx context.Context) string
 }
 
 func (av atLeastOneOfAttributeValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that at least one attribute from this collection is set: %q", av.pathExpressions)
+	return fmt.Sprintf("Ensure that at least one attribute from this collection is set: %s", av.pathExpressions)
 }
 
 func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
