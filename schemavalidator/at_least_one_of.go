@@ -19,7 +19,7 @@ type atLeastOneOfAttributeValidator struct {
 // AtLeastOneOf checks that of a set of path.Expression,
 // including the attribute it's applied to, at least one attribute out of all specified is configured.
 //
-// Relative path.Expression will be resolved against the validated attribute.
+// Any relative path.Expression will be resolved against the attribute with this validator.
 func AtLeastOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {
 	return &atLeastOneOfAttributeValidator{attributePaths}
 }
