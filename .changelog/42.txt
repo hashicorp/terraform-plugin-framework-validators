@@ -9,7 +9,3 @@ int64validator: Added `OneOf()` and `NoneOf()` validation functions
 ```release-note:feature
 Introduced `numbervalidator` package with `OneOf()` and `NoneOf()` validation functions
 ```
-
-```release-note:breaking-change
-Renaming package `validatordiag` to be at `helpers/validatordiag`
-```
