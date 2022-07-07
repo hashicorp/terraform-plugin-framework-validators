@@ -44,15 +44,15 @@ func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 
 	// Validate values at the matching paths
 	count := 0
-	for _, p := range matchingPaths {
-		var v attr.Value
-		diags := req.Config.GetAttribute(ctx, p, &v)
+	for _, mp := range matchingPaths {
+		var mpVal attr.Value
+		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
 		res.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return
 		}
 
-		if !v.IsNull() {
+		if !mpVal.IsNull() {
 			count++
 		}
 	}

@@ -36,12 +36,6 @@ func (av requiredWithAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av requiredWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	var v attr.Value
-	res.Diagnostics.Append(tfsdk.ValueAs(ctx, req.AttributeConfig, &v)...)
-	if res.Diagnostics.HasError() {
-		return
-	}
-
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {
@@ -49,24 +43,24 @@ func (av requiredWithAttributeValidator) Validate(ctx context.Context, req tfsdk
 	}
 
 	// Validate values at the matching paths
-	for _, p := range matchingPaths {
+	for _, mp := range matchingPaths {
 		// If the user specifies the same attribute this validator is applied to,
 		// also as part of the input, skip it.
-		if p.Equal(req.AttributePath) {
+		if mp.Equal(req.AttributePath) {
 			continue
 		}
 
-		var o attr.Value
-		diags := req.Config.GetAttribute(ctx, p, &o)
+		var mpVal attr.Value
+		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
 		res.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return
 		}
 
-		if !v.IsNull() && o.IsNull() {
+		if !req.AttributeConfig.IsNull() && mpVal.IsNull() {
 			res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 				req.AttributePath,
-				fmt.Sprintf("Attribute %q must be specified when %q is specified", p, req.AttributePath),
+				fmt.Sprintf("Attribute %q must be specified when %q is specified", mp, req.AttributePath),
 			))
 		}
 	}

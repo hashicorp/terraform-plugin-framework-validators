@@ -17,7 +17,7 @@ func MergeExpressionsWithAttribute(pathExps path.Expressions, attrPathExp path.E
 	result = append(result, attrPathExp)
 
 	for _, pe := range pathExps {
-		mpe := attrPathExp.Merge(pe).Resolve()
+		mpe := attrPathExp.Merge(pe)
 
 		// Include the merged path expression,
 		// only if it's not the same as the attribute
