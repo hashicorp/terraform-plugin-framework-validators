@@ -36,11 +36,6 @@ func (av requiredWithAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av requiredWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	// If attribute configuration is unknown, we can't validate yet
-	if req.AttributeConfig.IsUnknown() {
-		return
-	}
-
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {

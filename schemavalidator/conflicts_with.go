@@ -36,9 +36,9 @@ func (av conflictsWithAttributeValidator) MarkdownDescription(_ context.Context)
 }
 
 func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	// If attribute configuration is null, it cannot conflict with others;
-	// if it is unknown, we can't validate yet
-	if req.AttributeConfig.IsNull() || req.AttributeConfig.IsUnknown() {
+	// If attribute configuration is null,
+	// it cannot conflict with others
+	if req.AttributeConfig.IsNull() {
 		return
 	}
 

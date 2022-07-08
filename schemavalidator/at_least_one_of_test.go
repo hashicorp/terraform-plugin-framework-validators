@@ -85,7 +85,7 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 		},
 		"error_none-set": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.String{Null: true},
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -235,7 +235,7 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 		},
 		"matches-no-attribute-in-schema": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.String{Null: true},
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{

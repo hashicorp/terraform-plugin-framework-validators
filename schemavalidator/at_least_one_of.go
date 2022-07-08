@@ -35,6 +35,12 @@ func (av atLeastOneOfAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+	// If attribute configuration is not null,
+	// then we already know this validator is going to succeed.
+	if !req.AttributeConfig.IsNull() {
+		return
+	}
+
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {
