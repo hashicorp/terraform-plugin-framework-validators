@@ -15,7 +15,7 @@ func validateSet(ctx context.Context, request tfsdk.ValidateAttributeRequest, re
 	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &s)
 
 	if diags.HasError() {
-		response.Diagnostics = append(response.Diagnostics, diags...)
+		response.Diagnostics.Append(diags...)
 
 		return nil, false
 	}

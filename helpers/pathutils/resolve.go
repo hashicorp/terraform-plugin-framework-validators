@@ -40,7 +40,7 @@ func PathMatchExpressionsAgainstAttributeConfig(ctx context.Context, pathExps pa
 			resDiags.Append(validatordiag.BugInProviderDiagnostic(fmt.Sprintf("Path expression %q matches no attribute", pe)))
 		}
 
-		resPaths = append(resPaths, matchingPaths...)
+		resPaths.Append(matchingPaths...)
 	}
 
 	return resPaths, resDiags
