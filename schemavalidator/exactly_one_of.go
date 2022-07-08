@@ -36,6 +36,11 @@ func (av exactlyOneOfAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+	// If attribute configuration is unknown, we can't validate yet
+	if req.AttributeConfig.IsUnknown() {
+		return
+	}
+
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {
@@ -49,6 +54,12 @@ func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
 		res.Diagnostics.Append(diags...)
 		if diags.HasError() {
+			return
+		}
+
+		// Delay validation until all involved attribute
+		// have a known value
+		if mpVal.IsUnknown() {
 			return
 		}
 

@@ -36,6 +36,12 @@ func (av conflictsWithAttributeValidator) MarkdownDescription(_ context.Context)
 }
 
 func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+	// If attribute configuration is null, it cannot conflict with others;
+	// if it is unknown, we can't validate yet
+	if req.AttributeConfig.IsNull() || req.AttributeConfig.IsUnknown() {
+		return
+	}
+
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {
@@ -45,7 +51,7 @@ func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsd
 	// Validate values at the matching paths
 	for _, mp := range matchingPaths {
 		// If the user specifies the same attribute this validator is applied to,
-		// also as part of the input, skip it.
+		// also as part of the input, skip it
 		if mp.Equal(req.AttributePath) {
 			continue
 		}
@@ -57,7 +63,13 @@ func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsd
 			return
 		}
 
-		if !req.AttributeConfig.IsNull() && !mpVal.IsNull() {
+		// Delay validation until all involved attribute
+		// have a known value
+		if mpVal.IsUnknown() {
+			return
+		}
+
+		if !mpVal.IsNull() {
 			res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 				req.AttributePath,
 				fmt.Sprintf("Attribute %q cannot be specified when %q is specified", mp, req.AttributePath),

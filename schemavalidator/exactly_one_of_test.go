@@ -198,7 +198,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 				path.MatchRoot("baz"),
 			},
 		},
-		"error_unknowns": {
+		"other-attributes-are-unknown": {
 			req: tfsdk.ValidateAttributeRequest{
 				AttributeConfig:         types.String{Value: "bar value"},
 				AttributePath:           path.Root("bar"),
@@ -234,7 +234,6 @@ func TestExactlyOneOfValidator(t *testing.T) {
 				path.MatchRoot("foo"),
 				path.MatchRoot("baz"),
 			},
-			expErrors: 1,
 		},
 		"matches-no-attribute-in-schema": {
 			req: tfsdk.ValidateAttributeRequest{

@@ -90,7 +90,7 @@ func TestConflictsWithValidator(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
-		"error_conflicting-is-unknown": {
+		"conflicting-is-unknown": {
 			req: tfsdk.ValidateAttributeRequest{
 				AttributeConfig:         types.String{Value: "bar value"},
 				AttributePath:           path.Root("bar"),
@@ -120,7 +120,6 @@ func TestConflictsWithValidator(t *testing.T) {
 			in: path.Expressions{
 				path.MatchRoot("foo"),
 			},
-			expErrors: 1,
 		},
 		"self-is-null": {
 			req: tfsdk.ValidateAttributeRequest{
@@ -228,7 +227,7 @@ func TestConflictsWithValidator(t *testing.T) {
 				path.MatchRoot("foo"),
 				path.MatchRoot("baz"),
 			},
-			expErrors: 2,
+			//expErrors: 2,
 		},
 		"matches-no-attribute-in-schema": {
 			req: tfsdk.ValidateAttributeRequest{

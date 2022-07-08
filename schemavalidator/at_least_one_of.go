@@ -50,6 +50,12 @@ func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 			return
 		}
 
+		// Delay validation until all involved attribute
+		// have a known value
+		if mpVal.IsUnknown() {
+			return
+		}
+
 		if !mpVal.IsNull() {
 			return
 		}
