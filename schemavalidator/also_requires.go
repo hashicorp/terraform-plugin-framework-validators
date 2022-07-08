@@ -11,31 +11,37 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 )
 
-// requiredWithAttributeValidator is the underlying struct implementing RequiredWith.
-type requiredWithAttributeValidator struct {
+// alsoRequiresAttributeValidator is the underlying struct implementing AlsoRequires.
+type alsoRequiresAttributeValidator struct {
 	pathExpressions path.Expressions
 }
 
-// RequiredWith checks that a set of path.Expression,
-// including the attribute it's applied to, are set simultaneously.
+// AlsoRequires checks that a set of path.Expression has a non-null value,
+// if the current attribute also has a non-null value.
+//
 // This implements the validation logic declaratively within the tfsdk.Schema.
 //
 // Relative path.Expression will be resolved against the validated attribute.
-func RequiredWith(attributePaths ...path.Expression) tfsdk.AttributeValidator {
-	return &requiredWithAttributeValidator{attributePaths}
+func AlsoRequires(attributePaths ...path.Expression) tfsdk.AttributeValidator {
+	return &alsoRequiresAttributeValidator{attributePaths}
 }
 
-var _ tfsdk.AttributeValidator = (*requiredWithAttributeValidator)(nil)
+var _ tfsdk.AttributeValidator = (*alsoRequiresAttributeValidator)(nil)
 
-func (av requiredWithAttributeValidator) Description(ctx context.Context) string {
+func (av alsoRequiresAttributeValidator) Description(ctx context.Context) string {
 	return av.MarkdownDescription(ctx)
 }
 
-func (av requiredWithAttributeValidator) MarkdownDescription(_ context.Context) string {
+func (av alsoRequiresAttributeValidator) MarkdownDescription(_ context.Context) string {
 	return fmt.Sprintf("Ensure that if an attribute is set, also these are set: %q", av.pathExpressions)
 }
 
-func (av requiredWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+func (av alsoRequiresAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
+	// If attribute configuration is null, there is nothing else to validate
+	if req.AttributeConfig.IsNull() {
+		return
+	}
+
 	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
 	res.Diagnostics.Append(diags...)
 	if diags.HasError() {
@@ -57,13 +63,12 @@ func (av requiredWithAttributeValidator) Validate(ctx context.Context, req tfsdk
 			return
 		}
 
-		// Delay validation until all involved attribute
-		// have a known value
+		// Delay validation until all involved attribute have a known value
 		if mpVal.IsUnknown() {
 			return
 		}
 
-		if !req.AttributeConfig.IsNull() && mpVal.IsNull() {
+		if mpVal.IsNull() {
 			res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 				req.AttributePath,
 				fmt.Sprintf("Attribute %q must be specified when %q is specified", mp, req.AttributePath),

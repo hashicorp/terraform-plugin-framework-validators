@@ -272,7 +272,7 @@ func TestRequiredWithValidator(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			res := tfsdk.ValidateAttributeResponse{}
 
-			schemavalidator.RequiredWith(test.in...).Validate(context.TODO(), test.req, &res)
+			schemavalidator.AlsoRequires(test.in...).Validate(context.TODO(), test.req, &res)
 
 			if test.expErrors > 0 && !res.Diagnostics.HasError() {
 				t.Fatal("expected error(s), got none")

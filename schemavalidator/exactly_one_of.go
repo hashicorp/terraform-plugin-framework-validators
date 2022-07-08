@@ -17,8 +17,11 @@ type exactlyOneOfAttributeValidator struct {
 }
 
 // ExactlyOneOf checks that of a set of path.Expression,
-// including the attribute it's applied to, one and only one attribute out of all specified is configured.
+// including the attribute it's applied to,
+// one and only one attribute out of all specified has a value.
 // It will also cause a validation error if none are specified.
+//
+// This implements the validation logic declaratively within the tfsdk.Schema.
 //
 // Relative path.Expression will be resolved against the validated attribute.
 func ExactlyOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {
@@ -52,8 +55,7 @@ func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 			return
 		}
 
-		// Delay validation until all involved attribute
-		// have a known value
+		// Delay validation until all involved attribute have a known value
 		if mpVal.IsUnknown() {
 			return
 		}

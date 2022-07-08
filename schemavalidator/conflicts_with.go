@@ -17,7 +17,8 @@ type conflictsWithAttributeValidator struct {
 }
 
 // ConflictsWith checks that a set of path.Expression,
-// including the attribute it's applied to, are not set simultaneously.
+// including the attribute it's applied to, do not have a value simultaneously.
+//
 // This implements the validation logic declaratively within the tfsdk.Schema.
 //
 // Relative path.Expression will be resolved against the validated attribute.
@@ -36,8 +37,7 @@ func (av conflictsWithAttributeValidator) MarkdownDescription(_ context.Context)
 }
 
 func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	// If attribute configuration is null,
-	// it cannot conflict with others
+	// If attribute configuration is null, it cannot conflict with others
 	if req.AttributeConfig.IsNull() {
 		return
 	}
@@ -63,8 +63,7 @@ func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsd
 			return
 		}
 
-		// Delay validation until all involved attribute
-		// have a known value
+		// Delay validation until all involved attribute have a known value
 		if mpVal.IsUnknown() {
 			return
 		}

@@ -17,7 +17,10 @@ type atLeastOneOfAttributeValidator struct {
 }
 
 // AtLeastOneOf checks that of a set of path.Expression,
-// including the attribute it's applied to, at least one attribute out of all specified is configured.
+// including the attribute it's applied to,
+// at least one attribute out of all specified is has a non-null value.
+//
+// This implements the validation logic declaratively within the tfsdk.Schema.
 //
 // Any relative path.Expression will be resolved against the attribute with this validator.
 func AtLeastOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {
@@ -35,8 +38,7 @@ func (av atLeastOneOfAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	// If attribute configuration is not null,
-	// then we already know this validator is going to succeed.
+	// If attribute configuration is not null, validator already succeeded.
 	if !req.AttributeConfig.IsNull() {
 		return
 	}
@@ -56,8 +58,7 @@ func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 			return
 		}
 
-		// Delay validation until all involved attribute
-		// have a known value
+		// Delay validation until all involved attribute have a known value
 		if mpVal.IsUnknown() {
 			return
 		}
