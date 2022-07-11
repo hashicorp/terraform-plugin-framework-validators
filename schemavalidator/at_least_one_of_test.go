@@ -263,7 +263,7 @@ func TestAtLeastOneOfValidator(t *testing.T) {
 			in: path.Expressions{
 				path.MatchRoot("fooz"),
 			},
-			expErrors: 1,
+			expErrors: 2,
 		},
 	}
 

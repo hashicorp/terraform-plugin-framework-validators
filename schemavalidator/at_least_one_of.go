@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/pathutils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -43,33 +42,41 @@ func (av atLeastOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk
 		return
 	}
 
-	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
-	res.Diagnostics.Append(diags...)
-	if diags.HasError() {
-		return
-	}
+	expressions := req.AttributePathExpression.MergeExpressions(av.pathExpressions...)
 
-	// Validate values at the matching paths
-	for _, mp := range matchingPaths {
-		var mpVal attr.Value
-		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
+	for _, expression := range expressions {
+		matchedPaths, diags := req.Config.PathMatches(ctx, expression)
+
 		res.Diagnostics.Append(diags...)
+
+		// Collect all errors
 		if diags.HasError() {
-			return
+			continue
 		}
 
-		// Delay validation until all involved attribute have a known value
-		if mpVal.IsUnknown() {
-			return
-		}
+		for _, mp := range matchedPaths {
+			var mpVal attr.Value
+			diags := req.Config.GetAttribute(ctx, mp, &mpVal)
+			res.Diagnostics.Append(diags...)
 
-		if !mpVal.IsNull() {
-			return
+			// Collect all errors
+			if diags.HasError() {
+				continue
+			}
+
+			// Delay validation until all involved attribute have a known value
+			if mpVal.IsUnknown() {
+				return
+			}
+
+			if !mpVal.IsNull() {
+				return
+			}
 		}
 	}
 
 	res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 		req.AttributePath,
-		fmt.Sprintf("At least one attribute out of %q must be specified", matchingPaths),
+		fmt.Sprintf("At least one attribute out of %s must be specified", expressions),
 	))
 }

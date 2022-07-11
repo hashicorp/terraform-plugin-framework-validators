@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/pathutils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -39,43 +38,70 @@ func (av exactlyOneOfAttributeValidator) MarkdownDescription(_ context.Context) 
 }
 
 func (av exactlyOneOfAttributeValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, res *tfsdk.ValidateAttributeResponse) {
-	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
-	res.Diagnostics.Append(diags...)
-	if diags.HasError() {
+	count := 0
+	expressions := req.AttributePathExpression.MergeExpressions(av.pathExpressions...)
+
+	// If current attribute is unknown, delay validation
+	if req.AttributeConfig.IsUnknown() {
 		return
 	}
 
-	// Validate values at the matching paths
-	count := 0
-	for _, mp := range matchingPaths {
-		var mpVal attr.Value
-		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
+	// Now that we know the current attribute is known, check whether it is
+	// null to determine if it should contribute to the count. Later logic
+	// will remove a duplicate matching path, should it be included in the
+	// given expressions.
+	if !req.AttributeConfig.IsNull() {
+		count++
+	}
+
+	for _, expression := range expressions {
+		matchedPaths, diags := req.Config.PathMatches(ctx, expression)
+
 		res.Diagnostics.Append(diags...)
+
+		// Collect all errors
 		if diags.HasError() {
-			return
+			continue
 		}
 
-		// Delay validation until all involved attribute have a known value
-		if mpVal.IsUnknown() {
-			return
-		}
+		for _, mp := range matchedPaths {
+			// If the user specifies the same attribute this validator is applied to,
+			// also as part of the input, skip it
+			if mp.Equal(req.AttributePath) {
+				continue
+			}
 
-		if !mpVal.IsNull() {
-			count++
+			var mpVal attr.Value
+			diags := req.Config.GetAttribute(ctx, mp, &mpVal)
+			res.Diagnostics.Append(diags...)
+
+			// Collect all errors
+			if diags.HasError() {
+				continue
+			}
+
+			// Delay validation until all involved attribute have a known value
+			if mpVal.IsUnknown() {
+				return
+			}
+
+			if !mpVal.IsNull() {
+				count++
+			}
 		}
 	}
 
 	if count == 0 {
 		res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 			req.AttributePath,
-			fmt.Sprintf("No attribute specified when one (and only one) of %q is required", matchingPaths),
+			fmt.Sprintf("No attribute specified when one (and only one) of %s is required", expressions),
 		))
 	}
 
 	if count > 1 {
 		res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 			req.AttributePath,
-			fmt.Sprintf("%d attributes specified when one (and only one) of %q is required", count, matchingPaths),
+			fmt.Sprintf("%d attributes specified when one (and only one) of %s is required", count, expressions),
 		))
 	}
 }

@@ -124,7 +124,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"error_too-few": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.String{Null: true},
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -258,7 +258,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 						},
 					}, map[string]tftypes.Value{
 						"foo": tftypes.NewValue(tftypes.Number, 42),
-						"bar": tftypes.NewValue(tftypes.String, nil),
+						"bar": tftypes.NewValue(tftypes.String, "bar value"),
 					}),
 				},
 			},

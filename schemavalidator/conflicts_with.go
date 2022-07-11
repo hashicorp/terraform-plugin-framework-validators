@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/pathutils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -42,37 +41,45 @@ func (av conflictsWithAttributeValidator) Validate(ctx context.Context, req tfsd
 		return
 	}
 
-	matchingPaths, diags := pathutils.PathMatchExpressionsAgainstAttributeConfig(ctx, av.pathExpressions, req.AttributePathExpression, req.Config)
-	res.Diagnostics.Append(diags...)
-	if diags.HasError() {
-		return
-	}
+	expressions := req.AttributePathExpression.MergeExpressions(av.pathExpressions...)
 
-	// Validate values at the matching paths
-	for _, mp := range matchingPaths {
-		// If the user specifies the same attribute this validator is applied to,
-		// also as part of the input, skip it
-		if mp.Equal(req.AttributePath) {
+	for _, expression := range expressions {
+		matchedPaths, diags := req.Config.PathMatches(ctx, expression)
+
+		res.Diagnostics.Append(diags...)
+
+		// Collect all errors
+		if diags.HasError() {
 			continue
 		}
 
-		var mpVal attr.Value
-		diags := req.Config.GetAttribute(ctx, mp, &mpVal)
-		res.Diagnostics.Append(diags...)
-		if diags.HasError() {
-			return
-		}
+		for _, mp := range matchedPaths {
+			// If the user specifies the same attribute this validator is applied to,
+			// also as part of the input, skip it
+			if mp.Equal(req.AttributePath) {
+				continue
+			}
 
-		// Delay validation until all involved attribute have a known value
-		if mpVal.IsUnknown() {
-			return
-		}
+			var mpVal attr.Value
+			diags := req.Config.GetAttribute(ctx, mp, &mpVal)
+			res.Diagnostics.Append(diags...)
 
-		if !mpVal.IsNull() {
-			res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
-				req.AttributePath,
-				fmt.Sprintf("Attribute %q cannot be specified when %q is specified", mp, req.AttributePath),
-			))
+			// Collect all errors
+			if diags.HasError() {
+				continue
+			}
+
+			// Delay validation until all involved attribute have a known value
+			if mpVal.IsUnknown() {
+				return
+			}
+
+			if !mpVal.IsNull() {
+				res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
+					req.AttributePath,
+					fmt.Sprintf("Attribute %q cannot be specified when %q is specified", mp, req.AttributePath),
+				))
+			}
 		}
 	}
 }
