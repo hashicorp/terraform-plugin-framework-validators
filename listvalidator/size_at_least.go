@@ -16,7 +16,7 @@ type sizeAtLeastValidator struct {
 }
 
 // Description describes the validation in plain text formatting.
-func (v sizeAtLeastValidator) Description(ctx context.Context) string {
+func (v sizeAtLeastValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("list must contain at least %d elements", v.min)
 }
 

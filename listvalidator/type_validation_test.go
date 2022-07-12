@@ -21,24 +21,27 @@ func TestValidateList(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Bool{Value: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
 		},
 		"list-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.List{Null: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.List{Null: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
 		},
 		"list-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.List{Unknown: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.List{Unknown: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedListElems: nil,
 			expectedOk:        false,
@@ -52,7 +55,8 @@ func TestValidateList(t *testing.T) {
 						types.String{Value: "second"},
 					},
 				},
-				AttributePath: path.Root("test"),
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedListElems: []attr.Value{
 				types.String{Value: "first"},

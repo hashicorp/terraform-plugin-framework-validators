@@ -1,0 +1,3 @@
+```release-note:feature
+Introduced `schemavalidator` package with 4 new validation functions: `RequiredWith()`, `ConflictsWith()`, `AtLeastOneOf()`, `ExactlyOneOf()`
+```

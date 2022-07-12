@@ -21,24 +21,27 @@ func TestValidateMap(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Bool{Value: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
 		},
 		"map-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Map{Null: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Map{Null: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
 		},
 		"map-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Map{Unknown: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Map{Unknown: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedMap: nil,
 			expectedOk:  false,
@@ -52,7 +55,8 @@ func TestValidateMap(t *testing.T) {
 						"two": types.String{Value: "second"},
 					},
 				},
-				AttributePath: path.Root("test"),
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedMap: map[string]attr.Value{
 				"one": types.String{Value: "first"},

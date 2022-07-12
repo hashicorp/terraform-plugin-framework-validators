@@ -16,7 +16,7 @@ type sizeAtMostValidator struct {
 }
 
 // Description describes the validation in plain text formatting.
-func (v sizeAtMostValidator) Description(ctx context.Context) string {
+func (v sizeAtMostValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("list must contain at most %d elements", v.max)
 }
 

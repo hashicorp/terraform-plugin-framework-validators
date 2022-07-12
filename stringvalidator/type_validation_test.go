@@ -20,32 +20,36 @@ func TestValidateString(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Bool{Value: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Bool{Value: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedString: "",
 			expectedOk:     false,
 		},
 		"string-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Int64{Null: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Int64{Null: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedString: "",
 			expectedOk:     false,
 		},
 		"string-value": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.String{Value: "test-value"},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.String{Value: "test-value"},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedString: "test-value",
 			expectedOk:     true,
 		},
 		"string-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Int64{Unknown: true},
-				AttributePath:   path.Root("test"),
+				AttributeConfig:         types.Int64{Unknown: true},
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedString: "",
 			expectedOk:     false,
