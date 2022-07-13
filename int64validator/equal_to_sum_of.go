@@ -15,15 +15,15 @@ import (
 var _ tfsdk.AttributeValidator = equalToSumOfValidator{}
 
 // equalToSumOfValidator validates that an integer Attribute's value equals the sum of one
-// or more integer Attributes.
+// or more integer Attributes retrieved via the given path expressions.
 type equalToSumOfValidator struct {
-	attributesToSumPaths []path.Path
+	attributesToSumPathExpressions path.Expressions
 }
 
 // Description describes the validation in plain text formatting.
 func (validator equalToSumOfValidator) Description(_ context.Context) string {
 	var attributePaths []string
-	for _, p := range validator.attributesToSumPaths {
+	for _, p := range validator.attributesToSumPathExpressions {
 		attributePaths = append(attributePaths, p.String())
 	}
 
@@ -46,27 +46,40 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 	var sumOfAttribs int64
 	var numUnknownAttribsToSum int
 
-	for _, p := range validator.attributesToSumPaths {
-		var attribToSum types.Int64
+	for _, expression := range validator.attributesToSumPathExpressions {
+		matchedPaths, diags := request.Config.PathMatches(ctx, expression)
+		response.Diagnostics.Append(diags...)
 
-		response.Diagnostics.Append(request.Config.GetAttribute(ctx, p, &attribToSum)...)
-		if response.Diagnostics.HasError() {
-			return
-		}
-
-		if attribToSum.Null {
+		// Collect all errors
+		if diags.HasError() {
 			continue
 		}
 
-		if attribToSum.Unknown {
-			numUnknownAttribsToSum++
-			continue
-		}
+		for _, mp := range matchedPaths {
+			var attribToSum types.Int64
 
-		sumOfAttribs += attribToSum.Value
+			diags := request.Config.GetAttribute(ctx, mp, &attribToSum)
+			response.Diagnostics.Append(diags...)
+
+			// Collect all errors
+			if diags.HasError() {
+				continue
+			}
+
+			if attribToSum.IsNull() {
+				continue
+			}
+
+			if attribToSum.IsUnknown() {
+				numUnknownAttribsToSum++
+				continue
+			}
+
+			sumOfAttribs += attribToSum.Value
+		}
 	}
 
-	if numUnknownAttribsToSum == len(validator.attributesToSumPaths) {
+	if numUnknownAttribsToSum == len(validator.attributesToSumPathExpressions) {
 		return
 	}
 
@@ -85,11 +98,9 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 // attribute value:
 //
 //     - Is a number, which can be represented by a 64-bit integer.
-//     - Is equal to the sum of the given attributes.
+//     - Is equal to the sum of the given attributes retrieved via the given path expression(s).
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func EqualToSumOf(attributesToSum ...path.Path) tfsdk.AttributeValidator {
-	return equalToSumOfValidator{
-		attributesToSumPaths: attributesToSum,
-	}
+func EqualToSumOf(attributesToSumPathExpressions ...path.Expression) tfsdk.AttributeValidator {
+	return equalToSumOfValidator{attributesToSumPathExpressions}
 }

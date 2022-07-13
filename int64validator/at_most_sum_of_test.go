@@ -15,10 +15,10 @@ func TestAtMostSumOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val                  attr.Value
-		attributesToSumPaths []path.Path
-		requestConfigRaw     map[string]tftypes.Value
-		expectError          bool
+		val                            attr.Value
+		attributesToSumPathExpressions path.Expressions
+		requestConfigRaw               map[string]tftypes.Value
+		expectError                    bool
 	}
 	tests := map[string]testCase{
 		"not an Int64": {
@@ -33,9 +33,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 more than sum of attributes": {
 			val: types.Int64{Value: 11},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 5),
@@ -45,9 +45,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 equal to sum of attributes": {
 			val: types.Int64{Value: 10},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 5),
@@ -56,9 +56,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 less than sum of attributes": {
 			val: types.Int64{Value: 7},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, 4),
@@ -67,9 +67,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 less than sum of attributes, when one summed attribute is null": {
 			val: types.Int64{Value: 8},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -78,9 +78,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes are null": {
 			val: types.Int64{Null: true},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -89,9 +89,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 returns error when all attributes to sum are null": {
 			val: types.Int64{Value: 1},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, nil),
@@ -101,9 +101,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 less than sum of attributes, when one summed attribute is unknown": {
 			val: types.Int64{Value: 8},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -112,9 +112,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes are unknown": {
 			val: types.Int64{Unknown: true},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -123,9 +123,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"valid integer as Int64 does not return error when all attributes to sum are unknown": {
 			val: types.Int64{Value: 1},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue),
@@ -134,9 +134,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		},
 		"error when attribute to sum is not Number": {
 			val: types.Int64{Value: 9},
-			attributesToSumPaths: []path.Path{
-				path.Root("one"),
-				path.Root("two"),
+			attributesToSumPathExpressions: path.Expressions{
+				path.MatchRoot("one"),
+				path.MatchRoot("two"),
 			},
 			requestConfigRaw: map[string]tftypes.Value{
 				"one": tftypes.NewValue(tftypes.Bool, true),
@@ -150,8 +150,9 @@ func TestAtMostSumOfValidator(t *testing.T) {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:   path.Root("test"),
-				AttributeConfig: test.val,
+				AttributePath:           path.Root("test"),
+				AttributePathExpression: path.MatchRoot("test"),
+				AttributeConfig:         test.val,
 				Config: tfsdk.Config{
 					Raw: tftypes.NewValue(tftypes.Object{}, test.requestConfigRaw),
 					Schema: tfsdk.Schema{
@@ -166,7 +167,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 
 			response := tfsdk.ValidateAttributeResponse{}
 
-			AtMostSumOf(test.attributesToSumPaths...).Validate(context.Background(), request, &response)
+			AtMostSumOf(test.attributesToSumPathExpressions...).Validate(context.Background(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
