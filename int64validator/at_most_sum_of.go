@@ -79,7 +79,7 @@ func (validator atMostSumOfValidator) Validate(ctx context.Context, request tfsd
 		}
 	}
 
-	if numUnknownAttribsToSum == len(validator.attributesToSumPathExpressions) {
+	if numUnknownAttribsToSum > 0 {
 		return
 	}
 
