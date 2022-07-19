@@ -1,0 +1,3 @@
+```release-note:feature
+int64validator: New validators `AtLeastSumOf`, `AtMostSumOf` and `EqualToSumOf`, that compare value of an attribute, against the sum of the value of other attributes
+```
