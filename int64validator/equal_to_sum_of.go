@@ -21,9 +21,9 @@ type equalToSumOfValidator struct {
 }
 
 // Description describes the validation in plain text formatting.
-func (validator equalToSumOfValidator) Description(_ context.Context) string {
+func (av equalToSumOfValidator) Description(_ context.Context) string {
 	var attributePaths []string
-	for _, p := range validator.attributesToSumPathExpressions {
+	for _, p := range av.attributesToSumPathExpressions {
 		attributePaths = append(attributePaths, p.String())
 	}
 
@@ -31,22 +31,23 @@ func (validator equalToSumOfValidator) Description(_ context.Context) string {
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (validator equalToSumOfValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+func (av equalToSumOfValidator) MarkdownDescription(ctx context.Context) string {
+	return av.Description(ctx)
 }
 
 // Validate performs the validation.
-func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+func (av equalToSumOfValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
 	i, ok := validateInt(ctx, request, response)
-
 	if !ok {
 		return
 	}
 
-	var sumOfAttribs int64
-	var numUnknownAttribsToSum int
+	// Ensure input path expressions resolution against the current attribute
+	expressions := request.AttributePathExpression.MergeExpressions(av.attributesToSumPathExpressions...)
 
-	for _, expression := range validator.attributesToSumPathExpressions {
+	// Sum the value of all the attributes involved, but only if they are all known.
+	var sumOfAttribs int64
+	for _, expression := range expressions {
 		matchedPaths, diags := request.Config.PathMatches(ctx, expression)
 		response.Diagnostics.Append(diags...)
 
@@ -56,8 +57,13 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 		}
 
 		for _, mp := range matchedPaths {
-			var attribToSum types.Int64
+			// If the user specifies the same attribute this validator is applied to,
+			// also as part of the input, skip it
+			if mp.Equal(request.AttributePath) {
+				continue
+			}
 
+			var attribToSum types.Int64
 			diags := request.Config.GetAttribute(ctx, mp, &attribToSum)
 			response.Diagnostics.Append(diags...)
 
@@ -66,12 +72,13 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 				continue
 			}
 
-			if attribToSum.IsNull() {
-				continue
+			// Delay validation until all involved attribute have a known value
+			if attribToSum.IsUnknown() {
+				return
 			}
 
-			if attribToSum.IsUnknown() {
-				numUnknownAttribsToSum++
+			// Attribute is null, so it doesn't contribute to the sum
+			if attribToSum.IsNull() {
 				continue
 			}
 
@@ -79,14 +86,10 @@ func (validator equalToSumOfValidator) Validate(ctx context.Context, request tfs
 		}
 	}
 
-	if numUnknownAttribsToSum > 0 {
-		return
-	}
-
 	if i != sumOfAttribs {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
 			request.AttributePath,
-			validator.Description(ctx),
+			av.Description(ctx),
 			fmt.Sprintf("%d", i),
 		))
 
