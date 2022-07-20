@@ -1,3 +1,14 @@
+# 0.4.0 (July 20, 2022)
+
+FEATURES:
+
+* Introduced `metavalidator` package with `Any()`, `AnyWithAllWarnings()`, and `All()` validation functions ([#43](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/43))
+* Introduced `schemavalidator` package with 4 new validation functions: `RequiredWith()`, `ConflictsWith()`, `AtLeastOneOf()`, `ExactlyOneOf()` ([#32](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/32))
+
+ENHANCEMENTS:
+
+* int64validator: Added `AtLeastSumOf()`, `AtMostSumOf()` and `EqualToSumOf()` validation functions ([#29](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/29))
+
 # 0.3.0 (June 29, 2022)
 
 FEATURES:
