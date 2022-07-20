@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -63,22 +64,27 @@ func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 				continue
 			}
 
-			var attribToSum types.Int64
-			diags := request.Config.GetAttribute(ctx, mp, &attribToSum)
+			// Get the value
+			var matchedValue attr.Value
+			diags := request.Config.GetAttribute(ctx, mp, &matchedValue)
 			response.Diagnostics.Append(diags...)
-
-			// Collect all errors
 			if diags.HasError() {
 				continue
 			}
 
-			// Delay validation until all involved attribute have a known value
-			if attribToSum.IsUnknown() {
+			if matchedValue.IsUnknown() {
 				return
 			}
 
-			// Attribute is null, so it doesn't contribute to the sum
-			if attribToSum.IsNull() {
+			if matchedValue.IsNull() {
+				continue
+			}
+
+			// We know there is a value, convert it to the expected type
+			var attribToSum types.Int64
+			diags = tfsdk.ValueAs(ctx, matchedValue, &attribToSum)
+			response.Diagnostics.Append(diags...)
+			if diags.HasError() {
 				continue
 			}
 
