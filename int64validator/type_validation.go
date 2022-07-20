@@ -3,26 +3,20 @@ package int64validator
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // validateInt ensures that the request contains an Int64 value.
 func validateInt(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (int64, bool) {
-	t := request.AttributeConfig.Type(ctx)
-	if t != types.Int64Type {
-		response.Diagnostics.Append(validatordiag.InvalidAttributeTypeDiagnostic(
-			request.AttributePath,
-			"Expected value of type int64",
-			t.String(),
-		))
+	var i types.Int64
+	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &i)
+	response.Diagnostics.Append(diags...)
+	if diags.HasError() {
 		return 0, false
 	}
 
-	i := request.AttributeConfig.(types.Int64)
-
-	if i.Unknown || i.Null {
+	if i.IsUnknown() || i.IsNull() {
 		return 0, false
 	}
 
