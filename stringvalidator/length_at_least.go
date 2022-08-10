@@ -47,8 +47,8 @@ func (validator lengthAtLeastValidator) Validate(ctx context.Context, request tf
 // LengthAtLeast returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a string.
-//     - Is of length exclusively greater than the given minimum.
+//   - Is a string.
+//   - Is of length exclusively greater than the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func LengthAtLeast(minLength int) tfsdk.AttributeValidator {

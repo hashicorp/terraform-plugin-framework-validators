@@ -47,8 +47,8 @@ func (validator lengthAtMostValidator) Validate(ctx context.Context, request tfs
 // LengthAtMost returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a string.
-//     - Is of length exclusively less than the given maximum.
+//   - Is a string.
+//   - Is of length exclusively less than the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func LengthAtMost(maxLength int) tfsdk.AttributeValidator {
