@@ -47,8 +47,8 @@ func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.Val
 // AtMost returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a number, which can be represented by a 64-bit integer.
-//     - Is exclusively less than the given maximum.
+//   - Is a number, which can be represented by a 64-bit integer.
+//   - Is exclusively less than the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtMost(max int64) tfsdk.AttributeValidator {

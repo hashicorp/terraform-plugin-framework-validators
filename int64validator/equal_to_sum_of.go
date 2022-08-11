@@ -106,8 +106,8 @@ func (av equalToSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 // EqualToSumOf returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a number, which can be represented by a 64-bit integer.
-//     - Is equal to the sum of the given attributes retrieved via the given path expression(s).
+//   - Is a number, which can be represented by a 64-bit integer.
+//   - Is equal to the sum of the given attributes retrieved via the given path expression(s).
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func EqualToSumOf(attributesToSumPathExpressions ...path.Expression) tfsdk.AttributeValidator {

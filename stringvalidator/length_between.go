@@ -47,8 +47,8 @@ func (validator lengthBetweenValidator) Validate(ctx context.Context, request tf
 // LengthBetween returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a string.
-//     - Is of length greater than the given minimum and less than the given maximum.
+//   - Is a string.
+//   - Is of length greater than the given minimum and less than the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func LengthBetween(minLength, maxLength int) tfsdk.AttributeValidator {

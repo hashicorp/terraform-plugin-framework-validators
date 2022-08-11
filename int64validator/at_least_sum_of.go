@@ -106,8 +106,8 @@ func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 // AtLeastSumOf returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a number, which can be represented by a 64-bit integer.
-//     - Is at least the sum of the attributes retrieved via the given path expression(s).
+//   - Is a number, which can be represented by a 64-bit integer.
+//   - Is at least the sum of the attributes retrieved via the given path expression(s).
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtLeastSumOf(attributesToSumPathExpressions ...path.Expression) tfsdk.AttributeValidator {

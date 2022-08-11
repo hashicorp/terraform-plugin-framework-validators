@@ -106,8 +106,8 @@ func (av atMostSumOfValidator) Validate(ctx context.Context, request tfsdk.Valid
 // AtMostSumOf returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a number, which can be represented by a 64-bit integer.
-//     - Is at most the sum of the given attributes retrieved via the given path expression(s).
+//   - Is a number, which can be represented by a 64-bit integer.
+//   - Is at most the sum of the given attributes retrieved via the given path expression(s).
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtMostSumOf(attributesToSumPathExpressions ...path.Expression) tfsdk.AttributeValidator {
