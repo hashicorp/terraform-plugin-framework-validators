@@ -46,8 +46,8 @@ func (v sizeAtLeastValidator) Validate(ctx context.Context, req tfsdk.ValidateAt
 // SizeAtLeast returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a Map.
-//     - Contains at least min elements.
+//   - Is a Map.
+//   - Contains at least min elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func SizeAtLeast(min int) tfsdk.AttributeValidator {

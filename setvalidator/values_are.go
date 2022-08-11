@@ -55,8 +55,8 @@ func (v valuesAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttr
 // ValuesAre returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a Set.
-//     - Contains Set elements, each of which validate against each value validator.
+//   - Is a Set.
+//   - Contains Set elements, each of which validate against each value validator.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func ValuesAre(valueValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {

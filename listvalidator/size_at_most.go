@@ -46,8 +46,8 @@ func (v sizeAtMostValidator) Validate(ctx context.Context, req tfsdk.ValidateAtt
 // SizeAtMost returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a List.
-//     - Contains at most max elements.
+//   - Is a List.
+//   - Contains at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func SizeAtMost(max int) tfsdk.AttributeValidator {

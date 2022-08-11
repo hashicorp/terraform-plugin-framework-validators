@@ -55,7 +55,7 @@ func (v anyValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeR
 // Any returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Validates against at least one of the value validators.
+//   - Validates against at least one of the value validators.
 //
 // To prevent practitioner confusion should non-passing validators have
 // conflicting logic, only warnings from the passing validator are returned.

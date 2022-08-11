@@ -50,8 +50,8 @@ func (validator regexMatchesValidator) Validate(ctx context.Context, request tfs
 // RegexMatches returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
-//     - Is a string.
-//     - Matches the given regular expression https://github.com/google/re2/wiki/Syntax.
+//   - Is a string.
+//   - Matches the given regular expression https://github.com/google/re2/wiki/Syntax.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 // Optionally an error message can be provided to return something friendlier
