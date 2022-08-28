@@ -19,6 +19,9 @@ type alsoRequiresAttributeValidator struct {
 // if the current attribute also has a non-null value.
 //
 // This implements the validation logic declaratively within the tfsdk.Schema.
+// Refer to [datasourcevalidator.RequiredTogether],
+// [providervalidator.RequiredTogether], or [resourcevalidator.RequiredTogether]
+// for declaring this type of validation outside the schema definition.
 //
 // Relative path.Expression will be resolved against the validated attribute.
 func AlsoRequires(attributePaths ...path.Expression) tfsdk.AttributeValidator {
