@@ -14,7 +14,7 @@ func ExampleAtMost() {
 				Required: true,
 				Type:     types.Float64Type,
 				Validators: []tfsdk.AttributeValidator{
-					// Validate floating point value must be less than 42.42
+					// Validate floating point value must be at most 42.42
 					float64validator.AtMost(42.42),
 				},
 			},
