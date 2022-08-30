@@ -1,0 +1,11 @@
+```release-note:feature
+Introduced `datasourcevalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions
+```
+
+```release-note:feature
+Introduced `providervalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions
+```
+
+```release-note:feature
+Introduced `resourcevalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions
+```

@@ -20,6 +20,9 @@ type atLeastOneOfAttributeValidator struct {
 // at least one attribute out of all specified is has a non-null value.
 //
 // This implements the validation logic declaratively within the tfsdk.Schema.
+// Refer to [datasourcevalidator.AtLeastOneOf],
+// [providervalidator.AtLeastOneOf], or [resourcevalidator.AtLeastOneOf]
+// for declaring this type of validation outside the schema definition.
 //
 // Any relative path.Expression will be resolved against the attribute with this validator.
 func AtLeastOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {

@@ -21,6 +21,9 @@ type exactlyOneOfAttributeValidator struct {
 // It will also cause a validation error if none are specified.
 //
 // This implements the validation logic declaratively within the tfsdk.Schema.
+// Refer to [datasourcevalidator.ExactlyOneOf],
+// [providervalidator.ExactlyOneOf], or [resourcevalidator.ExactlyOneOf]
+// for declaring this type of validation outside the schema definition.
 //
 // Relative path.Expression will be resolved against the validated attribute.
 func ExactlyOneOf(attributePaths ...path.Expression) tfsdk.AttributeValidator {

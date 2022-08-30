@@ -1,0 +1,3 @@
+```release-note:bug
+all: Included missing attribute path details in error diagnostics since they are currently not output by Terraform
+```
