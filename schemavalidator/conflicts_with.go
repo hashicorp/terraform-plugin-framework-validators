@@ -19,6 +19,9 @@ type conflictsWithAttributeValidator struct {
 // including the attribute it's applied to, do not have a value simultaneously.
 //
 // This implements the validation logic declaratively within the tfsdk.Schema.
+// Refer to [datasourcevalidator.Conflicting],
+// [providervalidator.Conflicting], or [resourcevalidator.Conflicting]
+// for declaring this type of validation outside the schema definition.
 //
 // Relative path.Expression will be resolved against the validated attribute.
 func ConflictsWith(attributePaths ...path.Expression) tfsdk.AttributeValidator {
