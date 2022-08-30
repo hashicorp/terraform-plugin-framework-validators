@@ -14,7 +14,7 @@ func validateString(ctx context.Context, request tfsdk.ValidateAttributeRequest,
 	if t != types.StringType {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeTypeDiagnostic(
 			request.AttributePath,
-			"Expected value of type string",
+			"expected value of type string",
 			t.String(),
 		))
 		return "", false

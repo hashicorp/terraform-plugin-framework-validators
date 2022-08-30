@@ -1,6 +1,7 @@
 package validatordiag
 
 import (
+	"fmt"
 	"unicode"
 	"unicode/utf8"
 
@@ -13,7 +14,7 @@ func InvalidAttributeValueDiagnostic(path path.Path, description string, value s
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value",
-		capitalize(description)+", got: "+value,
+		fmt.Sprintf("Attribute %s %s, got: %s", path, description, value),
 	)
 }
 
@@ -22,7 +23,7 @@ func InvalidAttributeValueLengthDiagnostic(path path.Path, description string, v
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Length",
-		capitalize(description)+", got: "+value,
+		fmt.Sprintf("Attribute %s %s, got: %s", path, description, value),
 	)
 }
 
@@ -31,7 +32,7 @@ func InvalidAttributeValueMatchDiagnostic(path path.Path, description string, va
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Value Match",
-		capitalize(description)+", got: "+value,
+		fmt.Sprintf("Attribute %s %s, got: %s", path, description, value),
 	)
 }
 
@@ -49,7 +50,7 @@ func InvalidAttributeTypeDiagnostic(path path.Path, description string, value st
 	return diag.NewAttributeErrorDiagnostic(
 		path,
 		"Invalid Attribute Type",
-		capitalize(description)+", got: "+value,
+		fmt.Sprintf("Attribute %s %s, got: %s", path, description, value),
 	)
 }
 

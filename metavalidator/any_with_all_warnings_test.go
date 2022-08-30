@@ -55,7 +55,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
 					"Invalid Attribute Type",
-					"Expected value of type string, got: types.Int64Type",
+					"Attribute test expected value of type string, got: types.Int64Type",
 				),
 			},
 		},
@@ -70,12 +70,12 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
 					"Invalid Attribute Value Length",
-					"String length must be at least 4, got: 3",
+					"Attribute test string length must be at least 4, got: 3",
 				),
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
 					"Invalid Attribute Value Length",
-					"String length must be at least 5, got: 3",
+					"Attribute test string length must be at least 5, got: 3",
 				),
 			},
 		},
@@ -99,12 +99,12 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
 					"Invalid Attribute Value Length",
-					"String length must be at least 6, got: 3",
+					"Attribute test string length must be at least 6, got: 3",
 				),
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
 					"Invalid Attribute Value Length",
-					"String length must be at least 5, got: 3",
+					"Attribute test string length must be at least 5, got: 3",
 				),
 			},
 		},
