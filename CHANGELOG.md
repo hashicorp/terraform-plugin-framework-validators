@@ -1,3 +1,19 @@
+# 0.5.0 (August 30, 2022)
+
+NOTES:
+
+* This Go module has been updated to Go 1.18 per the [Go support policy](https://golang.org/doc/devel/release.html#policy). Any consumers building on earlier Go versions may experience errors. ([#55](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/55))
+
+FEATURES:
+
+* Introduced `datasourcevalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions ([#60](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/60))
+* Introduced `providervalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions ([#60](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/60))
+* Introduced `resourcevalidator` package with `AtLeastOneOf()`, `Conflicting()`, `ExactlyOneOf()`, and `RequiredTogether()` validation functions ([#60](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/60))
+
+BUG FIXES:
+
+* all: Included missing attribute path details in error diagnostics since they are currently not output by Terraform ([#61](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/61))
+
 # 0.4.0 (July 20, 2022)
 
 FEATURES:
