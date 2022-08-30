@@ -14,7 +14,7 @@ func ExampleBetween() {
 				Required: true,
 				Type:     types.Int64Type,
 				Validators: []tfsdk.AttributeValidator{
-					// Validate integer value must be at least 10 and less than 100
+					// Validate integer value must be at least 10 and at most 100
 					int64validator.Between(10, 100),
 				},
 			},

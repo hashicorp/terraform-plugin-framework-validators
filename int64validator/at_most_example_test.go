@@ -14,7 +14,7 @@ func ExampleAtMost() {
 				Required: true,
 				Type:     types.Int64Type,
 				Validators: []tfsdk.AttributeValidator{
-					// Validate integer value must be less than 42
+					// Validate integer value must be at most 42
 					int64validator.AtMost(42),
 				},
 			},

@@ -15,7 +15,7 @@ func ExampleEqualToSumOf() {
 				Required: true,
 				Type:     types.Int64Type,
 				Validators: []tfsdk.AttributeValidator{
-					// Validate this integer value must be equal the
+					// Validate this integer value must be equal to the
 					// summed integer values of other_attr1 and other_attr2.
 					int64validator.EqualToSumOf(path.Expressions{
 						path.MatchRoot("other_attr1"),

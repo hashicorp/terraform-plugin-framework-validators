@@ -14,7 +14,7 @@ func ExampleBetween() {
 				Required: true,
 				Type:     types.Float64Type,
 				Validators: []tfsdk.AttributeValidator{
-					// Validate floating point value must be at least 0.0 and less than 1.0
+					// Validate floating point value must be at least 0.0 and at most 1.0
 					float64validator.Between(0.0, 1.0),
 				},
 			},
