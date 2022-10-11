@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = atMostValidator{}
@@ -48,7 +49,7 @@ func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.Val
 // attribute value:
 //
 //   - Is a number, which can be represented by a 64-bit integer.
-//   - Is exclusively less than the given maximum.
+//   - Is less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtMost(max int64) tfsdk.AttributeValidator {

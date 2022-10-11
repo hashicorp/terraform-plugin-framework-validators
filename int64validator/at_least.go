@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = atLeastValidator{}
@@ -48,7 +49,7 @@ func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.Va
 // attribute value:
 //
 //   - Is a number, which can be represented by a 64-bit integer.
-//   - Is exclusively greater than the given minimum.
+//   - Is greater than or equal to the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtLeast(min int64) tfsdk.AttributeValidator {

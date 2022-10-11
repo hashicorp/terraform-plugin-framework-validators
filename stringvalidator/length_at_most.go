@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ tfsdk.AttributeValidator = lengthAtMostValidator{}
@@ -48,7 +49,7 @@ func (validator lengthAtMostValidator) Validate(ctx context.Context, request tfs
 // attribute value:
 //
 //   - Is a string.
-//   - Is of length exclusively less than the given maximum.
+//   - Is of length less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func LengthAtMost(maxLength int) tfsdk.AttributeValidator {

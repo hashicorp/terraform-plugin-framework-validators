@@ -49,7 +49,7 @@ func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.Va
 // attribute value:
 //
 //   - Is a number, which can be represented by a 64-bit floating point.
-//   - Is exclusively greater than the given minimum.
+//   - Is greater than or equal to the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
 func AtLeast(min float64) tfsdk.AttributeValidator {
