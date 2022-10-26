@@ -1,0 +1,3 @@
+```release-note:note
+all: This Go module has been updated for deprecations in terraform-plugin-framework version 0.15.0
+```

@@ -22,9 +22,9 @@ func validateFloat(ctx context.Context, request tfsdk.ValidateAttributeRequest, 
 
 	f := request.AttributeConfig.(types.Float64)
 
-	if f.Unknown || f.Null {
+	if f.IsUnknown() || f.IsNull() {
 		return 0.0, false
 	}
 
-	return f.Value, true
+	return f.ValueFloat64(), true
 }

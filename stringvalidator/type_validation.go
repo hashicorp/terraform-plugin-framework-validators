@@ -22,9 +22,9 @@ func validateString(ctx context.Context, request tfsdk.ValidateAttributeRequest,
 
 	s := request.AttributeConfig.(types.String)
 
-	if s.Unknown || s.Null {
+	if s.IsUnknown() || s.IsNull() {
 		return "", false
 	}
 
-	return s.Value, true
+	return s.ValueString(), true
 }
