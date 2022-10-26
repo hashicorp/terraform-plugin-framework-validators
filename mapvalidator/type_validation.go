@@ -20,9 +20,9 @@ func validateMap(ctx context.Context, request tfsdk.ValidateAttributeRequest, re
 		return nil, false
 	}
 
-	if m.Unknown || m.Null {
+	if m.IsUnknown() || m.IsNull() {
 		return nil, false
 	}
 
-	return m.Elems, true
+	return m.Elements(), true
 }

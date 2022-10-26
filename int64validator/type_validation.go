@@ -20,5 +20,5 @@ func validateInt(ctx context.Context, request tfsdk.ValidateAttributeRequest, re
 		return 0, false
 	}
 
-	return i.Value, true
+	return i.ValueInt64(), true
 }

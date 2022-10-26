@@ -88,7 +88,7 @@ func (av atMostSumOfValidator) Validate(ctx context.Context, request tfsdk.Valid
 				continue
 			}
 
-			sumOfAttribs += attribToSum.Value
+			sumOfAttribs += attribToSum.ValueInt64()
 		}
 	}
 

@@ -20,9 +20,9 @@ func validateList(ctx context.Context, request tfsdk.ValidateAttributeRequest, r
 		return nil, false
 	}
 
-	if l.Unknown || l.Null {
+	if l.IsUnknown() || l.IsNull() {
 		return nil, false
 	}
 
-	return l.Elems, true
+	return l.Elements(), true
 }
