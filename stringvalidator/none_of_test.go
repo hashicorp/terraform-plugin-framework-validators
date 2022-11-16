@@ -4,10 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
 func TestNoneOfValidator(t *testing.T) {
@@ -27,7 +28,7 @@ func TestNoneOfValidator(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.String{Value: "foo"},
+			in: types.StringValue("foo"),
 			validator: stringvalidator.NoneOf(
 				"foo",
 				"bar",
@@ -36,7 +37,7 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"simple-mismatch-case-insensitive": {
-			in: types.String{Value: "foo"},
+			in: types.StringValue("foo"),
 			validator: stringvalidator.NoneOf(
 				"FOO",
 				"bar",
@@ -45,7 +46,7 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"simple-mismatch": {
-			in: types.String{Value: "foz"},
+			in: types.StringValue("foz"),
 			validator: stringvalidator.NoneOf(
 				"foo",
 				"bar",
@@ -54,14 +55,14 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"list-not-allowed": {
-			in: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "10"},
-					types.String{Value: "20"},
-					types.String{Value: "30"},
+			in: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("10"),
+					types.StringValue("20"),
+					types.StringValue("30"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOf(
 				"10",
 				"20",
@@ -72,14 +73,14 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"set-not-allowed": {
-			in: types.Set{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "foo"},
-					types.String{Value: "bar"},
-					types.String{Value: "baz"},
+			in: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("foo"),
+					types.StringValue("bar"),
+					types.StringValue("baz"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOf(
 				"bob",
 				"alice",
@@ -91,14 +92,14 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"map-not-allowed": {
-			in: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"one.one":    types.String{Value: "1.1"},
-					"ten.twenty": types.String{Value: "10.20"},
-					"five.four":  types.String{Value: "5.4"},
+			in: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one.one":    types.StringValue("1.1"),
+					"ten.twenty": types.StringValue("10.20"),
+					"five.four":  types.StringValue("5.4"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOf(
 				"1.1",
 				"10.20",
@@ -109,14 +110,14 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"object-not-allowed": {
-			in: types.Object{
-				AttrTypes: objAttrTypes,
-				Attrs: map[string]attr.Value{
-					"Name":    types.String{Value: "Bob Parr"},
-					"Age":     types.String{Value: "40"},
-					"Address": types.String{Value: "1200 Park Avenue Emeryville"},
+			in: types.ObjectValueMust(
+				objAttrTypes,
+				map[string]attr.Value{
+					"Name":    types.StringValue("Bob Parr"),
+					"Age":     types.StringValue("40"),
+					"Address": types.StringValue("1200 Park Avenue Emeryville"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOf(
 				"Bob Parr",
 				"40",
@@ -126,7 +127,7 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"skip-validation-on-null": {
-			in: types.String{Null: true},
+			in: types.StringNull(),
 			validator: stringvalidator.NoneOf(
 				"foo",
 				"bar",
@@ -135,7 +136,7 @@ func TestNoneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
-			in: types.String{Unknown: true},
+			in: types.StringUnknown(),
 			validator: stringvalidator.NoneOf(
 				"foo",
 				"bar",
@@ -186,7 +187,7 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.String{Value: "foo"},
+			in: types.StringValue("foo"),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"foo",
 				"bar",
@@ -195,7 +196,7 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"simple-match-case-insensitive": {
-			in: types.String{Value: "foo"},
+			in: types.StringValue("foo"),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"FOO",
 				"bar",
@@ -204,7 +205,7 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"simple-mismatch": {
-			in: types.String{Value: "foz"},
+			in: types.StringValue("foz"),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"foo",
 				"bar",
@@ -213,14 +214,14 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"list-not-allowed": {
-			in: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "10"},
-					types.String{Value: "20"},
-					types.String{Value: "30"},
+			in: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("10"),
+					types.StringValue("20"),
+					types.StringValue("30"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"10",
 				"20",
@@ -231,14 +232,14 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"set-not-allowed": {
-			in: types.Set{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "foo"},
-					types.String{Value: "bar"},
-					types.String{Value: "baz"},
+			in: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("foo"),
+					types.StringValue("bar"),
+					types.StringValue("baz"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"bob",
 				"alice",
@@ -250,14 +251,14 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"map-not-allowed": {
-			in: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"one.one":    types.String{Value: "1.1"},
-					"ten.twenty": types.String{Value: "10.20"},
-					"five.four":  types.String{Value: "5.4"},
+			in: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one.one":    types.StringValue("1.1"),
+					"ten.twenty": types.StringValue("10.20"),
+					"five.four":  types.StringValue("5.4"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"1.1",
 				"10.20",
@@ -268,14 +269,14 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"object-not-allowed": {
-			in: types.Object{
-				AttrTypes: objAttrTypes,
-				Attrs: map[string]attr.Value{
-					"Name":    types.String{Value: "Bob Parr"},
-					"Age":     types.String{Value: "40"},
-					"Address": types.String{Value: "1200 Park Avenue Emeryville"},
+			in: types.ObjectValueMust(
+				objAttrTypes,
+				map[string]attr.Value{
+					"Name":    types.StringValue("Bob Parr"),
+					"Age":     types.StringValue("40"),
+					"Address": types.StringValue("1200 Park Avenue Emeryville"),
 				},
-			},
+			),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"Bob Parr",
 				"40",
@@ -285,7 +286,7 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"skip-validation-on-null": {
-			in: types.String{Null: true},
+			in: types.StringNull(),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"foo",
 				"bar",
@@ -294,7 +295,7 @@ func TestNoneOfCaseInsensitiveValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
-			in: types.String{Unknown: true},
+			in: types.StringUnknown(),
 			validator: stringvalidator.NoneOfCaseInsensitive(
 				"foo",
 				"bar",

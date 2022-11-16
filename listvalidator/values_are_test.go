@@ -23,46 +23,45 @@ func TestValuesAreValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not List": {
-			val: types.Set{
-				ElemType: types.StringType,
-			},
+			val: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{},
+			),
 			expectError: true,
 		},
 		"List unknown": {
-			val: types.List{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.ListUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List null": {
-			val: types.List{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.ListNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List elems invalid": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(6),
 			},
 			expectError: true,
 		},
 		"List elems invalid for second validator": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(2),
 				stringvalidator.LengthAtLeast(6),
@@ -70,26 +69,26 @@ func TestValuesAreValidator(t *testing.T) {
 			expectError: true,
 		},
 		"List elems wrong type for validator": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				int64validator.AtLeast(6),
 			},
 			expectError: true,
 		},
 		"List elems valid": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(5),
 			},

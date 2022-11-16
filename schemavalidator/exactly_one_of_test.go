@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/schemavalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/schemavalidator"
 )
 
 func TestExactlyOneOfValidator(t *testing.T) {
@@ -23,7 +24,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 	testCases := map[string]testCase{
 		"base": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.StringValue("bar value"),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -55,7 +56,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"self-is-null": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Null: true},
+				AttributeConfig:         types.StringNull(),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -86,7 +87,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"error_too-many": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.StringValue("bar value"),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -124,7 +125,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"error_too-few": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Null: true},
+				AttributeConfig:         types.StringNull(),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -162,7 +163,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"allow-duplicate-input": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.StringValue("bar value"),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -200,7 +201,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"other-attributes-are-unknown": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.StringValue("bar value"),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
@@ -237,7 +238,7 @@ func TestExactlyOneOfValidator(t *testing.T) {
 		},
 		"matches-no-attribute-in-schema": {
 			req: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.String{Value: "bar value"},
+				AttributeConfig:         types.StringValue("bar value"),
 				AttributePath:           path.Root("bar"),
 				AttributePathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{

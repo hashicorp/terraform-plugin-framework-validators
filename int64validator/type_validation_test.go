@@ -22,7 +22,7 @@ func TestValidateInt(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Bool{Value: true},
+				AttributeConfig:         types.BoolValue(true),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -33,7 +33,7 @@ func TestValidateInt(t *testing.T) {
 		},
 		"int64-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Int64{Null: true},
+				AttributeConfig:         types.Int64Null(),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -44,7 +44,7 @@ func TestValidateInt(t *testing.T) {
 		},
 		"int64-value": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Int64{Value: 123},
+				AttributeConfig:         types.Int64Value(123),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -53,7 +53,7 @@ func TestValidateInt(t *testing.T) {
 		},
 		"int64-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Int64{Unknown: true},
+				AttributeConfig:         types.Int64Unknown(),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},

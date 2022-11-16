@@ -20,52 +20,51 @@ func TestSizeAtMostValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a List": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"List unknown": {
-			val: types.List{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.ListUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List null": {
-			val: types.List{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.ListNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List size less than max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
 				},
-			},
+			),
 			max:         2,
 			expectError: false,
 		},
 		"List size equal to max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			max:         2,
 			expectError: false,
 		},
 		"List size greater than max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
-					types.String{Value: "third"},
-				}},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
+					types.StringValue("third"),
+				},
+			),
 			max:         2,
 			expectError: true,
 		},

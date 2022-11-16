@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 )
 
 func TestAtMostValidator(t *testing.T) {
@@ -21,27 +22,27 @@ func TestAtMostValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not an Int64": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown Int64": {
-			val: types.Int64{Unknown: true},
+			val: types.Int64Unknown(),
 			max: 2,
 		},
 		"null Int64": {
-			val: types.Int64{Null: true},
+			val: types.Int64Null(),
 			max: 2,
 		},
 		"valid integer as Int64": {
-			val: types.Int64{Value: 1},
+			val: types.Int64Value(1),
 			max: 2,
 		},
 		"valid integer as Int64 min": {
-			val: types.Int64{Value: 2},
+			val: types.Int64Value(2),
 			max: 2,
 		},
 		"too large integer as Int64": {
-			val:         types.Int64{Value: 4},
+			val:         types.Int64Value(4),
 			max:         2,
 			expectError: true,
 		},

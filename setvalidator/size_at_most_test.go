@@ -20,52 +20,51 @@ func TestSizeAtMostValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a Set": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"Set unknown": {
-			val: types.Set{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.SetUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Set null": {
-			val: types.Set{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.SetNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Set size less than max": {
-			val: types.Set{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
+			val: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
 				},
-			},
+			),
 			max:         2,
 			expectError: false,
 		},
 		"Set size equal to max": {
-			val: types.Set{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			max:         2,
 			expectError: false,
 		},
 		"Set size greater than max": {
-			val: types.Set{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
-					types.String{Value: "third"},
-				}},
+			val: types.SetValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
+					types.StringValue("third"),
+				},
+			),
 			max:         2,
 			expectError: true,
 		},

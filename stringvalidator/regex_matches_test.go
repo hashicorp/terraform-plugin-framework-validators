@@ -23,23 +23,23 @@ func TestRegexMatchesValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a String": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown String": {
-			val:    types.String{Unknown: true},
+			val:    types.StringUnknown(),
 			regexp: regexp.MustCompile(`^o[j-l]?$`),
 		},
 		"null String": {
-			val:    types.String{Null: true},
+			val:    types.StringNull(),
 			regexp: regexp.MustCompile(`^o[j-l]?$`),
 		},
 		"valid String": {
-			val:    types.String{Value: "ok"},
+			val:    types.StringValue("ok"),
 			regexp: regexp.MustCompile(`^o[j-l]?$`),
 		},
 		"invalid String": {
-			val:         types.String{Value: "not ok"},
+			val:         types.StringValue("not ok"),
 			regexp:      regexp.MustCompile(`^o[j-l]?$`),
 			expectError: true,
 		},

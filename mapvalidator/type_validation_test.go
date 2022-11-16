@@ -21,7 +21,7 @@ func TestValidateMap(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Bool{Value: true},
+				AttributeConfig:         types.BoolValue(true),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -30,7 +30,7 @@ func TestValidateMap(t *testing.T) {
 		},
 		"map-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Map{Null: true},
+				AttributeConfig:         types.MapNull(types.StringType),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -39,7 +39,7 @@ func TestValidateMap(t *testing.T) {
 		},
 		"map-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Map{Unknown: true},
+				AttributeConfig:         types.MapUnknown(types.StringType),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -48,19 +48,19 @@ func TestValidateMap(t *testing.T) {
 		},
 		"map-value": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Map{
-					ElemType: types.StringType,
-					Elems: map[string]attr.Value{
-						"one": types.String{Value: "first"},
-						"two": types.String{Value: "second"},
+				AttributeConfig: types.MapValueMust(
+					types.StringType,
+					map[string]attr.Value{
+						"one": types.StringValue("first"),
+						"two": types.StringValue("second"),
 					},
-				},
+				),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedMap: map[string]attr.Value{
-				"one": types.String{Value: "first"},
-				"two": types.String{Value: "second"},
+				"one": types.StringValue("first"),
+				"two": types.StringValue("second"),
 			},
 			expectedOk: true,
 		},

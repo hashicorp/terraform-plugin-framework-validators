@@ -4,10 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 )
 
 func TestOneOfValidator(t *testing.T) {
@@ -21,7 +22,7 @@ func TestOneOfValidator(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.Int64{Value: 123},
+			in: types.Int64Value(123),
 			validator: int64validator.OneOf(
 				123,
 				234,
@@ -31,7 +32,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"simple-mismatch": {
-			in: types.Int64{Value: 123},
+			in: types.Int64Value(123),
 			validator: int64validator.OneOf(
 				234,
 				8910,
@@ -40,7 +41,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"skip-validation-on-null": {
-			in: types.Int64{Null: true},
+			in: types.Int64Null(),
 			validator: int64validator.OneOf(
 				234,
 				8910,
@@ -49,7 +50,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
-			in: types.Int64{Unknown: true},
+			in: types.Int64Unknown(),
 			validator: int64validator.OneOf(
 				234,
 				8910,

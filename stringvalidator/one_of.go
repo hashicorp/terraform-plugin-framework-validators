@@ -12,7 +12,7 @@ import (
 func OneOf(acceptableStrings ...string) tfsdk.AttributeValidator {
 	acceptableStringValues := make([]attr.Value, 0, len(acceptableStrings))
 	for _, s := range acceptableStrings {
-		acceptableStringValues = append(acceptableStringValues, types.String{Value: s})
+		acceptableStringValues = append(acceptableStringValues, types.StringValue(s))
 	}
 
 	return primitivevalidator.OneOf(acceptableStringValues...)

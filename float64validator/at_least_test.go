@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 )
 
 func TestAtLeastValidator(t *testing.T) {
@@ -21,31 +22,31 @@ func TestAtLeastValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a Float64": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown Float64": {
-			val: types.Float64{Unknown: true},
+			val: types.Float64Unknown(),
 			min: 0.90,
 		},
 		"null Float64": {
-			val: types.Float64{Null: true},
+			val: types.Float64Null(),
 			min: 0.90,
 		},
 		"valid integer as Float64": {
-			val: types.Float64{Value: 2},
+			val: types.Float64Value(2),
 			min: 0.90,
 		},
 		"valid float as Float64": {
-			val: types.Float64{Value: 2.2},
+			val: types.Float64Value(2.2),
 			min: 0.90,
 		},
 		"valid float as Float64 min": {
-			val: types.Float64{Value: 0.9},
+			val: types.Float64Value(0.9),
 			min: 0.90,
 		},
 		"too small float as Float64": {
-			val:         types.Float64{Value: -1.1111},
+			val:         types.Float64Value(-1.1111),
 			min:         0.90,
 			expectError: true,
 		},

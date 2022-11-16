@@ -20,49 +20,47 @@ func TestSizeAtLeastValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a Map": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"Map unknown": {
-			val: types.Map{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.MapUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Map null": {
-			val: types.Map{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.MapNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Map size greater than min": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"one": types.String{Value: "first"},
-					"two": types.String{Value: "second"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one": types.StringValue("first"),
+					"two": types.StringValue("second"),
 				},
-			},
+			),
 			min:         1,
 			expectError: false,
 		},
 		"Map size equal to min": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"one": types.String{Value: "first"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one": types.StringValue("first"),
 				},
-			},
+			),
 			min:         1,
 			expectError: false,
 		},
 		"Map size less than min": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems:    map[string]attr.Value{},
-			},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{},
+			),
 			min:         1,
 			expectError: true,
 		},

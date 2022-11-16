@@ -4,10 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 )
 
 func TestOneOfValidator(t *testing.T) {
@@ -21,7 +22,7 @@ func TestOneOfValidator(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.Float64{Value: 123.456},
+			in: types.Float64Value(123.456),
 			validator: float64validator.OneOf(
 				123.456,
 				234.567,
@@ -31,7 +32,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"simple-mismatch": {
-			in: types.Float64{Value: 123.456},
+			in: types.Float64Value(123.456),
 			validator: float64validator.OneOf(
 				234.567,
 				8910.11,
@@ -40,7 +41,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"skip-validation-on-null": {
-			in: types.Float64{Null: true},
+			in: types.Float64Null(),
 			validator: float64validator.OneOf(
 				234.567,
 				8910.11,
@@ -49,7 +50,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
-			in: types.Float64{Unknown: true},
+			in: types.Float64Unknown(),
 			validator: float64validator.OneOf(
 				234.567,
 				8910.11,
