@@ -52,9 +52,6 @@ func (v keysAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttrib
 
 		for _, validator := range v.keyValidators {
 			validator.Validate(ctx, request, resp)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 }

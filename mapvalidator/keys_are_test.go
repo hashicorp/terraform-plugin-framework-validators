@@ -19,7 +19,7 @@ func TestKeysAreValidator(t *testing.T) {
 	type testCase struct {
 		val               attr.Value
 		keysAreValidators []tfsdk.AttributeValidator
-		expectError       bool
+		expectErrorsCount int
 	}
 	tests := map[string]testCase{
 		"not Map": {
@@ -27,19 +27,19 @@ func TestKeysAreValidator(t *testing.T) {
 				types.StringType,
 				[]attr.Value{},
 			),
-			expectError: true,
+			expectErrorsCount: 1,
 		},
 		"Map unknown": {
 			val: types.MapUnknown(
 				types.StringType,
 			),
-			expectError: false,
+			expectErrorsCount: 0,
 		},
 		"Map null": {
 			val: types.MapNull(
 				types.StringType,
 			),
-			expectError: false,
+			expectErrorsCount: 0,
 		},
 		"Map key invalid": {
 			val: types.MapValueMust(
@@ -52,7 +52,7 @@ func TestKeysAreValidator(t *testing.T) {
 			keysAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(4),
 			},
-			expectError: true,
+			expectErrorsCount: 2,
 		},
 		"Map key invalid for second validator": {
 			val: types.MapValueMust(
@@ -66,7 +66,7 @@ func TestKeysAreValidator(t *testing.T) {
 				stringvalidator.LengthAtLeast(2),
 				stringvalidator.LengthAtLeast(6),
 			},
-			expectError: true,
+			expectErrorsCount: 2,
 		},
 		"Map keys wrong type for validator": {
 			val: types.MapValueMust(
@@ -79,7 +79,20 @@ func TestKeysAreValidator(t *testing.T) {
 			keysAreValidators: []tfsdk.AttributeValidator{
 				int64validator.AtLeast(6),
 			},
-			expectError: true,
+			expectErrorsCount: 1,
+		},
+		"Map keys for invalid multiple validators": {
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one": types.StringValue("first"),
+				},
+			),
+			keysAreValidators: []tfsdk.AttributeValidator{
+				stringvalidator.LengthAtLeast(5),
+				stringvalidator.LengthAtLeast(6),
+			},
+			expectErrorsCount: 2,
 		},
 		"Map keys valid": {
 			val: types.MapValueMust(
@@ -92,7 +105,7 @@ func TestKeysAreValidator(t *testing.T) {
 			keysAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(3),
 			},
-			expectError: false,
+			expectErrorsCount: 0,
 		},
 	}
 
@@ -107,12 +120,8 @@ func TestKeysAreValidator(t *testing.T) {
 			response := tfsdk.ValidateAttributeResponse{}
 			KeysAre(test.keysAreValidators...).Validate(context.TODO(), request, &response)
 
-			if !response.Diagnostics.HasError() && test.expectError {
-				t.Fatal("expected error, got no error")
-			}
-
-			if response.Diagnostics.HasError() && !test.expectError {
-				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			if response.Diagnostics.ErrorsCount() != test.expectErrorsCount {
+				t.Fatalf("expected %d errors, but got %d: %s", test.expectErrorsCount, response.Diagnostics.ErrorsCount(), response.Diagnostics)
 			}
 		})
 	}

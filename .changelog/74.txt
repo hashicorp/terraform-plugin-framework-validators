@@ -1,0 +1,3 @@
+```release-note:bug
+mapvalidator: Updated `KeysAre()` to return all errors instead of just the first
+```
