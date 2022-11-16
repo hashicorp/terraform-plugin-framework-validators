@@ -1,10 +1,11 @@
 package stringvalidator
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework-validators/internal/primitivevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/internal/primitivevalidator"
 )
 
 // NoneOf checks that the string held in the attribute
@@ -12,7 +13,7 @@ import (
 func NoneOf(unacceptableStrings ...string) tfsdk.AttributeValidator {
 	unacceptableStringValues := make([]attr.Value, 0, len(unacceptableStrings))
 	for _, s := range unacceptableStrings {
-		unacceptableStringValues = append(unacceptableStringValues, types.String{Value: s})
+		unacceptableStringValues = append(unacceptableStringValues, types.StringValue(s))
 	}
 
 	return primitivevalidator.NoneOf(unacceptableStringValues...)

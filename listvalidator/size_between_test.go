@@ -21,90 +21,88 @@ func TestSizeBetweenValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a List": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"List unknown": {
-			val: types.List{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.ListUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List null": {
-			val: types.List{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.ListNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"List size greater than min": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			min:         1,
 			max:         3,
 			expectError: false,
 		},
 		"List size equal to min": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
 				},
-			},
+			),
 			min:         1,
 			max:         3,
 			expectError: false,
 		},
 		"List size less than max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
 				},
-			},
+			),
 			min:         1,
 			max:         3,
 			expectError: false,
 		},
 		"List size equal to max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
-					types.String{Value: "third"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
+					types.StringValue("third"),
 				},
-			},
+			),
 			min:         1,
 			max:         3,
 			expectError: false,
 		},
 		"List size less than min": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems:    []attr.Value{},
-			},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{},
+			),
 			min:         1,
 			max:         3,
 			expectError: true,
 		},
 		"List size greater than max": {
-			val: types.List{
-				ElemType: types.StringType,
-				Elems: []attr.Value{
-					types.String{Value: "first"},
-					types.String{Value: "second"},
-					types.String{Value: "third"},
-					types.String{Value: "fourth"},
+			val: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("first"),
+					types.StringValue("second"),
+					types.StringValue("third"),
+					types.StringValue("fourth"),
 				},
-			},
+			),
 			min:         1,
 			max:         3,
 			expectError: true,

@@ -45,7 +45,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"Type mismatch": {
-			val: types.Int64{Value: 12},
+			val: types.Int64Value(12),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(3),
 				stringvalidator.LengthAtLeast(5),
@@ -60,7 +60,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 			},
 		},
 		"String invalid": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(4),
 				stringvalidator.LengthAtLeast(5),
@@ -80,7 +80,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 			},
 		},
 		"String valid": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(5),
 				stringvalidator.LengthAtLeast(3),
@@ -89,7 +89,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 			expectedValidatorDiags: diag.Diagnostics{},
 		},
 		"String invalid in all nested validators": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
 				metavalidator.All(stringvalidator.LengthAtLeast(5), stringvalidator.LengthAtLeast(3)),
@@ -109,7 +109,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 			},
 		},
 		"String valid in one of the nested validators": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
 				metavalidator.All(stringvalidator.LengthAtLeast(2), stringvalidator.LengthAtLeast(3)),
@@ -118,7 +118,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 			expectedValidatorDiags: diag.Diagnostics{},
 		},
 		"String valid in one of the nested validators with warning": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				metavalidator.All(stringvalidator.LengthAtLeast(6), stringvalidator.LengthAtLeast(3)),
 				metavalidator.All(stringvalidator.LengthAtLeast(2), warningValidator{
@@ -131,7 +131,7 @@ func TestAnyWithAllWarningsValidator(t *testing.T) {
 				diag.NewWarningDiagnostic("Warning", "Warning")},
 		},
 		"String valid in one of the nested validators with warning and warnings from failed validations": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				metavalidator.All(stringvalidator.LengthAtLeast(6), warningValidator{
 					summary: "Warning",

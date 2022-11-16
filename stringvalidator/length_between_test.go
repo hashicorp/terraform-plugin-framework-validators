@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
 func TestLengthBetweenValidator(t *testing.T) {
@@ -22,32 +23,32 @@ func TestLengthBetweenValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a String": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown String": {
-			val:       types.String{Unknown: true},
+			val:       types.StringUnknown(),
 			minLength: 1,
 			maxLength: 3,
 		},
 		"null String": {
-			val:       types.String{Null: true},
+			val:       types.StringNull(),
 			minLength: 1,
 			maxLength: 3,
 		},
 		"valid String": {
-			val:       types.String{Value: "ok"},
+			val:       types.StringValue("ok"),
 			minLength: 1,
 			maxLength: 3,
 		},
 		"too long String": {
-			val:         types.String{Value: "not ok"},
+			val:         types.StringValue("not ok"),
 			minLength:   1,
 			maxLength:   3,
 			expectError: true,
 		},
 		"too short String": {
-			val:         types.String{Value: ""},
+			val:         types.StringValue(""),
 			minLength:   1,
 			maxLength:   3,
 			expectError: true,

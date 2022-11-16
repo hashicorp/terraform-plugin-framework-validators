@@ -26,7 +26,7 @@ func TestAllValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"Type mismatch": {
-			val: types.Int64{Value: 12},
+			val: types.Int64Value(12),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(3),
 				stringvalidator.LengthAtLeast(5),
@@ -41,7 +41,7 @@ func TestAllValidator(t *testing.T) {
 			},
 		},
 		"String invalid": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(3),
 				stringvalidator.LengthAtLeast(5),
@@ -56,7 +56,7 @@ func TestAllValidator(t *testing.T) {
 			},
 		},
 		"String valid": {
-			val: types.String{Value: "one"},
+			val: types.StringValue("one"),
 			valueValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(2),
 				stringvalidator.LengthAtLeast(3),

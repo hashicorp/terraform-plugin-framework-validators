@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
 func TestLengthAtMostValidator(t *testing.T) {
@@ -21,23 +22,23 @@ func TestLengthAtMostValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not a String": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown String": {
-			val:       types.String{Unknown: true},
+			val:       types.StringUnknown(),
 			maxLength: 1,
 		},
 		"null String": {
-			val:       types.String{Null: true},
+			val:       types.StringNull(),
 			maxLength: 1,
 		},
 		"valid String": {
-			val:       types.String{Value: "ok"},
+			val:       types.StringValue("ok"),
 			maxLength: 2,
 		},
 		"too long String": {
-			val:         types.String{Value: "not ok"},
+			val:         types.StringValue("not ok"),
 			maxLength:   5,
 			expectError: true,
 		},

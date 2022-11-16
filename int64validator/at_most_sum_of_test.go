@@ -22,17 +22,17 @@ func TestAtMostSumOfValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not an Int64": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown Int64": {
-			val: types.Int64{Unknown: true},
+			val: types.Int64Unknown(),
 		},
 		"null Int64": {
-			val: types.Int64{Null: true},
+			val: types.Int64Null(),
 		},
 		"valid integer as Int64 more than sum of attributes": {
-			val: types.Int64{Value: 11},
+			val: types.Int64Value(11),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -44,7 +44,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			expectError: true,
 		},
 		"valid integer as Int64 equal to sum of attributes": {
-			val: types.Int64{Value: 10},
+			val: types.Int64Value(10),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -55,7 +55,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 less than sum of attributes": {
-			val: types.Int64{Value: 7},
+			val: types.Int64Value(7),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -66,7 +66,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 less than sum of attributes, when one summed attribute is null": {
-			val: types.Int64{Value: 8},
+			val: types.Int64Value(8),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -77,7 +77,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 does not return error when all attributes are null": {
-			val: types.Int64{Null: true},
+			val: types.Int64Null(),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -88,7 +88,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 returns error when all attributes to sum are null": {
-			val: types.Int64{Value: 1},
+			val: types.Int64Value(1),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -100,7 +100,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			expectError: true,
 		},
 		"valid integer as Int64 less than sum of attributes, when one summed attribute is unknown": {
-			val: types.Int64{Value: 8},
+			val: types.Int64Value(8),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -111,7 +111,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 does not return error when all attributes are unknown": {
-			val: types.Int64{Unknown: true},
+			val: types.Int64Unknown(),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -122,7 +122,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"valid integer as Int64 does not return error when all attributes to sum are unknown": {
-			val: types.Int64{Value: 1},
+			val: types.Int64Value(1),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),
@@ -133,7 +133,7 @@ func TestAtMostSumOfValidator(t *testing.T) {
 			},
 		},
 		"error when attribute to sum is not Number": {
-			val: types.Int64{Value: 9},
+			val: types.Int64Value(9),
 			attributesToSumPathExpressions: path.Expressions{
 				path.MatchRoot("one"),
 				path.MatchRoot("two"),

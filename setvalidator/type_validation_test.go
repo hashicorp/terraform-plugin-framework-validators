@@ -21,7 +21,7 @@ func TestValidateSet(t *testing.T) {
 	}{
 		"invalid-type": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Bool{Value: true},
+				AttributeConfig:         types.BoolValue(true),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -30,7 +30,7 @@ func TestValidateSet(t *testing.T) {
 		},
 		"set-null": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Set{Null: true},
+				AttributeConfig:         types.SetNull(types.StringType),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -39,7 +39,7 @@ func TestValidateSet(t *testing.T) {
 		},
 		"set-unknown": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig:         types.Set{Unknown: true},
+				AttributeConfig:         types.SetUnknown(types.StringType),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
@@ -48,19 +48,19 @@ func TestValidateSet(t *testing.T) {
 		},
 		"set-value": {
 			request: tfsdk.ValidateAttributeRequest{
-				AttributeConfig: types.Set{
-					ElemType: types.StringType,
-					Elems: []attr.Value{
-						types.String{Value: "first"},
-						types.String{Value: "second"},
+				AttributeConfig: types.SetValueMust(
+					types.StringType,
+					[]attr.Value{
+						types.StringValue("first"),
+						types.StringValue("second"),
 					},
-				},
+				),
 				AttributePath:           path.Root("test"),
 				AttributePathExpression: path.MatchRoot("test"),
 			},
 			expectedSetElems: []attr.Value{
-				types.String{Value: "first"},
-				types.String{Value: "second"},
+				types.StringValue("first"),
+				types.StringValue("second"),
 			},
 			expectedOk: true,
 		},

@@ -23,40 +23,38 @@ func TestValuesAreValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"Map unknown": {
-			val: types.Map{
-				Unknown:  true,
-				ElemType: types.StringType,
-			},
+			val: types.MapUnknown(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Map null": {
-			val: types.Map{
-				Null:     true,
-				ElemType: types.StringType,
-			},
+			val: types.MapNull(
+				types.StringType,
+			),
 			expectError: false,
 		},
 		"Map value invalid": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"number_one": types.String{Value: "first"},
-					"number_two": types.String{Value: "second"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"number_one": types.StringValue("first"),
+					"number_two": types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(6),
 			},
 			expectError: true,
 		},
 		"Maps value invalid for second validator": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"number_one": types.String{Value: "first"},
-					"number_two": types.String{Value: "second"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"number_one": types.StringValue("first"),
+					"number_two": types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(2),
 				stringvalidator.LengthAtLeast(6),
@@ -64,26 +62,26 @@ func TestValuesAreValidator(t *testing.T) {
 			expectError: true,
 		},
 		"Map values wrong type for validator": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"number_one": types.String{Value: "first"},
-					"number_two": types.String{Value: "second"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"number_one": types.StringValue("first"),
+					"number_two": types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				int64validator.AtLeast(6),
 			},
 			expectError: true,
 		},
 		"Map values valid": {
-			val: types.Map{
-				ElemType: types.StringType,
-				Elems: map[string]attr.Value{
-					"one": types.String{Value: "first"},
-					"two": types.String{Value: "second"},
+			val: types.MapValueMust(
+				types.StringType,
+				map[string]attr.Value{
+					"one": types.StringValue("first"),
+					"two": types.StringValue("second"),
 				},
-			},
+			),
 			valuesAreValidators: []tfsdk.AttributeValidator{
 				stringvalidator.LengthAtLeast(5),
 			},

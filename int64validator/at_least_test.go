@@ -4,11 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 )
 
 func TestAtLeastValidator(t *testing.T) {
@@ -21,27 +22,27 @@ func TestAtLeastValidator(t *testing.T) {
 	}
 	tests := map[string]testCase{
 		"not an Int64": {
-			val:         types.Bool{Value: true},
+			val:         types.BoolValue(true),
 			expectError: true,
 		},
 		"unknown Int64": {
-			val: types.Int64{Unknown: true},
+			val: types.Int64Unknown(),
 			min: 1,
 		},
 		"null Int64": {
-			val: types.Int64{Null: true},
+			val: types.Int64Null(),
 			min: 1,
 		},
 		"valid integer as Int64": {
-			val: types.Int64{Value: 2},
+			val: types.Int64Value(2),
 			min: 1,
 		},
 		"valid integer as Int64 min": {
-			val: types.Int64{Value: 1},
+			val: types.Int64Value(1),
 			min: 1,
 		},
 		"too small integer as Int64": {
-			val:         types.Int64{Value: -1},
+			val:         types.Int64Value(-1),
 			min:         1,
 			expectError: true,
 		},

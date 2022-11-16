@@ -5,10 +5,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/numbervalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/numbervalidator"
 )
 
 func TestOneOfValidator(t *testing.T) {
@@ -22,7 +23,7 @@ func TestOneOfValidator(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.Number{Value: big.NewFloat(123.456)},
+			in: types.NumberValue(big.NewFloat(123.456)),
 			validator: numbervalidator.OneOf(
 				big.NewFloat(123.456),
 				big.NewFloat(234.567),
@@ -32,7 +33,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"simple-mismatch": {
-			in: types.Number{Value: big.NewFloat(123.456)},
+			in: types.NumberValue(big.NewFloat(123.456)),
 			validator: numbervalidator.OneOf(
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
@@ -41,7 +42,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 1,
 		},
 		"skip-validation-on-null": {
-			in: types.Number{Null: true},
+			in: types.NumberNull(),
 			validator: numbervalidator.OneOf(
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
@@ -50,7 +51,7 @@ func TestOneOfValidator(t *testing.T) {
 			expErrors: 0,
 		},
 		"skip-validation-on-unknown": {
-			in: types.Number{Unknown: true},
+			in: types.NumberUnknown(),
 			validator: numbervalidator.OneOf(
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
