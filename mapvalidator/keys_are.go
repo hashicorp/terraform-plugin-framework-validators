@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var _ tfsdk.AttributeValidator = keysAreValidator{}
+var _ validator.Map = keysAreValidator{}
 
 // keysAreValidator validates that each map key validates against each of the value validators.
 type keysAreValidator struct {
-	keyValidators []tfsdk.AttributeValidator
+	keyValidators []validator.String
 }
 
 // Description describes the validation in plain text formatting.
@@ -31,32 +31,37 @@ func (v keysAreValidator) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
 }
 
-// Validate performs the validation.
-// Note that the AttributePath specified in the ValidateAttributeRequest refers to the value in the Map with key `k`,
-// whereas the AttributeConfig refers to the key itself (i.e., `k`). This is intentional as the validation being
+// ValidateMap performs the validation.
+// Note that the Path specified in the MapRequest refers to the value in the Map with key `k`,
+// whereas the ConfigValue refers to the key itself (i.e., `k`). This is intentional as the validation being
 // performed is for the keys of the Map.
-func (v keysAreValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
-	elems, ok := validateMap(ctx, req, resp)
-	if !ok {
+func (v keysAreValidator) ValidateMap(ctx context.Context, req validator.MapRequest, resp *validator.MapResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
-	for k := range elems {
-		attrPath := req.AttributePath.AtMapKey(k)
-		request := tfsdk.ValidateAttributeRequest{
-			AttributePath:           attrPath,
-			AttributePathExpression: attrPath.Expression(),
-			AttributeConfig:         types.StringValue(k),
-			Config:                  req.Config,
+	for k := range req.ConfigValue.Elements() {
+		attrPath := req.Path.AtMapKey(k)
+		validateReq := validator.StringRequest{
+			Path:           attrPath,
+			PathExpression: attrPath.Expression(),
+			ConfigValue:    types.StringValue(k),
+			Config:         req.Config,
 		}
 
-		for _, validator := range v.keyValidators {
-			validator.Validate(ctx, request, resp)
+		for _, keyValidator := range v.keyValidators {
+			validateResp := &validator.StringResponse{}
+
+			keyValidator.ValidateString(ctx, validateReq, validateResp)
+
+			resp.Diagnostics.Append(validateResp.Diagnostics...)
 		}
 	}
 }
 
-func KeysAre(keyValidators ...tfsdk.AttributeValidator) tfsdk.AttributeValidator {
+// KeysAre returns a map validator that validates all key strings with the
+// given string validators.
+func KeysAre(keyValidators ...validator.String) validator.Map {
 	return keysAreValidator{
 		keyValidators: keyValidators,
 	}

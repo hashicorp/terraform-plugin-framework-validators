@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
-var _ tfsdk.AttributeValidator = betweenValidator{}
+var _ validator.Int64 = betweenValidator{}
 
 // betweenValidator validates that an integer Attribute's value is in a range.
 type betweenValidator struct {
@@ -26,22 +26,18 @@ func (validator betweenValidator) MarkdownDescription(ctx context.Context) strin
 	return validator.Description(ctx)
 }
 
-// Validate performs the validation.
-func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	i, ok := validateInt(ctx, request, response)
-
-	if !ok {
+// ValidateInt64 performs the validation.
+func (v betweenValidator) ValidateInt64(ctx context.Context, request validator.Int64Request, response *validator.Int64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
-	if i < validator.min || i > validator.max {
+	if request.ConfigValue.ValueInt64() < v.min || request.ConfigValue.ValueInt64() > v.max {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			request.AttributePath,
-			validator.Description(ctx),
-			fmt.Sprintf("%d", i),
+			request.Path,
+			v.Description(ctx),
+			fmt.Sprintf("%d", request.ConfigValue.ValueInt64()),
 		))
-
-		return
 	}
 }
 
@@ -52,7 +48,7 @@ func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.Va
 //   - Is greater than or equal to the given minimum and less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func Between(min, max int64) tfsdk.AttributeValidator {
+func Between(min, max int64) validator.Int64 {
 	if min > max {
 		return nil
 	}

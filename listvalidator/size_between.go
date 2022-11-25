@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ tfsdk.AttributeValidator = sizeBetweenValidator{}
+var _ validator.List = sizeBetweenValidator{}
 
 // sizeBetweenValidator validates that list contains at least min elements
 // and at most max elements.
@@ -28,20 +28,19 @@ func (v sizeBetweenValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 // Validate performs the validation.
-func (v sizeBetweenValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
-	elems, ok := validateList(ctx, req, resp)
-	if !ok {
+func (v sizeBetweenValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
+	elems := req.ConfigValue.Elements()
+
 	if len(elems) < v.min || len(elems) > v.max {
 		resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			req.AttributePath,
+			req.Path,
 			v.Description(ctx),
 			fmt.Sprintf("%d", len(elems)),
 		))
-
-		return
 	}
 }
 
@@ -52,7 +51,7 @@ func (v sizeBetweenValidator) Validate(ctx context.Context, req tfsdk.ValidateAt
 //   - Contains at least min elements and at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeBetween(min, max int) tfsdk.AttributeValidator {
+func SizeBetween(min, max int) validator.List {
 	return sizeBetweenValidator{
 		min: min,
 		max: max,

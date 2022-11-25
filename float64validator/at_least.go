@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
-var _ tfsdk.AttributeValidator = atLeastValidator{}
+var _ validator.Float64 = atLeastValidator{}
 
 // atLeastValidator validates that an float Attribute's value is at least a certain value.
 type atLeastValidator struct {
@@ -26,22 +26,20 @@ func (validator atLeastValidator) MarkdownDescription(ctx context.Context) strin
 	return validator.Description(ctx)
 }
 
-// Validate performs the validation.
-func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	f, ok := validateFloat(ctx, request, response)
-
-	if !ok {
+// ValidateFloat64 performs the validation.
+func (validator atLeastValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
-	if f < validator.min {
-		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			request.AttributePath,
-			validator.Description(ctx),
-			fmt.Sprintf("%f", f),
-		))
+	value := request.ConfigValue.ValueFloat64()
 
-		return
+	if value < validator.min {
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+			request.Path,
+			validator.Description(ctx),
+			fmt.Sprintf("%f", value),
+		))
 	}
 }
 
@@ -52,7 +50,7 @@ func (validator atLeastValidator) Validate(ctx context.Context, request tfsdk.Va
 //   - Is greater than or equal to the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtLeast(min float64) tfsdk.AttributeValidator {
+func AtLeast(min float64) validator.Float64 {
 	return atLeastValidator{
 		min: min,
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -14,15 +14,11 @@ func TestSizeAtMostValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val         attr.Value
+		val         types.List
 		max         int
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"not a List": {
-			val:         types.BoolValue(true),
-			expectError: true,
-		},
 		"List unknown": {
 			val: types.ListUnknown(
 				types.StringType,
@@ -73,13 +69,13 @@ func TestSizeAtMostValidator(t *testing.T) {
 	for name, test := range tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:           path.Root("test"),
-				AttributePathExpression: path.MatchRoot("test"),
-				AttributeConfig:         test.val,
+			request := validator.ListRequest{
+				Path:           path.Root("test"),
+				PathExpression: path.MatchRoot("test"),
+				ConfigValue:    test.val,
 			}
-			response := tfsdk.ValidateAttributeResponse{}
-			SizeAtMost(test.max).Validate(context.TODO(), request, &response)
+			response := validator.ListResponse{}
+			SizeAtMost(test.max).ValidateList(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

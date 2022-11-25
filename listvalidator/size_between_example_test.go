@@ -2,20 +2,19 @@ package listvalidator_test
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func ExampleSizeBetween() {
-	// Used within a GetSchema method of a DataSource, Provider, or Resource
-	_ = tfsdk.Schema{
-		Attributes: map[string]tfsdk.Attribute{
-			"example_attr": {
-				Required: true,
-				Type: types.ListType{
-					ElemType: types.StringType,
-				},
-				Validators: []tfsdk.AttributeValidator{
+	// Used within a Schema method of a DataSource, Provider, or Resource
+	_ = schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"example_attr": schema.ListAttribute{
+				ElementType: types.StringType,
+				Required:    true,
+				Validators: []validator.List{
 					// Validate this list must contain at least 2 and at most 4 elements.
 					listvalidator.SizeBetween(2, 4),
 				},
