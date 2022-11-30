@@ -1,3 +1,19 @@
+# 0.7.0 (November 30, 2022)
+
+BREAKING CHANGES:
+
+* all: Migrated implementations to support terraform-plugin-framework version 0.17.0 `datasource/schema`, `provider/schema`, and `resource/schema` packages with type-specific validation ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* listvalidator: The `ValuesAre` validator has been removed and split into element type-specific validators in the same package, such as `StringValuesAre` ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* mapvalidator: The `ValuesAre` validator has been removed and split into element type-specific validators in the same package, such as `StringValuesAre` ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* metavalidator: The `All` and `Any` validators have been removed and split into type-specific packages, such as `stringvalidator.Any` ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* schemavalidator: The `AlsoRequires`, `AtLeastOneOf`, `ConflictsWith`, and `ExactlyOneOf` validators have been removed and split into type-specific packages, such as `stringvalidator.ConflictsWith` ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* setvalidator: The `ValuesAre` validator has been removed and split into element type-specific validators in the same package, such as `StringValuesAre` ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+
+FEATURES:
+
+* boolvalidator: New package which contains boolean type specific validators ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+* objectvalidator: New package which contains object type specific validators ([#80](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/80))
+
 # 0.6.0 (November 17, 2022)
 
 NOTES:
