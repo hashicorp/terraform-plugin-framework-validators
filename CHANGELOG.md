@@ -1,3 +1,12 @@
+# 0.6.0 (November 17, 2022)
+
+NOTES:
+* all: This Go module has been updated for deprecations in terraform-plugin-framework version 0.15.0 ([#72](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/72))
+* all: This Go module has been updated to make it compatible with the breaking changes in terraform-plugin-framework version 0.16.0 ([#77](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/77))
+
+BUG FIXES:
+* mapvalidator: Updated `KeysAre()` to return all errors instead of just the first ([#74](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/74))
+
 # 0.5.0 (August 30, 2022)
 
 NOTES:
