@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -29,11 +29,10 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				PathExpressions: nil,
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -60,11 +59,10 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				PathExpressions: path.Expressions{},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -93,11 +91,10 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -130,11 +127,10 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -173,15 +169,13 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -212,15 +206,13 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -246,15 +238,13 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -281,19 +271,16 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -322,19 +309,16 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -363,19 +347,16 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -409,19 +390,16 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -450,19 +428,16 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -498,23 +473,19 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test3": {
+						"test3": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -552,23 +523,19 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test3": {
+						"test3": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -606,23 +573,19 @@ func TestExactlyOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 			config: tfsdk.Config{
-				Schema: tfsdk.Schema{
-					Attributes: map[string]tfsdk.Attribute{
-						"test1": {
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test2": {
+						"test2": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"test3": {
+						"test3": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
-						"other": {
+						"other": schema.StringAttribute{
 							Optional: true,
-							Type:     types.StringType,
 						},
 					},
 				},
@@ -684,15 +647,13 @@ func TestExactlyOneOfValidatorValidateDataSource(t *testing.T) {
 			},
 			req: datasource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -721,19 +682,16 @@ func TestExactlyOneOfValidatorValidateDataSource(t *testing.T) {
 			},
 			req: datasource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test1": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test1": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"test2": {
+							"test2": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -798,15 +756,13 @@ func TestExactlyOneOfValidatorValidateProvider(t *testing.T) {
 			},
 			req: provider.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -835,19 +791,16 @@ func TestExactlyOneOfValidatorValidateProvider(t *testing.T) {
 			},
 			req: provider.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test1": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test1": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"test2": {
+							"test2": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -912,15 +865,13 @@ func TestExactlyOneOfValidatorValidateResource(t *testing.T) {
 			},
 			req: resource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -949,19 +900,16 @@ func TestExactlyOneOfValidatorValidateResource(t *testing.T) {
 			},
 			req: resource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test1": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test1": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"test2": {
+							"test2": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},

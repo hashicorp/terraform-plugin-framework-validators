@@ -7,10 +7,10 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
@@ -28,15 +28,13 @@ func TestExactlyOneOf(t *testing.T) {
 			},
 			req: datasource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},
@@ -63,19 +61,16 @@ func TestExactlyOneOf(t *testing.T) {
 			},
 			req: datasource.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test1": {
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test1": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"test2": {
+							"test2": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
-							"other": {
+							"other": schema.StringAttribute{
 								Optional: true,
-								Type:     types.StringType,
 							},
 						},
 					},

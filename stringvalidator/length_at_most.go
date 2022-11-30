@@ -4,12 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ tfsdk.AttributeValidator = lengthAtMostValidator{}
+var _ validator.String = lengthAtMostValidator{}
 
 // lengthAtMostValidator validates that a string Attribute's length is at most a certain value.
 type lengthAtMostValidator struct {
@@ -27,17 +26,17 @@ func (validator lengthAtMostValidator) MarkdownDescription(ctx context.Context) 
 }
 
 // Validate performs the validation.
-func (validator lengthAtMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(ctx, request, response)
-
-	if !ok {
+func (v lengthAtMostValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
-	if l := len(s); l > validator.maxLength {
+	value := request.ConfigValue.ValueString()
+
+	if l := len(value); l > v.maxLength {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueLengthDiagnostic(
-			request.AttributePath,
-			validator.Description(ctx),
+			request.Path,
+			v.Description(ctx),
 			fmt.Sprintf("%d", l),
 		))
 
@@ -52,7 +51,7 @@ func (validator lengthAtMostValidator) Validate(ctx context.Context, request tfs
 //   - Is of length less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func LengthAtMost(maxLength int) tfsdk.AttributeValidator {
+func LengthAtMost(maxLength int) validator.String {
 	if maxLength < 0 {
 		return nil
 	}

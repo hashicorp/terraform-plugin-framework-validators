@@ -4,8 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -15,8 +14,8 @@ func TestOneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        attr.Value
-		validator tfsdk.AttributeValidator
+		in        types.Int64
+		validator validator.Int64
 		expErrors int
 	}
 
@@ -63,11 +62,11 @@ func TestOneOfValidator(t *testing.T) {
 	for name, test := range testCases {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			req := tfsdk.ValidateAttributeRequest{
-				AttributeConfig: test.in,
+			req := validator.Int64Request{
+				ConfigValue: test.in,
 			}
-			res := tfsdk.ValidateAttributeResponse{}
-			test.validator.Validate(context.TODO(), req, &res)
+			res := validator.Int64Response{}
+			test.validator.ValidateInt64(context.TODO(), req, &res)
 
 			if test.expErrors > 0 && !res.Diagnostics.HasError() {
 				t.Fatalf("expected %d error(s), got none", test.expErrors)

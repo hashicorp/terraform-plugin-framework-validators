@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
-var _ tfsdk.AttributeValidator = betweenValidator{}
+var _ validator.Float64 = betweenValidator{}
 
 // betweenValidator validates that an float Attribute's value is in a range.
 type betweenValidator struct {
@@ -26,22 +26,20 @@ func (validator betweenValidator) MarkdownDescription(ctx context.Context) strin
 	return validator.Description(ctx)
 }
 
-// Validate performs the validation.
-func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	f, ok := validateFloat(ctx, request, response)
-
-	if !ok {
+// ValidateFloat64 performs the validation.
+func (v betweenValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
-	if f < validator.min || f > validator.max {
-		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			request.AttributePath,
-			validator.Description(ctx),
-			fmt.Sprintf("%f", f),
-		))
+	value := request.ConfigValue.ValueFloat64()
 
-		return
+	if value < v.min || value > v.max {
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+			request.Path,
+			v.Description(ctx),
+			fmt.Sprintf("%f", value),
+		))
 	}
 }
 
@@ -52,7 +50,7 @@ func (validator betweenValidator) Validate(ctx context.Context, request tfsdk.Va
 //   - Is greater than or equal to the given minimum and less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func Between(min, max float64) tfsdk.AttributeValidator {
+func Between(min, max float64) validator.Float64 {
 	if min > max {
 		return nil
 	}

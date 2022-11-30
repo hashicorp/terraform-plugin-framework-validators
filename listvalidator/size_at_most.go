@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ tfsdk.AttributeValidator = sizeAtMostValidator{}
+var _ validator.List = sizeAtMostValidator{}
 
 // sizeAtMostValidator validates that list contains at most max elements.
 type sizeAtMostValidator struct {
@@ -26,20 +26,19 @@ func (v sizeAtMostValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 // Validate performs the validation.
-func (v sizeAtMostValidator) Validate(ctx context.Context, req tfsdk.ValidateAttributeRequest, resp *tfsdk.ValidateAttributeResponse) {
-	elems, ok := validateList(ctx, req, resp)
-	if !ok {
+func (v sizeAtMostValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
+	elems := req.ConfigValue.Elements()
+
 	if len(elems) > v.max {
 		resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			req.AttributePath,
+			req.Path,
 			v.Description(ctx),
 			fmt.Sprintf("%d", len(elems)),
 		))
-
-		return
 	}
 }
 
@@ -50,7 +49,7 @@ func (v sizeAtMostValidator) Validate(ctx context.Context, req tfsdk.ValidateAtt
 //   - Contains at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeAtMost(max int) tfsdk.AttributeValidator {
+func SizeAtMost(max int) validator.List {
 	return sizeAtMostValidator{
 		max: max,
 	}

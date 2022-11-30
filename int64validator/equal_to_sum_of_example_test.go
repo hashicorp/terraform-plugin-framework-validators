@@ -2,19 +2,18 @@ package int64validator_test
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 func ExampleEqualToSumOf() {
-	// Used within a GetSchema method of a DataSource, Provider, or Resource
-	_ = tfsdk.Schema{
-		Attributes: map[string]tfsdk.Attribute{
-			"example_attr": {
+	// Used within a Schema method of a DataSource, Provider, or Resource
+	_ = schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"example_attr": schema.Int64Attribute{
 				Required: true,
-				Type:     types.Int64Type,
-				Validators: []tfsdk.AttributeValidator{
+				Validators: []validator.Int64{
 					// Validate this integer value must be equal to the
 					// summed integer values of other_attr1 and other_attr2.
 					int64validator.EqualToSumOf(path.Expressions{
@@ -23,13 +22,11 @@ func ExampleEqualToSumOf() {
 					}...),
 				},
 			},
-			"other_attr1": {
+			"other_attr1": schema.Int64Attribute{
 				Required: true,
-				Type:     types.Int64Type,
 			},
-			"other_attr2": {
+			"other_attr2": schema.Int64Attribute{
 				Required: true,
-				Type:     types.Int64Type,
 			},
 		},
 	}

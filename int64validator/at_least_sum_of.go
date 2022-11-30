@@ -7,13 +7,14 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
-var _ tfsdk.AttributeValidator = atLeastSumOfValidator{}
+var _ validator.Int64 = atLeastSumOfValidator{}
 
 // atLeastSumOfValidator validates that an integer Attribute's value is at least the sum of one
 // or more integer Attributes retrieved via the given path expressions.
@@ -36,15 +37,14 @@ func (av atLeastSumOfValidator) MarkdownDescription(ctx context.Context) string 
 	return av.Description(ctx)
 }
 
-// Validate performs the validation.
-func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	i, ok := validateInt(ctx, request, response)
-	if !ok {
+// ValidateInt64 performs the validation.
+func (av atLeastSumOfValidator) ValidateInt64(ctx context.Context, request validator.Int64Request, response *validator.Int64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
 	// Ensure input path expressions resolution against the current attribute
-	expressions := request.AttributePathExpression.MergeExpressions(av.attributesToSumPathExpressions...)
+	expressions := request.PathExpression.MergeExpressions(av.attributesToSumPathExpressions...)
 
 	// Sum the value of all the attributes involved, but only if they are all known.
 	var sumOfAttribs int64
@@ -60,7 +60,7 @@ func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 		for _, mp := range matchedPaths {
 			// If the user specifies the same attribute this validator is applied to,
 			// also as part of the input, skip it
-			if mp.Equal(request.AttributePath) {
+			if mp.Equal(request.Path) {
 				continue
 			}
 
@@ -92,14 +92,12 @@ func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 		}
 	}
 
-	if i < sumOfAttribs {
+	if request.ConfigValue.ValueInt64() < sumOfAttribs {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			request.AttributePath,
+			request.Path,
 			av.Description(ctx),
-			fmt.Sprintf("%d", i),
+			fmt.Sprintf("%d", request.ConfigValue.ValueInt64()),
 		))
-
-		return
 	}
 }
 
@@ -110,6 +108,6 @@ func (av atLeastSumOfValidator) Validate(ctx context.Context, request tfsdk.Vali
 //   - Is at least the sum of the attributes retrieved via the given path expression(s).
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtLeastSumOf(attributesToSumPathExpressions ...path.Expression) tfsdk.AttributeValidator {
+func AtLeastSumOf(attributesToSumPathExpressions ...path.Expression) validator.Int64 {
 	return atLeastSumOfValidator{attributesToSumPathExpressions}
 }

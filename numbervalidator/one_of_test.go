@@ -5,8 +5,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/numbervalidator"
@@ -16,8 +15,8 @@ func TestOneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        attr.Value
-		validator tfsdk.AttributeValidator
+		in        types.Number
+		validator validator.Number
 		expErrors int
 	}
 
@@ -64,11 +63,11 @@ func TestOneOfValidator(t *testing.T) {
 	for name, test := range testCases {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			req := tfsdk.ValidateAttributeRequest{
-				AttributeConfig: test.in,
+			req := validator.NumberRequest{
+				ConfigValue: test.in,
 			}
-			res := tfsdk.ValidateAttributeResponse{}
-			test.validator.Validate(context.TODO(), req, &res)
+			res := validator.NumberResponse{}
+			test.validator.ValidateNumber(context.TODO(), req, &res)
 
 			if test.expErrors > 0 && !res.Diagnostics.HasError() {
 				t.Fatalf("expected %d error(s), got none", test.expErrors)

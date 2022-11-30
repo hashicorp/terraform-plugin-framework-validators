@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
-var _ tfsdk.AttributeValidator = atMostValidator{}
+var _ validator.Int64 = atMostValidator{}
 
 // atMostValidator validates that an integer Attribute's value is at most a certain value.
 type atMostValidator struct {
@@ -26,22 +26,18 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 	return validator.Description(ctx)
 }
 
-// Validate performs the validation.
-func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	i, ok := validateInt(ctx, request, response)
-
-	if !ok {
+// ValidateInt64 performs the validation.
+func (v atMostValidator) ValidateInt64(ctx context.Context, request validator.Int64Request, response *validator.Int64Response) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}
 
-	if i > validator.max {
+	if request.ConfigValue.ValueInt64() > v.max {
 		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
-			request.AttributePath,
-			validator.Description(ctx),
-			fmt.Sprintf("%d", i),
+			request.Path,
+			v.Description(ctx),
+			fmt.Sprintf("%d", request.ConfigValue.ValueInt64()),
 		))
-
-		return
 	}
 }
 
@@ -52,7 +48,7 @@ func (validator atMostValidator) Validate(ctx context.Context, request tfsdk.Val
 //   - Is less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtMost(max int64) tfsdk.AttributeValidator {
+func AtMost(max int64) validator.Int64 {
 	return atMostValidator{
 		max: max,
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -14,16 +14,12 @@ func TestSizeBetweenValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val         attr.Value
+		val         types.Map
 		min         int
 		max         int
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"not a Map": {
-			val:         types.BoolValue(true),
-			expectError: true,
-		},
 		"Map unknown": {
 			val: types.MapUnknown(
 				types.StringType,
@@ -112,13 +108,13 @@ func TestSizeBetweenValidator(t *testing.T) {
 	for name, test := range tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:           path.Root("test"),
-				AttributePathExpression: path.MatchRoot("test"),
-				AttributeConfig:         test.val,
+			request := validator.MapRequest{
+				Path:           path.Root("test"),
+				PathExpression: path.MatchRoot("test"),
+				ConfigValue:    test.val,
 			}
-			response := tfsdk.ValidateAttributeResponse{}
-			SizeBetween(test.min, test.max).Validate(context.TODO(), request, &response)
+			response := validator.MapResponse{}
+			SizeBetween(test.min, test.max).ValidateMap(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

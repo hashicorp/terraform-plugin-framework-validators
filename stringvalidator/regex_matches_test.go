@@ -5,9 +5,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -17,15 +16,11 @@ func TestRegexMatchesValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val         attr.Value
+		val         types.String
 		regexp      *regexp.Regexp
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"not a String": {
-			val:         types.BoolValue(true),
-			expectError: true,
-		},
 		"unknown String": {
 			val:    types.StringUnknown(),
 			regexp: regexp.MustCompile(`^o[j-l]?$`),
@@ -48,13 +43,13 @@ func TestRegexMatchesValidator(t *testing.T) {
 	for name, test := range tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
-			request := tfsdk.ValidateAttributeRequest{
-				AttributePath:           path.Root("test"),
-				AttributePathExpression: path.MatchRoot("test"),
-				AttributeConfig:         test.val,
+			request := validator.StringRequest{
+				Path:           path.Root("test"),
+				PathExpression: path.MatchRoot("test"),
+				ConfigValue:    test.val,
 			}
-			response := tfsdk.ValidateAttributeResponse{}
-			stringvalidator.RegexMatches(test.regexp, "").Validate(context.TODO(), request, &response)
+			response := validator.StringResponse{}
+			stringvalidator.RegexMatches(test.regexp, "").ValidateString(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
