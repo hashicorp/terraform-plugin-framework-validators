@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -152,11 +153,11 @@ func TestEqualToSumOfValidator(t *testing.T) {
 				ConfigValue:    test.val,
 				Config: tfsdk.Config{
 					Raw: tftypes.NewValue(tftypes.Object{}, test.requestConfigRaw),
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"test": {Type: types.Int64Type},
-							"one":  {Type: types.Int64Type},
-							"two":  {Type: types.Int64Type},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.Int64Attribute{},
+							"one":  schema.Int64Attribute{},
+							"two":  schema.Int64Attribute{},
 						},
 					},
 				},

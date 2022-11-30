@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -28,14 +29,10 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -59,14 +56,10 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -90,17 +83,11 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
-							"baz": {
-								Type: types.Int64Type,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.Int64Attribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -128,17 +115,11 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
-							"baz": {
-								Type: types.Float64Type,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.Float64Attribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -165,17 +146,11 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
-							"baz": {
-								Type: types.Int64Type,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.Int64Attribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -203,17 +178,11 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
-							"baz": {
-								Type: types.Int64Type,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.Int64Attribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
@@ -240,14 +209,10 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
-					Schema: tfsdk.Schema{
-						Attributes: map[string]tfsdk.Attribute{
-							"foo": {
-								Type: types.Int64Type,
-							},
-							"bar": {
-								Type: types.StringType,
-							},
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
