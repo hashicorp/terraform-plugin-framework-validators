@@ -1,3 +1,9 @@
+# 0.8.0 (December 13, 2022)
+
+NOTES:
+
+* all: Support terraform-plugin-framework version 1.0.0 types handling ([#83](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/83))
+
 # 0.7.0 (November 30, 2022)
 
 BREAKING CHANGES:
