@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // ValueFloat64sAre returns an validator which ensures that any configured
@@ -48,7 +48,7 @@ func (v valueFloat64sAreValidator) ValidateSet(ctx context.Context, req validato
 		return
 	}
 
-	_, ok := req.ConfigValue.ElementType(ctx).(types.Float64Typable)
+	_, ok := req.ConfigValue.ElementType(ctx).(basetypes.Float64Typable)
 
 	if !ok {
 		resp.Diagnostics.AddAttributeError(
@@ -68,7 +68,7 @@ func (v valueFloat64sAreValidator) ValidateSet(ctx context.Context, req validato
 	for _, element := range req.ConfigValue.Elements() {
 		elementPath := req.Path.AtSetValue(element)
 
-		elementValuable, ok := element.(types.Float64Valuable)
+		elementValuable, ok := element.(basetypes.Float64Valuable)
 
 		// The check above should have prevented this, but raise an error
 		// instead of a type assertion panic or skipping the element. Any issue

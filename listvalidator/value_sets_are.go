@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // ValueSetsAre returns an validator which ensures that any configured
@@ -48,7 +48,7 @@ func (v valueSetsAreValidator) ValidateList(ctx context.Context, req validator.L
 		return
 	}
 
-	_, ok := req.ConfigValue.ElementType(ctx).(types.SetTypable)
+	_, ok := req.ConfigValue.ElementType(ctx).(basetypes.SetTypable)
 
 	if !ok {
 		resp.Diagnostics.AddAttributeError(
@@ -68,7 +68,7 @@ func (v valueSetsAreValidator) ValidateList(ctx context.Context, req validator.L
 	for idx, element := range req.ConfigValue.Elements() {
 		elementPath := req.Path.AtListIndex(idx)
 
-		elementValuable, ok := element.(types.SetValuable)
+		elementValuable, ok := element.(basetypes.SetValuable)
 
 		// The check above should have prevented this, but raise an error
 		// instead of a type assertion panic or skipping the element. Any issue

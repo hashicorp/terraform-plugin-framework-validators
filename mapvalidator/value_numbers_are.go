@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // ValueNumbersAre returns an validator which ensures that any configured
@@ -48,7 +48,7 @@ func (v valueNumbersAreValidator) ValidateMap(ctx context.Context, req validator
 		return
 	}
 
-	_, ok := req.ConfigValue.ElementType(ctx).(types.NumberTypable)
+	_, ok := req.ConfigValue.ElementType(ctx).(basetypes.NumberTypable)
 
 	if !ok {
 		resp.Diagnostics.AddAttributeError(
@@ -68,7 +68,7 @@ func (v valueNumbersAreValidator) ValidateMap(ctx context.Context, req validator
 	for key, element := range req.ConfigValue.Elements() {
 		elementPath := req.Path.AtMapKey(key)
 
-		elementValuable, ok := element.(types.NumberValuable)
+		elementValuable, ok := element.(basetypes.NumberValuable)
 
 		// The check above should have prevented this, but raise an error
 		// instead of a type assertion panic or skipping the element. Any issue

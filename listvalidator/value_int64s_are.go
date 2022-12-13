@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // ValueInt64sAre returns an validator which ensures that any configured
@@ -48,7 +48,7 @@ func (v valueInt64sAreValidator) ValidateList(ctx context.Context, req validator
 		return
 	}
 
-	_, ok := req.ConfigValue.ElementType(ctx).(types.Int64Typable)
+	_, ok := req.ConfigValue.ElementType(ctx).(basetypes.Int64Typable)
 
 	if !ok {
 		resp.Diagnostics.AddAttributeError(
@@ -68,7 +68,7 @@ func (v valueInt64sAreValidator) ValidateList(ctx context.Context, req validator
 	for idx, element := range req.ConfigValue.Elements() {
 		elementPath := req.Path.AtListIndex(idx)
 
-		elementValuable, ok := element.(types.Int64Valuable)
+		elementValuable, ok := element.(basetypes.Int64Valuable)
 
 		// The check above should have prevented this, but raise an error
 		// instead of a type assertion panic or skipping the element. Any issue
