@@ -44,13 +44,12 @@ func (v lengthAtMostValidator) ValidateString(ctx context.Context, request valid
 	}
 }
 
-// LengthAtMost returns an AttributeValidator which ensures that any configured
-// attribute value:
+// LengthAtMost returns an validator which ensures that any configured
+// attribute value is of single-byte character length less than or equal
+// to the given maximum. Null (unconfigured) and unknown (known after apply)
+// values are skipped.
 //
-//   - Is a string.
-//   - Is of length less than or equal to the given maximum.
-//
-// Null (unconfigured) and unknown (known after apply) values are skipped.
+// Use UTF8LengthAtMost for checking multiple-byte characters.
 func LengthAtMost(maxLength int) validator.String {
 	if maxLength < 0 {
 		return nil

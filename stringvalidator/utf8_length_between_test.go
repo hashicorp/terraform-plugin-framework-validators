@@ -11,36 +11,62 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-func TestLengthAtLeastValidator(t *testing.T) {
+func TestUTF8LengthBetweenValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
 		val         types.String
 		minLength   int
+		maxLength   int
 		expectError bool
 	}
 	tests := map[string]testCase{
 		"unknown": {
 			val:       types.StringUnknown(),
 			minLength: 1,
+			maxLength: 1,
 		},
 		"null": {
 			val:       types.StringNull(),
 			minLength: 1,
+			maxLength: 1,
 		},
-		"valid": {
+		"valid single byte characters": {
 			val:       types.StringValue("ok"),
-			minLength: 1,
+			minLength: 2,
+			maxLength: 3,
 		},
-		"too short": {
-			val:         types.StringValue(""),
-			minLength:   1,
-			expectError: true,
+		"valid mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringValue("test⇄test"),
+			minLength: 8,
+			maxLength: 9,
 		},
-		"multiple byte characters": {
+		"valid multiple byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:       types.StringValue("⇄"),
-			minLength: 2,
+			minLength: 1,
+			maxLength: 1,
+		},
+		"invalid single byte characters": {
+			val:         types.StringValue("ok"),
+			minLength:   1,
+			maxLength:   1,
+			expectError: true,
+		},
+		"invalid mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringValue("test⇄test"),
+			minLength:   8,
+			maxLength:   8,
+			expectError: true,
+		},
+		"invalid multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringValue("⇄⇄"),
+			minLength:   1,
+			maxLength:   1,
+			expectError: true,
 		},
 	}
 
@@ -53,7 +79,7 @@ func TestLengthAtLeastValidator(t *testing.T) {
 				ConfigValue:    test.val,
 			}
 			response := validator.StringResponse{}
-			stringvalidator.LengthAtLeast(test.minLength).ValidateString(context.TODO(), request, &response)
+			stringvalidator.UTF8LengthBetween(test.minLength, test.maxLength).ValidateString(context.Background(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

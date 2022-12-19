@@ -45,13 +45,12 @@ func (v lengthAtLeastValidator) ValidateString(ctx context.Context, request vali
 	}
 }
 
-// LengthAtLeast returns an AttributeValidator which ensures that any configured
-// attribute value:
+// LengthAtLeast returns an validator which ensures that any configured
+// attribute value is of single-byte character length greater than or equal
+// to the given minimum. Null (unconfigured) and unknown (known after apply)
+// values are skipped.
 //
-//   - Is a string.
-//   - Is of length greater than or equal to the given minimum.
-//
-// Null (unconfigured) and unknown (known after apply) values are skipped.
+// Use UTF8LengthAtLeast for checking multiple-byte characters.
 func LengthAtLeast(minLength int) validator.String {
 	if minLength < 0 {
 		return nil
