@@ -21,32 +21,38 @@ func TestLengthBetweenValidator(t *testing.T) {
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"unknown String": {
+		"unknown": {
 			val:       types.StringUnknown(),
 			minLength: 1,
 			maxLength: 3,
 		},
-		"null String": {
+		"null": {
 			val:       types.StringNull(),
 			minLength: 1,
 			maxLength: 3,
 		},
-		"valid String": {
+		"valid": {
 			val:       types.StringValue("ok"),
 			minLength: 1,
 			maxLength: 3,
 		},
-		"too long String": {
+		"too long": {
 			val:         types.StringValue("not ok"),
 			minLength:   1,
 			maxLength:   3,
 			expectError: true,
 		},
-		"too short String": {
+		"too short": {
 			val:         types.StringValue(""),
 			minLength:   1,
 			maxLength:   3,
 			expectError: true,
+		},
+		"multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringValue("⇄"),
+			minLength: 2,
+			maxLength: 4,
 		},
 	}
 

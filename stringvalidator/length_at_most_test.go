@@ -20,21 +20,27 @@ func TestLengthAtMostValidator(t *testing.T) {
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"unknown String": {
+		"unknown": {
 			val:       types.StringUnknown(),
 			maxLength: 1,
 		},
-		"null String": {
+		"null": {
 			val:       types.StringNull(),
 			maxLength: 1,
 		},
-		"valid String": {
+		"valid": {
 			val:       types.StringValue("ok"),
 			maxLength: 2,
 		},
-		"too long String": {
+		"too long": {
 			val:         types.StringValue("not ok"),
 			maxLength:   5,
+			expectError: true,
+		},
+		"multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringValue("⇄"),
+			maxLength:   2,
 			expectError: true,
 		},
 	}

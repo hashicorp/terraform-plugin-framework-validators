@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-func TestLengthAtLeastValidator(t *testing.T) {
+func TestUTF8LengthAtLeastValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -28,19 +28,36 @@ func TestLengthAtLeastValidator(t *testing.T) {
 			val:       types.StringNull(),
 			minLength: 1,
 		},
-		"valid": {
+		"valid single byte characters": {
 			val:       types.StringValue("ok"),
 			minLength: 1,
 		},
-		"too short": {
-			val:         types.StringValue(""),
-			minLength:   1,
-			expectError: true,
+		"valid mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringValue("test⇄test"),
+			minLength: 9,
 		},
-		"multiple byte characters": {
+		"valid multiple byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:       types.StringValue("⇄"),
-			minLength: 2,
+			minLength: 1,
+		},
+		"invalid single byte characters": {
+			val:         types.StringValue("ok"),
+			minLength:   3,
+			expectError: true,
+		},
+		"invalid mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringValue("test⇄test"),
+			minLength:   10,
+			expectError: true,
+		},
+		"invalid multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringValue("⇄"),
+			minLength:   2,
+			expectError: true,
 		},
 	}
 
@@ -53,7 +70,7 @@ func TestLengthAtLeastValidator(t *testing.T) {
 				ConfigValue:    test.val,
 			}
 			response := validator.StringResponse{}
-			stringvalidator.LengthAtLeast(test.minLength).ValidateString(context.TODO(), request, &response)
+			stringvalidator.UTF8LengthAtLeast(test.minLength).ValidateString(context.Background(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
