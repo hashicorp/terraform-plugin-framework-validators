@@ -1,3 +1,10 @@
+# 0.9.0 (December 20, 2022)
+
+ENHANCEMENTS:
+
+* listvalidator: Added `UniqueValues` validator ([#88](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/88))
+* stringvalidator: Added `UTF8LengthAtLeast`, `UTF8LengthAtMost`, and `UTF8LengthBetween` validators ([#87](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/87))
+
 # 0.8.0 (December 13, 2022)
 
 NOTES:
