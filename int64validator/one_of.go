@@ -46,7 +46,7 @@ func (v oneOfValidator) ValidateInt64(ctx context.Context, request validator.Int
 }
 
 // OneOf checks that the Int64 held in the attribute
-// is none of the given `values`.
+// is one of the given `values`.
 func OneOf(values ...int64) validator.Int64 {
 	frameworkValues := make([]types.Int64, 0, len(values))
 

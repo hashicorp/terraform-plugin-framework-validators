@@ -47,7 +47,7 @@ func (v oneOfCaseInsensitiveValidator) ValidateString(ctx context.Context, reque
 }
 
 // OneOfCaseInsensitive checks that the String held in the attribute
-// is none of the given `values`.
+// is one of the given `values`.
 func OneOfCaseInsensitive(values ...string) validator.String {
 	frameworkValues := make([]types.String, 0, len(values))
 
