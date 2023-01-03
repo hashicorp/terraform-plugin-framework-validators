@@ -47,7 +47,7 @@ func (v oneOfValidator) ValidateNumber(ctx context.Context, request validator.Nu
 }
 
 // OneOf checks that the Number held in the attribute
-// is none of the given `values`.
+// is one of the given `values`.
 func OneOf(values ...*big.Float) validator.Number {
 	frameworkValues := make([]types.Number, 0, len(values))
 

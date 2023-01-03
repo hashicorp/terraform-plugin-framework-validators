@@ -46,7 +46,7 @@ func (v oneOfValidator) ValidateString(ctx context.Context, request validator.St
 }
 
 // OneOf checks that the String held in the attribute
-// is none of the given `values`.
+// is one of the given `values`.
 func OneOf(values ...string) validator.String {
 	frameworkValues := make([]types.String, 0, len(values))
 
