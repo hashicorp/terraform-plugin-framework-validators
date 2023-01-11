@@ -32,15 +32,15 @@ func (v ConflictingValidator) MarkdownDescription(_ context.Context) string {
 }
 
 func (v ConflictingValidator) ValidateDataSource(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v ConflictingValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v ConflictingValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v ConflictingValidator) Validate(ctx context.Context, config tfsdk.Config) diag.Diagnostics {

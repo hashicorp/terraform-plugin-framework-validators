@@ -31,15 +31,15 @@ func (v AtLeastOneOfValidator) MarkdownDescription(_ context.Context) string {
 }
 
 func (v AtLeastOneOfValidator) ValidateDataSource(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v AtLeastOneOfValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v AtLeastOneOfValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
+	resp.Diagnostics.Append(v.Validate(ctx, req.Config)...)
 }
 
 func (v AtLeastOneOfValidator) Validate(ctx context.Context, config tfsdk.Config) diag.Diagnostics {
