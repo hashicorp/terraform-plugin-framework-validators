@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/hashicorp/terraform-plugin-framework-validators/internal/configvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -14,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/internal/configvalidator"
 )
 
 func TestConflictingValidatorValidate(t *testing.T) {
@@ -101,8 +102,8 @@ func TestConflictingValidatorValidate(t *testing.T) {
 			},
 			expected: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
-					"Invalid Path Expression for Schema Data",
-					"The Terraform Provider unexpectedly matched no paths with the given path expression and current schema data. "+
+					"Invalid Path Expression for Schema",
+					"The Terraform Provider unexpectedly provided a path expression that does not match the current schema. "+
 						"This can happen if the path expression does not correctly follow the schema in structure or types. "+
 						"Please report this to the provider developers.\n\n"+
 						"Path Expression: not-test",
@@ -137,15 +138,15 @@ func TestConflictingValidatorValidate(t *testing.T) {
 			},
 			expected: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
-					"Invalid Path Expression for Schema Data",
-					"The Terraform Provider unexpectedly matched no paths with the given path expression and current schema data. "+
+					"Invalid Path Expression for Schema",
+					"The Terraform Provider unexpectedly provided a path expression that does not match the current schema. "+
 						"This can happen if the path expression does not correctly follow the schema in structure or types. "+
 						"Please report this to the provider developers.\n\n"+
 						"Path Expression: not-test1",
 				),
 				diag.NewErrorDiagnostic(
-					"Invalid Path Expression for Schema Data",
-					"The Terraform Provider unexpectedly matched no paths with the given path expression and current schema data. "+
+					"Invalid Path Expression for Schema",
+					"The Terraform Provider unexpectedly provided a path expression that does not match the current schema. "+
 						"This can happen if the path expression does not correctly follow the schema in structure or types. "+
 						"Please report this to the provider developers.\n\n"+
 						"Path Expression: not-test2",
