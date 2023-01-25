@@ -62,6 +62,7 @@ func TestNoneOfValidator(t *testing.T) {
 	for name, test := range testCases {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			req := validator.Float64Request{
 				ConfigValue: test.in,
 			}

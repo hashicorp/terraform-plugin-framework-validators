@@ -84,6 +84,7 @@ func TestAnyValidatorValidateSet(t *testing.T) {
 	for name, test := range tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			request := validator.SetRequest{
 				Path:           path.Root("test"),
 				PathExpression: path.MatchRoot("test"),

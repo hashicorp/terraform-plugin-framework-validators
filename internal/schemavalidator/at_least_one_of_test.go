@@ -234,7 +234,9 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 	}
 
 	for name, test := range testCases {
+		name, test := name, test
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			res := &schemavalidator.AtLeastOneOfValidatorResponse{}
 
 			schemavalidator.AtLeastOneOfValidator{
