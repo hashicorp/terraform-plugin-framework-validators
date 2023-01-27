@@ -1,3 +1,0 @@
-```release-note:enhancement
-stringvalidator: Added `UTF8LengthAtLeast`, `UTF8LengthAtMost`, and `UTF8LengthBetween` validators
-```

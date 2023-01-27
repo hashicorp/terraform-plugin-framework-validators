@@ -1,3 +1,0 @@
-```release-note:enhancement
-setvalidator: Added `SizeAtLeast()`, `SizeAtMost()` and `SizeBetween` validation functions
-```

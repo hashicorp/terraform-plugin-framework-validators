@@ -1,3 +1,0 @@
-```release-note:breaking-change
-Fixed package naming for `int64validator`: was misnamed `validate`
-```

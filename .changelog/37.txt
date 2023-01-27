@@ -1,3 +1,0 @@
-```release-note:feature
-Introduced `listvalidator` package with `ValuesAre()` validation functions
-```
