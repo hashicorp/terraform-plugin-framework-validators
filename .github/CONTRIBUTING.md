@@ -289,10 +289,13 @@ This section is dedicated to the maintainers of this project.
 
 ### Releases
 
-To cut a release, go to the repository in Github and click on the `Actions` tab
+To cut a release, go to the repository in Github and click on the `Actions` tab.
 
 Select the `Release` workflow on the left-hand menu. 
 
-In the `Release` submenu, click on the Run workflow button, select the branch to cut the release from (default is main)
-and input the `Release version number` which is the Semantic Release number including
-the `v` prefix (i.e. `v1.4.0`) and click `Run workflow`
+Click on the `Run workflow` button.
+
+Select the branch to cut the release from (default is main).
+
+Input the `Release version number` which is the Semantic Release number including
+the `v` prefix (i.e. `v1.4.0`) and click `Run workflow` to kickoff the release.
