@@ -122,8 +122,6 @@ The CHANGELOG is intended to show developer-impacting changes to the codebase fo
 A major feature entry should use the `FEATURES` kind.
 
 ``````markdown
-FEATURES:
-
 Added `great` package, which solves all the problems
 
 ``````
@@ -133,8 +131,6 @@ Added `great` package, which solves all the problems
 A new bug entry should use the `BUG FIXES` kind and have a prefix indicating the sub-package it corresponds to, a colon, then followed by a brief summary. Use a `all` prefix should the fix apply to all sub-packages.
 
 ``````markdown
-BUG FIXES:
-
 tfsdk: Prevented potential panic in `Example()` function
 
 ``````
