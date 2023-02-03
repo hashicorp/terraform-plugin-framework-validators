@@ -9,6 +9,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 )
 
+// InvalidAttributeDiagnostic returns an error Diagnostic to be used when an attribute is invalid, but has no value.
+func InvalidAttributeDiagnostic(path path.Path, description string) diag.Diagnostic {
+	return diag.NewAttributeErrorDiagnostic(
+		path,
+		"Invalid Attribute",
+		fmt.Sprintf("Attribute %s %s", path, description),
+	)
+}
+
 // InvalidAttributeValueDiagnostic returns an error Diagnostic to be used when an attribute has an invalid value.
 func InvalidAttributeValueDiagnostic(path path.Path, description string, value string) diag.Diagnostic {
 	return diag.NewAttributeErrorDiagnostic(
