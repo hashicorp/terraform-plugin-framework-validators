@@ -1,3 +1,0 @@
-```release-note:feature
-Introduced `mapvalidator` package with `KeysAre()` and `ValuesAre()` validation functions
-```

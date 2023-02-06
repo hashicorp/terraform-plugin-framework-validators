@@ -1,3 +1,0 @@
-```release-note:enhancement
-int64validator: Added `AtLeastSumOf()`, `AtMostSumOf()` and `EqualToSumOf()` validation functions
-```

@@ -1,3 +1,0 @@
-```release-note:enhancement
-stringvalidator: Added `OneOf()` and `NoneOf()` (case sensitive), and `OneOfCaseInsensitive()` and `NoneOfCaseInsensitive()` (case insensitive) validation functions
-```
