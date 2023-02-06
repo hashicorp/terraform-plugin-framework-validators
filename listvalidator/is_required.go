@@ -7,23 +7,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ validator.List = notNullValidator{}
+var _ validator.List = isRequiredValidator{}
 
-// notNullValidator validates that list is not null
-type notNullValidator struct{}
+// isRequiredValidator validates that a list has a configuration value set
+type isRequiredValidator struct{}
 
 // Description describes the validation in plain text formatting.
-func (v notNullValidator) Description(_ context.Context) string {
-	return "list must not be null"
+func (v isRequiredValidator) Description(_ context.Context) string {
+	return "must have a configuration value set as the provider has marked it as required"
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (v notNullValidator) MarkdownDescription(ctx context.Context) string {
+func (v isRequiredValidator) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
 }
 
 // Validate performs the validation.
-func (v notNullValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+func (v isRequiredValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
 	if req.ConfigValue.IsNull() {
 		resp.Diagnostics.Append(validatordiag.InvalidAttributeDiagnostic(
 			req.Path,
@@ -32,11 +32,11 @@ func (v notNullValidator) ValidateList(ctx context.Context, req validator.ListRe
 	}
 }
 
-// NotNull returns a validator which ensures that any configured list is set
+// IsRequired returns a validator which ensures that any configured list is set
 // to a value.
 //
 // This validator is equivalent to the `Required` field on attributes and is only
 // practical for use with `schema.ListNestedBlock`
-func NotNull() validator.List {
-	return notNullValidator{}
+func IsRequired() validator.List {
+	return isRequiredValidator{}
 }

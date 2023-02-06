@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func TestNotNullValidator(t *testing.T) {
+func TestIsRequiredValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -58,7 +58,7 @@ func TestNotNullValidator(t *testing.T) {
 				ConfigValue:    test.val,
 			}
 			response := validator.ListResponse{}
-			NotNull().ValidateList(context.TODO(), request, &response)
+			IsRequired().ValidateList(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
