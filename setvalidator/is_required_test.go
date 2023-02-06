@@ -1,9 +1,10 @@
-package setvalidator
+package setvalidator_test
 
 import (
 	"context"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -58,7 +59,7 @@ func TestIsRequiredValidator(t *testing.T) {
 				ConfigValue:    test.val,
 			}
 			response := validator.SetResponse{}
-			IsRequired().ValidateSet(context.TODO(), request, &response)
+			setvalidator.IsRequired().ValidateSet(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")

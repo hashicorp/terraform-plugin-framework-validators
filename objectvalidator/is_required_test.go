@@ -1,10 +1,10 @@
-package listvalidator_test
+package objectvalidator_test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -15,34 +15,44 @@ func TestIsRequiredValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		val         types.List
+		val         types.Object
 		expectError bool
 	}
 	tests := map[string]testCase{
-		"List null": {
-			val: types.ListNull(
-				types.StringType,
+		"Object null": {
+			val: types.ObjectNull(
+				map[string]attr.Type{
+					"field1": types.StringType,
+				},
 			),
 			expectError: true,
 		},
-		"List unknown": {
-			val: types.ListUnknown(
-				types.StringType,
+		"Object unknown": {
+			val: types.ObjectUnknown(
+				map[string]attr.Type{
+					"field1": types.StringType,
+				},
 			),
 			expectError: false,
 		},
-		"List empty": {
-			val: types.ListValueMust(
-				types.StringType,
-				[]attr.Value{},
+		"Object empty": {
+			val: types.ObjectValueMust(
+				map[string]attr.Type{
+					"field1": types.StringType,
+				},
+				map[string]attr.Value{
+					"field1": types.StringNull(),
+				},
 			),
 			expectError: false,
 		},
-		"List with elements": {
-			val: types.ListValueMust(
-				types.StringType,
-				[]attr.Value{
-					types.StringValue("first"),
+		"Object with elements": {
+			val: types.ObjectValueMust(
+				map[string]attr.Type{
+					"field1": types.StringType,
+				},
+				map[string]attr.Value{
+					"field1": types.StringValue("value1"),
 				},
 			),
 			expectError: false,
@@ -53,13 +63,13 @@ func TestIsRequiredValidator(t *testing.T) {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			request := validator.ListRequest{
+			request := validator.ObjectRequest{
 				Path:           path.Root("test"),
 				PathExpression: path.MatchRoot("test"),
 				ConfigValue:    test.val,
 			}
-			response := validator.ListResponse{}
-			listvalidator.IsRequired().ValidateList(context.TODO(), request, &response)
+			response := validator.ObjectResponse{}
+			objectvalidator.IsRequired().ValidateObject(context.TODO(), request, &response)
 
 			if !response.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
