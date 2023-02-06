@@ -1,4 +1,4 @@
-package listvalidator
+package setvalidator
 
 import (
 	"context"
@@ -7,9 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ validator.List = isRequiredValidator{}
+var _ validator.Set = isRequiredValidator{}
 
-// isRequiredValidator validates that a list has a configuration value.
+// isRequiredValidator validates that a set has a configuration value.
 type isRequiredValidator struct{}
 
 // Description describes the validation in plain text formatting.
@@ -23,7 +23,7 @@ func (v isRequiredValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 // Validate performs the validation.
-func (v isRequiredValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+func (v isRequiredValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
 	if req.ConfigValue.IsNull() {
 		resp.Diagnostics.Append(validatordiag.InvalidAttributeDiagnostic(
 			req.Path,
@@ -32,10 +32,10 @@ func (v isRequiredValidator) ValidateList(ctx context.Context, req validator.Lis
 	}
 }
 
-// IsRequired returns a validator which ensures that any configured list has a value (not null).
+// IsRequired returns a validator which ensures that any configured set has a value (not null).
 //
 // This validator is equivalent to the `Required` field on attributes and is only
-// practical for use with `schema.ListNestedBlock`
-func IsRequired() validator.List {
+// practical for use with `schema.SetNestedBlock`
+func IsRequired() validator.Set {
 	return isRequiredValidator{}
 }
