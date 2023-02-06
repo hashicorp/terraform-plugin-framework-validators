@@ -25,7 +25,7 @@ func (v isRequiredValidator) MarkdownDescription(ctx context.Context) string {
 // Validate performs the validation.
 func (v isRequiredValidator) ValidateObject(ctx context.Context, req validator.ObjectRequest, resp *validator.ObjectResponse) {
 	if req.ConfigValue.IsNull() {
-		resp.Diagnostics.Append(validatordiag.InvalidAttributeDiagnostic(
+		resp.Diagnostics.Append(validatordiag.InvalidBlockDiagnostic(
 			req.Path,
 			v.Description(ctx),
 		))
