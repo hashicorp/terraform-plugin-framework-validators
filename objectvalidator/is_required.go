@@ -35,7 +35,7 @@ func (v isRequiredValidator) ValidateObject(ctx context.Context, req validator.O
 // IsRequired returns a validator which ensures that any configured object has a value (not null).
 //
 // This validator is equivalent to the `Required` field on attributes and is only
-// practical for use with `schema.SingleNestedBlock` or `schema.NestedBlockObject`
+// practical for use with `schema.SingleNestedBlock`
 func IsRequired() validator.Object {
 	return isRequiredValidator{}
 }
