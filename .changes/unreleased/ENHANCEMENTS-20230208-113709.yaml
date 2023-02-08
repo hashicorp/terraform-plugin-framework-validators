@@ -1,0 +1,5 @@
+kind: ENHANCEMENTS
+body: 'objectvalidator: Added `IsRequired` validator'
+time: 2023-02-08T11:37:09.734344-05:00
+custom:
+  Issue: "107"
