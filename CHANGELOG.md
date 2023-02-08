@@ -1,3 +1,11 @@
+## 0.10.0 (February 08, 2023)
+
+ENHANCEMENTS:
+
+* listvalidator: Added `IsRequired` validator ([#107](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/107))
+* setvalidator: Added `IsRequired` validator ([#107](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/107))
+* objectvalidator: Added `IsRequired` validator ([#107](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/107))
+
 # 0.9.0 (December 20, 2022)
 
 ENHANCEMENTS:
