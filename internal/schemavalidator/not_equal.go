@@ -14,42 +14,42 @@ import (
 
 // This type of validator must satisfy all types.
 var (
-	_ validator.Bool    = DifferentFromValidator{}
-	_ validator.Float64 = DifferentFromValidator{}
-	_ validator.Int64   = DifferentFromValidator{}
-	_ validator.List    = DifferentFromValidator{}
-	_ validator.Map     = DifferentFromValidator{}
-	_ validator.Number  = DifferentFromValidator{}
-	_ validator.Object  = DifferentFromValidator{}
-	_ validator.Set     = DifferentFromValidator{}
-	_ validator.String  = DifferentFromValidator{}
+	_ validator.Bool    = NotEqualValidator{}
+	_ validator.Float64 = NotEqualValidator{}
+	_ validator.Int64   = NotEqualValidator{}
+	_ validator.List    = NotEqualValidator{}
+	_ validator.Map     = NotEqualValidator{}
+	_ validator.Number  = NotEqualValidator{}
+	_ validator.Object  = NotEqualValidator{}
+	_ validator.Set     = NotEqualValidator{}
+	_ validator.String  = NotEqualValidator{}
 )
 
-// DifferentFromValidator is the underlying struct implementing DifferentFrom.
-type DifferentFromValidator struct {
+// NotEqualValidator is the underlying struct implementing NotEqual.
+type NotEqualValidator struct {
 	PathExpressions path.Expressions
 }
 
-type DifferentFromValidatorRequest struct {
+type NotEqualValidatorRequest struct {
 	Config         tfsdk.Config
 	ConfigValue    attr.Value
 	Path           path.Path
 	PathExpression path.Expression
 }
 
-type DifferentFromValidatorResponse struct {
+type NotEqualValidatorResponse struct {
 	Diagnostics diag.Diagnostics
 }
 
-func (dv DifferentFromValidator) Description(ctx context.Context) string {
+func (dv NotEqualValidator) Description(ctx context.Context) string {
 	return dv.MarkdownDescription(ctx)
 }
 
-func (dv DifferentFromValidator) MarkdownDescription(_ context.Context) string {
+func (dv NotEqualValidator) MarkdownDescription(_ context.Context) string {
 	return fmt.Sprintf("Ensure that if an attribute is set, these don't share the same value: %q", dv.PathExpressions)
 }
 
-func (dv DifferentFromValidator) Validate(ctx context.Context, req DifferentFromValidatorRequest, resp *DifferentFromValidatorResponse) {
+func (dv NotEqualValidator) Validate(ctx context.Context, req NotEqualValidatorRequest, resp *NotEqualValidatorResponse) {
 	// If attribute configuration is null, there is nothing else to validate
 	if req.ConfigValue.IsNull() {
 		return
@@ -103,126 +103,126 @@ func (dv DifferentFromValidator) Validate(ctx context.Context, req DifferentFrom
 	}
 }
 
-func (dv DifferentFromValidator) ValidateBool(ctx context.Context, req validator.BoolRequest, resp *validator.BoolResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateBool(ctx context.Context, req validator.BoolRequest, resp *validator.BoolResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateFloat64(ctx context.Context, req validator.Float64Request, resp *validator.Float64Response) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateFloat64(ctx context.Context, req validator.Float64Request, resp *validator.Float64Response) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateInt64(ctx context.Context, req validator.Int64Request, resp *validator.Int64Response) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateInt64(ctx context.Context, req validator.Int64Request, resp *validator.Int64Response) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateMap(ctx context.Context, req validator.MapRequest, resp *validator.MapResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateMap(ctx context.Context, req validator.MapRequest, resp *validator.MapResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateNumber(ctx context.Context, req validator.NumberRequest, resp *validator.NumberResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateNumber(ctx context.Context, req validator.NumberRequest, resp *validator.NumberResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateObject(ctx context.Context, req validator.ObjectRequest, resp *validator.ObjectResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateObject(ctx context.Context, req validator.ObjectRequest, resp *validator.ObjectResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
-func (dv DifferentFromValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
-	validateReq := DifferentFromValidatorRequest{
+func (dv NotEqualValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	validateReq := NotEqualValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
 		Path:           req.Path,
 		PathExpression: req.PathExpression,
 	}
-	validateResp := &DifferentFromValidatorResponse{}
+	validateResp := &NotEqualValidatorResponse{}
 
 	dv.Validate(ctx, validateReq, validateResp)
 
