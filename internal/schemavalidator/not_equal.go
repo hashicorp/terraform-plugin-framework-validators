@@ -85,7 +85,7 @@ func (dv NotEqualValidator) Validate(ctx context.Context, req NotEqualValidatorR
 
 			// Delay validation until all involved attribute have a known value
 			if mpVal.IsUnknown() {
-				return
+				continue
 			}
 
 			// Null attributes can't collide with the attribute undergoing validation
