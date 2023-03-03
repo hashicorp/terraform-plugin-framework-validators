@@ -78,6 +78,33 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
+		"self-is-unknown": {
+			req: schemavalidator.NotEqualValidatorRequest{
+				ConfigValue:    types.StringUnknown(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.StringAttribute{},
+							"bar": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.String,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.String, "foo value"),
+						"bar": tftypes.NewValue(tftypes.String, nil),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+		},
 		"other-is-null": {
 			req: schemavalidator.NotEqualValidatorRequest{
 				ConfigValue:    types.StringValue("bar value"),
