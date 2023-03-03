@@ -2,7 +2,6 @@ package schemavalidator_test
 
 import (
 	"context"
-	"math/big"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -78,6 +77,33 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
+		"self-is-unknown": {
+			req: schemavalidator.NotEqualValidatorRequest{
+				ConfigValue:    types.StringUnknown(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.StringAttribute{},
+							"bar": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.String,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.String, "foo value"),
+						"bar": tftypes.NewValue(tftypes.String, nil),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+		},
 		"other-is-null": {
 			req: schemavalidator.NotEqualValidatorRequest{
 				ConfigValue:    types.StringValue("bar value"),
@@ -105,61 +131,7 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
-		"compatible-types": {
-			req: schemavalidator.NotEqualValidatorRequest{
-				ConfigValue:    types.Int64Value(42),
-				Path:           path.Root("bar"),
-				PathExpression: path.MatchRoot("bar"),
-				Config: tfsdk.Config{
-					Schema: schema.Schema{
-						Attributes: map[string]schema.Attribute{
-							"foo": schema.NumberAttribute{},
-							"bar": schema.Int64Attribute{},
-						},
-					},
-					Raw: tftypes.NewValue(tftypes.Object{
-						AttributeTypes: map[string]tftypes.Type{
-							"foo": tftypes.Number,
-							"bar": tftypes.Number,
-						},
-					}, map[string]tftypes.Value{
-						"foo": tftypes.NewValue(tftypes.Number, 43),
-						"bar": tftypes.NewValue(tftypes.Number, 42),
-					}),
-				},
-			},
-			in: path.Expressions{
-				path.MatchRoot("foo"),
-			},
-		},
-		"incompatible-types": {
-			req: schemavalidator.NotEqualValidatorRequest{
-				ConfigValue:    types.Int64Value(42),
-				Path:           path.Root("bar"),
-				PathExpression: path.MatchRoot("bar"),
-				Config: tfsdk.Config{
-					Schema: schema.Schema{
-						Attributes: map[string]schema.Attribute{
-							"foo": schema.StringAttribute{},
-							"bar": schema.Int64Attribute{},
-						},
-					},
-					Raw: tftypes.NewValue(tftypes.Object{
-						AttributeTypes: map[string]tftypes.Type{
-							"foo": tftypes.String,
-							"bar": tftypes.Number,
-						},
-					}, map[string]tftypes.Value{
-						"foo": tftypes.NewValue(tftypes.String, "foo value"),
-						"bar": tftypes.NewValue(tftypes.Number, 42),
-					}),
-				},
-			},
-			in: path.Expressions{
-				path.MatchRoot("foo"),
-			},
-		},
-		"error_same-type-same-value": {
+		"error_same-value": {
 			req: schemavalidator.NotEqualValidatorRequest{
 				ConfigValue:    types.StringValue("bar value"),
 				Path:           path.Root("bar"),
@@ -187,33 +159,37 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 			},
 			expErrors: 1,
 		},
-		"error_compatible-types-same-value": {
+		"error_multiple-same-value": {
 			req: schemavalidator.NotEqualValidatorRequest{
-				ConfigValue:    types.NumberValue(big.NewFloat(float64(42))),
+				ConfigValue:    types.StringValue("bar value"),
 				Path:           path.Root("bar"),
 				PathExpression: path.MatchRoot("bar"),
 				Config: tfsdk.Config{
 					Schema: schema.Schema{
 						Attributes: map[string]schema.Attribute{
-							"foo": schema.Int64Attribute{},
-							"bar": schema.NumberAttribute{},
+							"foo": schema.StringAttribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
 						AttributeTypes: map[string]tftypes.Type{
-							"foo": tftypes.Number,
-							"bar": tftypes.Number,
+							"foo": tftypes.String,
+							"bar": tftypes.String,
+							"baz": tftypes.String,
 						},
 					}, map[string]tftypes.Value{
-						"foo": tftypes.NewValue(tftypes.Number, 42),
-						"bar": tftypes.NewValue(tftypes.Number, 42),
+						"foo": tftypes.NewValue(tftypes.String, "bar value"),
+						"bar": tftypes.NewValue(tftypes.String, "bar value"),
+						"baz": tftypes.NewValue(tftypes.String, "bar value"),
 					}),
 				},
 			},
 			in: path.Expressions{
 				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
 			},
-			expErrors: 1,
+			expErrors: 2,
 		},
 		"other-unknown": {
 			req: schemavalidator.NotEqualValidatorRequest{
@@ -225,16 +201,19 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 						Attributes: map[string]schema.Attribute{
 							"foo": schema.StringAttribute{},
 							"bar": schema.StringAttribute{},
+							"baz": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
 						AttributeTypes: map[string]tftypes.Type{
 							"foo": tftypes.String,
 							"bar": tftypes.String,
+							"baz": tftypes.String,
 						},
 					}, map[string]tftypes.Value{
 						"foo": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
 						"bar": tftypes.NewValue(tftypes.String, "bar value"),
+						"baz": tftypes.NewValue(tftypes.String, "bar value"),
 					}),
 				},
 			},

@@ -50,8 +50,8 @@ func (dv NotEqualValidator) MarkdownDescription(_ context.Context) string {
 }
 
 func (dv NotEqualValidator) Validate(ctx context.Context, req NotEqualValidatorRequest, resp *NotEqualValidatorResponse) {
-	// If attribute configuration is null, there is nothing else to validate
-	if req.ConfigValue.IsNull() {
+	// If attribute configuration is null or unknown there is nothing to validate
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
@@ -83,9 +83,22 @@ func (dv NotEqualValidator) Validate(ctx context.Context, req NotEqualValidatorR
 				continue
 			}
 
-			// Delay validation until all involved attribute have a known value
+			// Validation across types should not be attempted
+			reqType := req.ConfigValue.Type(ctx)
+			mpType := mpVal.Type(ctx)
+			if !reqType.Equal(mpType) {
+				resp.Diagnostics.Append(
+					validatordiag.InvalidAttributeTypeDiagnostic(
+						req.Path,
+						fmt.Sprintf("of type %q, cannot be compared with attribute %s", reqType, mp),
+						mpType.String(),
+					),
+				)
+			}
+
+			// Validation of unknown attributes will be delayed
 			if mpVal.IsUnknown() {
-				return
+				continue
 			}
 
 			// Null attributes can't collide with the attribute undergoing validation
