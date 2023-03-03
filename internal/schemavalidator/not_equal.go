@@ -50,8 +50,8 @@ func (dv NotEqualValidator) MarkdownDescription(_ context.Context) string {
 }
 
 func (dv NotEqualValidator) Validate(ctx context.Context, req NotEqualValidatorRequest, resp *NotEqualValidatorResponse) {
-	// If attribute configuration is null, there is nothing else to validate
-	if req.ConfigValue.IsNull() {
+	// If attribute configuration is null or unknown there is nothing to validate
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
