@@ -252,16 +252,19 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 						Attributes: map[string]schema.Attribute{
 							"foo": schema.StringAttribute{},
 							"bar": schema.StringAttribute{},
+							"baz": schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
 						AttributeTypes: map[string]tftypes.Type{
 							"foo": tftypes.String,
 							"bar": tftypes.String,
+							"baz": tftypes.String,
 						},
 					}, map[string]tftypes.Value{
 						"foo": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
 						"bar": tftypes.NewValue(tftypes.String, "bar value"),
+						"baz": tftypes.NewValue(tftypes.String, "bar value"),
 					}),
 				},
 			},
