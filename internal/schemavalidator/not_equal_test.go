@@ -214,6 +214,38 @@ func TestNotEqualValidatorValidate(t *testing.T) {
 			},
 			expErrors: 1,
 		},
+		"error_multiple-same-type-same-value": {
+			req: schemavalidator.NotEqualValidatorRequest{
+				ConfigValue:    types.StringValue("bar value"),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.StringAttribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.String,
+							"bar": tftypes.String,
+							"baz": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.String, "bar value"),
+						"bar": tftypes.NewValue(tftypes.String, "bar value"),
+						"baz": tftypes.NewValue(tftypes.String, "bar value"),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
+			},
+			expErrors: 2,
+		},
 		"error_compatible-types-same-value": {
 			req: schemavalidator.NotEqualValidatorRequest{
 				ConfigValue:    types.NumberValue(big.NewFloat(float64(42))),
