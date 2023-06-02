@@ -1,3 +1,6 @@
+// Copyright (c) HashiCorp, Inc.
+// SPDX-License-Identifier: MPL-2.0
+
 // Package datasourcevalidator provides validators to express relationships
 // between multiple attributes of a data source. For example, checking that
 // multiple attributes are not configured at the same time.
