@@ -7,6 +7,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -90,6 +91,37 @@ func TestOneOfValidator(t *testing.T) {
 
 			if test.expErrors == 0 && res.Diagnostics.HasError() {
 				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			}
+		})
+	}
+}
+
+func TestOneOfValidator_Description(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		in       []string
+		expected string
+	}
+
+	testCases := map[string]testCase{
+		"quoted-once": {
+			in:       []string{"foo", "bar", "baz"},
+			expected: `value must be one of: ["foo" "bar" "baz"]`,
+		},
+	}
+
+	for name, test := range testCases {
+		name, test := name, test
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			v := stringvalidator.OneOf(test.in...)
+
+			got := v.MarkdownDescription(context.Background())
+
+			if diff := cmp.Diff(got, test.expected); diff != "" {
+				t.Errorf("unexpected difference: %s", diff)
 			}
 		})
 	}
