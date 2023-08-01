@@ -1,0 +1,6 @@
+kind: BUG FIXES
+body: 'stringvalidator: Removed double quoting in `Description` returned from `NoneOf`,
+  `NoneOfCaseInsensitive`, `OneOf` and `OneOfCaseInsensitive` validators'
+time: 2023-08-01T10:47:45.629204+01:00
+custom:
+  Issue: "152"
