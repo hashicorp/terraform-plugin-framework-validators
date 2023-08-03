@@ -1,5 +1,0 @@
-kind: ENHANCEMENTS
-body: 'int64validator: Added `equalToProductOf` validator'
-time: 2023-05-02T11:24:40.147812-04:00
-custom:
-  Issue: "129"
