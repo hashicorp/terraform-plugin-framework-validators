@@ -25,7 +25,7 @@ func (v noneOfValidator) Description(ctx context.Context) string {
 }
 
 func (v noneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be none of: %q", v.values)
+	return fmt.Sprintf("value must be none of: %s", v.values)
 }
 
 func (v noneOfValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
