@@ -6,11 +6,20 @@ package testvalidator
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 // WarningBool returns a validator which returns a warning diagnostic.
 func WarningBool(summary string, detail string) validator.Bool {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
+// WarningDataSource returns a validator which returns a warning diagnostic.
+func WarningDataSource(summary string, detail string) datasource.ConfigValidator {
 	return WarningValidator{
 		Summary: summary,
 		Detail:  detail,
@@ -82,15 +91,16 @@ func WarningString(summary string, detail string) validator.String {
 }
 
 var (
-	_ validator.Bool    = WarningValidator{}
-	_ validator.Float64 = WarningValidator{}
-	_ validator.Int64   = WarningValidator{}
-	_ validator.List    = WarningValidator{}
-	_ validator.Map     = WarningValidator{}
-	_ validator.Number  = WarningValidator{}
-	_ validator.Object  = WarningValidator{}
-	_ validator.Set     = WarningValidator{}
-	_ validator.String  = WarningValidator{}
+	_ validator.Bool             = WarningValidator{}
+	_ datasource.ConfigValidator = WarningValidator{}
+	_ validator.Float64          = WarningValidator{}
+	_ validator.Int64            = WarningValidator{}
+	_ validator.List             = WarningValidator{}
+	_ validator.Map              = WarningValidator{}
+	_ validator.Number           = WarningValidator{}
+	_ validator.Object           = WarningValidator{}
+	_ validator.Set              = WarningValidator{}
+	_ validator.String           = WarningValidator{}
 )
 
 type WarningValidator struct {
@@ -107,6 +117,10 @@ func (v WarningValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v WarningValidator) ValidateBool(ctx context.Context, request validator.BoolRequest, response *validator.BoolResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
+func (v WarningValidator) ValidateDataSource(ctx context.Context, request datasource.ValidateConfigRequest, response *datasource.ValidateConfigResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
