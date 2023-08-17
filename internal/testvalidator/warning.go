@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -74,6 +75,14 @@ func WarningObject(summary string, detail string) validator.Object {
 	}
 }
 
+// WarningProvider returns a validator which returns a warning diagnostic.
+func WarningProvider(summary string, detail string) provider.ConfigValidator {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
 // WarningSet returns a validator which returns a warning diagnostic.
 func WarningSet(summary string, detail string) validator.Set {
 	return WarningValidator{
@@ -91,8 +100,9 @@ func WarningString(summary string, detail string) validator.String {
 }
 
 var (
-	_ validator.Bool             = WarningValidator{}
 	_ datasource.ConfigValidator = WarningValidator{}
+	_ provider.ConfigValidator   = WarningValidator{}
+	_ validator.Bool             = WarningValidator{}
 	_ validator.Float64          = WarningValidator{}
 	_ validator.Int64            = WarningValidator{}
 	_ validator.List             = WarningValidator{}
@@ -145,6 +155,10 @@ func (v WarningValidator) ValidateNumber(ctx context.Context, request validator.
 }
 
 func (v WarningValidator) ValidateObject(ctx context.Context, request validator.ObjectRequest, response *validator.ObjectResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
+func (v WarningValidator) ValidateProvider(ctx context.Context, request provider.ValidateConfigRequest, response *provider.ValidateConfigResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
