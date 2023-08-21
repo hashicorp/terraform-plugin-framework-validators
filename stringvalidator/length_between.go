@@ -47,14 +47,14 @@ func (v lengthBetweenValidator) ValidateString(ctx context.Context, request vali
 	}
 }
 
-// LengthBetween returns an validator which ensures that any configured
-// attribute value is of single-byte character length greater than the given
-// minimum and less than the given maximum. Null (unconfigured) and unknown
-// (known after apply) values are skipped.
+// LengthBetween returns a validator which ensures that any configured
+// attribute value is of single-byte character length greater than or equal
+// to the given minimum and less than or equal to the given maximum. Null
+// (unconfigured) and unknown (known after apply) values are skipped.
 //
 // Use UTF8LengthBetween for checking multiple-byte characters.
 func LengthBetween(minLength, maxLength int) validator.String {
-	if minLength < 0 || maxLength < 0 || minLength > maxLength {
+	if minLength < 0 || minLength > maxLength {
 		return nil
 	}
 
