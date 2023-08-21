@@ -39,6 +39,26 @@ func TestLengthBetweenValidator(t *testing.T) {
 			minLength: 1,
 			maxLength: 3,
 		},
+		"valid minimum": {
+			val:       types.StringValue("ok"),
+			minLength: 2,
+			maxLength: 3,
+		},
+		"valid maximum": {
+			val:       types.StringValue("ok"),
+			minLength: 1,
+			maxLength: 2,
+		},
+		"valid just right": {
+			val:       types.StringValue("ok"),
+			minLength: 2,
+			maxLength: 2,
+		},
+		"valid empty": {
+			val:       types.StringValue(""),
+			minLength: 0,
+			maxLength: 0,
+		},
 		"too long": {
 			val:         types.StringValue("not ok"),
 			minLength:   1,
