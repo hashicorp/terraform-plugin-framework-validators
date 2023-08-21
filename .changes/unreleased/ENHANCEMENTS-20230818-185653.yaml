@@ -1,0 +1,5 @@
+kind: ENHANCEMENTS
+body: 'datasourcevalidator: Added `All`, `Any`, and `AnyWithAllWarnings` validators'
+time: 2023-08-18T18:56:53.809569-04:00
+custom:
+  Issue: "158"
