@@ -12,6 +12,6 @@ import (
 func ExampleAnyWithAllWarnings() {
 	// Used inside a datasource.DataSource type ConfigValidators method
 	_ = []datasource.ConfigValidator{
-		datasourcevalidator.Any( /* ... */ ),
+		datasourcevalidator.AnyWithAllWarnings( /* ... */ ),
 	}
 }
