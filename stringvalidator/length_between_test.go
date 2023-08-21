@@ -54,7 +54,7 @@ func TestLengthBetweenValidator(t *testing.T) {
 			minLength: 2,
 			maxLength: 2,
 		},
-		"valid empty": {
+		"valid minimum maximum zero": {
 			val:       types.StringValue(""),
 			minLength: 0,
 			maxLength: 0,
