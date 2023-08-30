@@ -1,3 +1,12 @@
+## 0.12.0 (August 30, 2023)
+
+ENHANCEMENTS:
+
+* boolvalidator: Added `All`, `Any`, and `AnyWithAllWarnings` validators ([#158](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/158))
+* datasourcevalidator: Added `All`, `Any`, and `AnyWithAllWarnings` validators ([#158](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/158))
+* providervalidator: Added `All`, `Any`, and `AnyWithAllWarnings` validators ([#158](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/158))
+* resourcevalidator: Added `All`, `Any`, and `AnyWithAllWarnings` validators ([#158](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/158))
+
 ## 0.11.0 (August 03, 2023)
 
 NOTES:
