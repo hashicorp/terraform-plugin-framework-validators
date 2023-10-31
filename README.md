@@ -4,7 +4,11 @@
 
 terraform-plugin-framework-validators is a Go module containing common use case validators for [terraform-plugin-framework](https://github.com/hashicorp/terraform-plugin-framework) types. It aims to provide generic type validator functionality that should be applicable to the broader framework-based provider ecosystem.
 
-This Go module is not intended to define all possible validations. In particular, many validators that relate to specific string formats, encodings, and other specifics should instead be implemented separately in custom attribute types (e.g. a type implementing the `attr.TypeWithValidators` interface). Many of these custom types can be discovered by a conventional repository naming prefix of `terraform-plugin-framework-type-`.
+This Go module is not intended to define all possible validations. In particular, many validators that relate to specific string formats, encodings, and other specifics should instead be implemented separately in custom attribute types (e.g. a type implementing the `attr.TypeWithValidators` interface). Many of these custom types can be discovered by a conventional repository naming prefix of `terraform-plugin-framework-`. HashiCorp-supported custom types available for specific use cases include but are not limited to:
+
+- [JSON Types](https://github.com/hashicorp/terraform-plugin-framework-jsontypes)
+- [Networking Types](https://github.com/hashicorp/terraform-plugin-framework-nettypes)
+- [Time Types](https://github.com/hashicorp/terraform-plugin-framework-timetypes)
 
 ## Terraform Plugin Framework Compatibility
 
