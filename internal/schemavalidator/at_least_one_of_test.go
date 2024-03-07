@@ -5,8 +5,10 @@ package schemavalidator_test
 
 import (
 	"context"
+	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -20,9 +22,10 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		req       schemavalidator.AtLeastOneOfValidatorRequest
-		in        path.Expressions
-		expErrors int
+		req             schemavalidator.AtLeastOneOfValidatorRequest
+		in              path.Expressions
+		expErrors       int
+		expDiagsMsgSegs []string
 	}
 
 	testCases := map[string]testCase{
@@ -111,6 +114,38 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				path.MatchRoot("baz"),
 			},
 			expErrors: 1,
+		},
+		"both-attrs-in-diag-msg": {
+			req: schemavalidator.AtLeastOneOfValidatorRequest{
+				ConfigValue:    types.NumberNull(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.Int64Attribute{},
+						},
+					},
+					Raw: tftypes.NewValue(
+						tftypes.Object{
+							AttributeTypes: map[string]tftypes.Type{
+								"foo": tftypes.Number,
+								"bar": tftypes.Number,
+							},
+						},
+						map[string]tftypes.Value{
+							"foo": tftypes.NewValue(tftypes.Number, nil),
+							"bar": tftypes.NewValue(tftypes.Number, nil),
+						},
+					),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+			expErrors:       1,
+			expDiagsMsgSegs: []string{"foo", "bar"},
 		},
 		"multiple-set": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -236,6 +271,22 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 		},
 	}
 
+	checkDiagsForExpectedMessageSegments := func(diags diag.Diagnostics, segs []string) {
+		for _, seg := range segs {
+			found := false
+			for _, diag := range diags {
+				if strings.Contains(diag.Summary(), seg) || strings.Contains(diag.Detail(), seg) {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				t.Fatalf("expected diagnostic message to contain %q, got none", seg)
+			}
+		}
+	}
+
 	for name, test := range testCases {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
@@ -252,6 +303,10 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 
 			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
 				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			}
+
+			if len(test.expDiagsMsgSegs) > 0 {
+				checkDiagsForExpectedMessageSegments(res.Diagnostics, test.expDiagsMsgSegs)
 			}
 
 			if test.expErrors == 0 && res.Diagnostics.HasError() {
