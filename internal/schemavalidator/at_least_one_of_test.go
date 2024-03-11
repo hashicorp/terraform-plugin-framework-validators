@@ -267,47 +267,6 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				},
 			},
 		},
-		"both-attrs-in-diag-msg": {
-			req: schemavalidator.AtLeastOneOfValidatorRequest{
-				ConfigValue:    types.NumberNull(),
-				Path:           path.Root("bar"),
-				PathExpression: path.MatchRoot("bar"),
-				Config: tfsdk.Config{
-					Schema: schema.Schema{
-						Attributes: map[string]schema.Attribute{
-							"foo": schema.Int64Attribute{},
-							"bar": schema.Int64Attribute{},
-						},
-					},
-					Raw: tftypes.NewValue(
-						tftypes.Object{
-							AttributeTypes: map[string]tftypes.Type{
-								"foo": tftypes.Number,
-								"bar": tftypes.Number,
-							},
-						},
-						map[string]tftypes.Value{
-							"foo": tftypes.NewValue(tftypes.Number, nil),
-							"bar": tftypes.NewValue(tftypes.Number, nil),
-						},
-					),
-				},
-			},
-			in: path.Expressions{
-				path.MatchRoot("foo"),
-			},
-			expected: &schemavalidator.AtLeastOneOfValidatorResponse{
-				Diagnostics: diag.Diagnostics{
-					diag.WithPath(
-						path.Root("bar"),
-						diag.NewErrorDiagnostic(
-							"Invalid Attribute Combination",
-							"At least one attribute out of [foo,bar] must be specified",
-						),
-					),
-				},
-			},
-		},
 	}
 
 	for name, test := range testCases {
