@@ -91,6 +91,10 @@ func (av AtLeastOneOfValidator) Validate(ctx context.Context, req AtLeastOneOfVa
 		}
 	}
 
+	// This attribute is among those required attributes,
+	// append it to make it appears in the error message.
+	expressions.Append(req.PathExpression)
+
 	res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
 		req.Path,
 		fmt.Sprintf("At least one attribute out of %s must be specified", expressions),

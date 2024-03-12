@@ -7,6 +7,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -20,9 +22,9 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		req       schemavalidator.AtLeastOneOfValidatorRequest
-		in        path.Expressions
-		expErrors int
+		req      schemavalidator.AtLeastOneOfValidatorRequest
+		in       path.Expressions
+		expected *schemavalidator.AtLeastOneOfValidatorResponse
 	}
 
 	testCases := map[string]testCase{
@@ -52,6 +54,7 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 			in: path.Expressions{
 				path.MatchRoot("foo"),
 			},
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{},
 		},
 		"self-is-null": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -79,6 +82,7 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 			in: path.Expressions{
 				path.MatchRoot("foo"),
 			},
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{},
 		},
 		"error_none-set": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -110,7 +114,17 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 				path.MatchRoot("baz"),
 			},
-			expErrors: 1,
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{
+				Diagnostics: diag.Diagnostics{
+					diag.WithPath(
+						path.Root("bar"),
+						diag.NewErrorDiagnostic(
+							"Invalid Attribute Combination",
+							"At least one attribute out of [foo,baz,bar] must be specified",
+						),
+					),
+				},
+			},
 		},
 		"multiple-set": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -142,6 +156,7 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 				path.MatchRoot("baz"),
 			},
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{},
 		},
 		"allow-duplicate-input": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -174,6 +189,7 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				path.MatchRoot("bar"),
 				path.MatchRoot("baz"),
 			},
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{},
 		},
 		"unknowns": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -205,6 +221,7 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				path.MatchRoot("foo"),
 				path.MatchRoot("baz"),
 			},
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{},
 		},
 		"matches-no-attribute-in-schema": {
 			req: schemavalidator.AtLeastOneOfValidatorRequest{
@@ -232,7 +249,23 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 			in: path.Expressions{
 				path.MatchRoot("fooz"),
 			},
-			expErrors: 2,
+			expected: &schemavalidator.AtLeastOneOfValidatorResponse{
+				Diagnostics: diag.Diagnostics{
+					diag.NewErrorDiagnostic(
+						"Invalid Path Expression for Schema",
+						"The Terraform Provider unexpectedly provided a path expression that does not match the current schema. "+
+							"This can happen if the path expression does not correctly follow the schema in structure or types. "+
+							"Please report this to the provider developers.\n\nPath Expression: fooz",
+					),
+					diag.WithPath(
+						path.Root("bar"),
+						diag.NewErrorDiagnostic(
+							"Invalid Attribute Combination",
+							"At least one attribute out of [fooz,bar] must be specified",
+						),
+					),
+				},
+			},
 		},
 	}
 
@@ -246,16 +279,8 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 				PathExpressions: test.in,
 			}.Validate(context.TODO(), test.req, res)
 
-			if test.expErrors > 0 && !res.Diagnostics.HasError() {
-				t.Fatal("expected error(s), got none")
-			}
-
-			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
-			}
-
-			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if diff := cmp.Diff(test.expected, res); diff != "" {
+				t.Errorf("unexpected diff: %s", diff)
 			}
 		})
 	}
