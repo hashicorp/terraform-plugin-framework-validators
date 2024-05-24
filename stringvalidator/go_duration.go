@@ -12,34 +12,34 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-// Duration returns an AttributeValidator which ensures that any configured
+// GoDuration returns an AttributeValidator which ensures that any configured
 // attribute value:
 //
 //   - Is parseable as time duration.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func Duration() validator.String {
-	return timeDurationValidator{}
+func GoDuration() validator.String {
+	return goDurationValidator{}
 }
 
-var _ validator.String = timeDurationValidator{}
+var _ validator.String = goDurationValidator{}
 
-// timeDurationValidator validates that a string Attribute's value is parseable as time.Duration.
-type timeDurationValidator struct {
+// goDurationValidator validates that a string Attribute's value is parseable as time.Duration.
+type goDurationValidator struct {
 }
 
 // Description describes the validation in plain text formatting.
-func (validator timeDurationValidator) Description(_ context.Context) string {
+func (validator goDurationValidator) Description(_ context.Context) string {
 	return `must be a string containing a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".`
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.
-func (validator timeDurationValidator) MarkdownDescription(ctx context.Context) string {
+func (validator goDurationValidator) MarkdownDescription(ctx context.Context) string {
 	return validator.Description(ctx)
 }
 
 // ValidateString performs the validation.
-func (validator timeDurationValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+func (validator goDurationValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
 	s := req.ConfigValue
 
 	if s.IsUnknown() || s.IsNull() {
@@ -49,7 +49,7 @@ func (validator timeDurationValidator) ValidateString(ctx context.Context, req v
 	if _, err := time.ParseDuration(s.ValueString()); err != nil {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
 			req.Path,
-			"Invalid Attribute Value Time Duration",
+			"Invalid Attribute Value Go Duration",
 			fmt.Sprintf("%q %s", s.ValueString(), validator.Description(ctx))),
 		)
 		return

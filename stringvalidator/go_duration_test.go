@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-func TestTimeDuration(t *testing.T) {
+func TestGoDuration(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
@@ -39,7 +39,7 @@ func TestTimeDuration(t *testing.T) {
 			expectedDiagnostics: diag.Diagnostics{
 				diag.NewAttributeErrorDiagnostic(
 					path.Root("test"),
-					"Invalid Attribute Value Time Duration",
+					"Invalid Attribute Value Go Duration",
 					`"20x" must be a string containing a sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".`,
 				),
 			},
@@ -58,7 +58,7 @@ func TestTimeDuration(t *testing.T) {
 
 			response := validator.StringResponse{}
 
-			stringvalidator.Duration().ValidateString(context.Background(), request, &response)
+			stringvalidator.GoDuration().ValidateString(context.Background(), request, &response)
 
 			if diff := cmp.Diff(response.Diagnostics, test.expectedDiagnostics); diff != "" {
 				t.Errorf("unexpected diagnostics difference: %s", diff)
