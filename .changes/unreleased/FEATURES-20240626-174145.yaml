@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'int32validator: New package which contains int32 type specific validators'
+time: 2024-06-26T17:41:45.007609-04:00
+custom:
+  Issue: "222"
