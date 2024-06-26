@@ -28,8 +28,24 @@ func WarningDataSource(summary string, detail string) datasource.ConfigValidator
 	}
 }
 
+// WarningFloat32 returns a validator which returns a warning diagnostic.
+func WarningFloat32(summary string, detail string) validator.Float32 {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
 // WarningFloat64 returns a validator which returns a warning diagnostic.
 func WarningFloat64(summary string, detail string) validator.Float64 {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
+// WarningInt64 returns a validator which returns a warning diagnostic.
+func WarningInt32(summary string, detail string) validator.Int32 {
 	return WarningValidator{
 		Summary: summary,
 		Detail:  detail,
@@ -113,7 +129,9 @@ var (
 	_ provider.ConfigValidator   = WarningValidator{}
 	_ resource.ConfigValidator   = WarningValidator{}
 	_ validator.Bool             = WarningValidator{}
+	_ validator.Float32          = WarningValidator{}
 	_ validator.Float64          = WarningValidator{}
+	_ validator.Int32            = WarningValidator{}
 	_ validator.Int64            = WarningValidator{}
 	_ validator.List             = WarningValidator{}
 	_ validator.Map              = WarningValidator{}
@@ -144,7 +162,15 @@ func (v WarningValidator) ValidateDataSource(ctx context.Context, request dataso
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
+func (v WarningValidator) ValidateFloat32(ctx context.Context, request validator.Float32Request, response *validator.Float32Response) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
 func (v WarningValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
+func (v WarningValidator) ValidateInt32(ctx context.Context, request validator.Int32Request, response *validator.Int32Response) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 

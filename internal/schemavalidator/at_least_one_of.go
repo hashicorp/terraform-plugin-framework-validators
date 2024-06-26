@@ -7,18 +7,21 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 // This type of validator must satisfy all types.
 var (
 	_ validator.Bool    = AtLeastOneOfValidator{}
+	_ validator.Float32 = AtLeastOneOfValidator{}
 	_ validator.Float64 = AtLeastOneOfValidator{}
+	_ validator.Int32   = AtLeastOneOfValidator{}
 	_ validator.Int64   = AtLeastOneOfValidator{}
 	_ validator.List    = AtLeastOneOfValidator{}
 	_ validator.Map     = AtLeastOneOfValidator{}
@@ -115,7 +118,35 @@ func (av AtLeastOneOfValidator) ValidateBool(ctx context.Context, req validator.
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
+func (av AtLeastOneOfValidator) ValidateFloat32(ctx context.Context, req validator.Float32Request, resp *validator.Float32Response) {
+	validateReq := AtLeastOneOfValidatorRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &AtLeastOneOfValidatorResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
 func (av AtLeastOneOfValidator) ValidateFloat64(ctx context.Context, req validator.Float64Request, resp *validator.Float64Response) {
+	validateReq := AtLeastOneOfValidatorRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &AtLeastOneOfValidatorResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
+func (av AtLeastOneOfValidator) ValidateInt32(ctx context.Context, req validator.Int32Request, resp *validator.Int32Response) {
 	validateReq := AtLeastOneOfValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,

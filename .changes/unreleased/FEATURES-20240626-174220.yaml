@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'float32validator: New package which contains float32 type specific validators'
+time: 2024-06-26T17:42:20.2122-04:00
+custom:
+  Issue: "222"
