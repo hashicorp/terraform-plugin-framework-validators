@@ -4,9 +4,10 @@
 package int64validator_test
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 )
 
 func ExampleAll() {
@@ -17,13 +18,13 @@ func ExampleAll() {
 				Required: true,
 				Validators: []validator.Int64{
 					// Validate this Int64 value must either be:
-					//  - 1.0
-					//  - At least 2.0, but not 3.0
+					//  - 1
+					//  - At least 2, but not 3
 					int64validator.Any(
-						int64validator.OneOf(1.0),
+						int64validator.OneOf(1),
 						int64validator.All(
-							int64validator.AtLeast(2.0),
-							int64validator.NoneOf(3.0),
+							int64validator.AtLeast(2),
+							int64validator.NoneOf(3),
 						),
 					),
 				},
