@@ -1,5 +1,0 @@
-kind: ENHANCEMENTS
-body: 'mapvalidator: Added `ValueInt32sAre` and `ValueFloat32sAre` validators'
-time: 2024-06-26T17:44:11.352117-04:00
-custom:
-  Issue: "222"
