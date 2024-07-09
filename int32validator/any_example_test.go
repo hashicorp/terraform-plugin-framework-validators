@@ -18,11 +18,11 @@ func ExampleAny() {
 				Required: true,
 				Validators: []validator.Int32{
 					// Validate this Int32 value must either be:
-					//  - 1.0
-					//  - At least 2.0
+					//  - 1
+					//  - At least 2
 					int32validator.Any(
-						int32validator.OneOf(1.0),
-						int32validator.AtLeast(2.0),
+						int32validator.OneOf(1),
+						int32validator.AtLeast(2),
 					),
 				},
 			},
