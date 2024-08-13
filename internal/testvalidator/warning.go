@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -108,6 +109,14 @@ func WarningResource(summary string, detail string) resource.ConfigValidator {
 	}
 }
 
+// WarningEphemeralResource returns a validator which returns a warning diagnostic.
+func WarningEphemeralResource(summary string, detail string) ephemeral.ConfigValidator {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
 // WarningSet returns a validator which returns a warning diagnostic.
 func WarningSet(summary string, detail string) validator.Set {
 	return WarningValidator{
@@ -199,6 +208,10 @@ func (v WarningValidator) ValidateProvider(ctx context.Context, request provider
 }
 
 func (v WarningValidator) ValidateResource(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
+func (v WarningValidator) ValidateEphemeralResource(ctx context.Context, request ephemeral.ValidateConfigRequest, response *ephemeral.ValidateConfigResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
