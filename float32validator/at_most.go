@@ -53,8 +53,8 @@ func (v atMostValidator) ValidateFloat32(ctx context.Context, request validator.
 //   - Is less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtMost(max float32) validator.Float32 {
+func AtMost(maxVal float32) validator.Float32 {
 	return atMostValidator{
-		max: max,
+		max: maxVal,
 	}
 }
