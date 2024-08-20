@@ -7,8 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ validator.List = sizeAtLeastValidator{}
@@ -52,8 +53,8 @@ func (v sizeAtLeastValidator) ValidateList(ctx context.Context, req validator.Li
 //   - Contains at least min elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeAtLeast(min int) validator.List {
+func SizeAtLeast(minVal int) validator.List {
 	return sizeAtLeastValidator{
-		min: min,
+		min: minVal,
 	}
 }

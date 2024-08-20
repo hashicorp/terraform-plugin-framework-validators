@@ -7,8 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ validator.List = sizeAtMostValidator{}
@@ -52,8 +53,8 @@ func (v sizeAtMostValidator) ValidateList(ctx context.Context, req validator.Lis
 //   - Contains at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeAtMost(max int) validator.List {
+func SizeAtMost(maxVal int) validator.List {
 	return sizeAtMostValidator{
-		max: max,
+		max: maxVal,
 	}
 }

@@ -7,8 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ validator.List = sizeBetweenValidator{}
@@ -54,9 +55,9 @@ func (v sizeBetweenValidator) ValidateList(ctx context.Context, req validator.Li
 //   - Contains at least min elements and at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeBetween(min, max int) validator.List {
+func SizeBetween(minVal, maxVal int) validator.List {
 	return sizeBetweenValidator{
-		min: min,
-		max: max,
+		min: minVal,
+		max: maxVal,
 	}
 }

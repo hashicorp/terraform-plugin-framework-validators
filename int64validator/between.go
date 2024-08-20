@@ -51,13 +51,13 @@ func (v betweenValidator) ValidateInt64(ctx context.Context, request validator.I
 //   - Is greater than or equal to the given minimum and less than or equal to the given maximum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func Between(min, max int64) validator.Int64 {
-	if min > max {
+func Between(minVal, maxVal int64) validator.Int64 {
+	if minVal > maxVal {
 		return nil
 	}
 
 	return betweenValidator{
-		min: min,
-		max: max,
+		min: minVal,
+		max: maxVal,
 	}
 }

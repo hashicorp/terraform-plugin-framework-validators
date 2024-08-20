@@ -53,8 +53,8 @@ func (validator atLeastValidator) ValidateFloat32(ctx context.Context, request v
 //   - Is greater than or equal to the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtLeast(min float32) validator.Float32 {
+func AtLeast(minVal float32) validator.Float32 {
 	return atLeastValidator{
-		min: min,
+		min: minVal,
 	}
 }

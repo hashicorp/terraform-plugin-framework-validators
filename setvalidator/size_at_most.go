@@ -7,8 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ validator.Set = sizeAtMostValidator{}
@@ -52,8 +53,8 @@ func (v sizeAtMostValidator) ValidateSet(ctx context.Context, req validator.SetR
 //   - Contains at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeAtMost(max int) validator.Set {
+func SizeAtMost(maxVal int) validator.Set {
 	return sizeAtMostValidator{
-		max: max,
+		max: maxVal,
 	}
 }

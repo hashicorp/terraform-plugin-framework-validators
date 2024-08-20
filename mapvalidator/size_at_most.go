@@ -7,8 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 )
 
 var _ validator.Map = sizeAtMostValidator{}
@@ -52,8 +53,8 @@ func (v sizeAtMostValidator) ValidateMap(ctx context.Context, req validator.MapR
 //   - Contains at most max elements.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func SizeAtMost(max int) validator.Map {
+func SizeAtMost(maxVal int) validator.Map {
 	return sizeAtMostValidator{
-		max: max,
+		max: maxVal,
 	}
 }
