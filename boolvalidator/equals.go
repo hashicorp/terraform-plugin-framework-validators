@@ -42,8 +42,8 @@ func (v equalsValidator) ValidateBool(ctx context.Context, req validator.BoolReq
 	}
 }
 
-// Equals checks that the Bool held in the attribute matches the
-// given `value`
+// Equals returns an AttributeValidator which ensures that the configured boolean attribute
+// matches the given `value`. Null (unconfigured) and unknown (known after apply) values are skipped.
 func Equals(value bool) validator.Bool {
 	return equalsValidator{
 		value: types.BoolValue(value),
