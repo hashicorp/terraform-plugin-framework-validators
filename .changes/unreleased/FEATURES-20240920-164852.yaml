@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'boolvalidator: Added `Equals` validator'
+time: 2024-09-20T16:48:52.562758-04:00
+custom:
+    Issue: "232"
