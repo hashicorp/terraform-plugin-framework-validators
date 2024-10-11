@@ -5,8 +5,10 @@ package int64validator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -17,71 +19,82 @@ func TestNoneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        types.Int64
-		validator validator.Int64
-		expErrors int
+		in           types.Int64
+		noneOfValues []int64
+		expectError  bool
 	}
 
 	testCases := map[string]testCase{
 		"simple-match": {
 			in: types.Int64Value(123),
-			validator: int64validator.NoneOf(
+			noneOfValues: []int64{
 				123,
 				234,
 				8910,
 				1213,
-			),
-			expErrors: 1,
+			},
+			expectError: true,
 		},
 		"simple-mismatch": {
 			in: types.Int64Value(123),
-			validator: int64validator.NoneOf(
+			noneOfValues: []int64{
 				234,
 				8910,
 				1213,
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-null": {
 			in: types.Int64Null(),
-			validator: int64validator.NoneOf(
+			noneOfValues: []int64{
 				234,
 				8910,
 				1213,
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-unknown": {
 			in: types.Int64Unknown(),
-			validator: int64validator.NoneOf(
+			noneOfValues: []int64{
 				234,
 				8910,
 				1213,
-			),
-			expErrors: 0,
+			},
 		},
 	}
 
 	for name, test := range testCases {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateInt64 - %s", name), func(t *testing.T) {
 			t.Parallel()
 			req := validator.Int64Request{
 				ConfigValue: test.in,
 			}
 			res := validator.Int64Response{}
-			test.validator.ValidateInt64(context.TODO(), req, &res)
+			int64validator.NoneOf(test.noneOfValues...).ValidateInt64(context.TODO(), req, &res)
 
-			if test.expErrors > 0 && !res.Diagnostics.HasError() {
-				t.Fatalf("expected %d error(s), got none", test.expErrors)
+			if !res.Diagnostics.HasError() && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Diagnostics.HasError() && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterInt64 - %s", name), func(t *testing.T) {
+			t.Parallel()
+			req := function.Int64ParameterValidatorRequest{
+				Value: test.in,
+			}
+			res := function.Int64ParameterValidatorResponse{}
+			int64validator.NoneOf(test.noneOfValues...).ValidateParameterInt64(context.TODO(), req, &res)
+
+			if res.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Error)
 			}
 		})
 	}
