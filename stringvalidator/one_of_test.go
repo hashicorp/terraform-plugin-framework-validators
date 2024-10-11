@@ -5,9 +5,11 @@ package stringvalidator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -18,79 +20,90 @@ func TestOneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        types.String
-		validator validator.String
-		expErrors int
+		in          types.String
+		oneOfValues []string
+		expectError bool
 	}
 
 	testCases := map[string]testCase{
 		"simple-match": {
 			in: types.StringValue("foo"),
-			validator: stringvalidator.OneOf(
+			oneOfValues: []string{
 				"foo",
 				"bar",
 				"baz",
-			),
-			expErrors: 0,
+			},
 		},
 		"simple-mismatch-case-insensitive": {
 			in: types.StringValue("foo"),
-			validator: stringvalidator.OneOf(
+			oneOfValues: []string{
 				"FOO",
 				"bar",
 				"baz",
-			),
-			expErrors: 1,
+			},
+			expectError: true,
 		},
 		"simple-mismatch": {
 			in: types.StringValue("foz"),
-			validator: stringvalidator.OneOf(
+			oneOfValues: []string{
 				"foo",
 				"bar",
 				"baz",
-			),
-			expErrors: 1,
+			},
+			expectError: true,
 		},
 		"skip-validation-on-null": {
 			in: types.StringNull(),
-			validator: stringvalidator.OneOf(
+			oneOfValues: []string{
 				"foo",
 				"bar",
 				"baz",
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-unknown": {
 			in: types.StringUnknown(),
-			validator: stringvalidator.OneOf(
+			oneOfValues: []string{
 				"foo",
 				"bar",
 				"baz",
-			),
-			expErrors: 0,
+			},
 		},
 	}
 
 	for name, test := range testCases {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateString - %s", name), func(t *testing.T) {
 			t.Parallel()
 			req := validator.StringRequest{
 				ConfigValue: test.in,
 			}
 			res := validator.StringResponse{}
-			test.validator.ValidateString(context.TODO(), req, &res)
+			stringvalidator.OneOf(test.oneOfValues...).ValidateString(context.TODO(), req, &res)
 
-			if test.expErrors > 0 && !res.Diagnostics.HasError() {
-				t.Fatalf("expected %d error(s), got none", test.expErrors)
+			if !res.Diagnostics.HasError() && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Diagnostics.HasError() && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterString - %s", name), func(t *testing.T) {
+			t.Parallel()
+			req := function.StringParameterValidatorRequest{
+				Value: test.in,
+			}
+			res := function.StringParameterValidatorResponse{}
+			stringvalidator.OneOf(test.oneOfValues...).ValidateParameterString(context.TODO(), req, &res)
+
+			if res.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Error)
 			}
 		})
 	}

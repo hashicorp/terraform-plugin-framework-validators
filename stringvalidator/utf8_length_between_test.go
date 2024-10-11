@@ -5,8 +5,10 @@ package stringvalidator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -71,11 +73,30 @@ func TestUTF8LengthBetweenValidator(t *testing.T) {
 			maxLength:   1,
 			expectError: true,
 		},
+		"invalid validator usage - minLength < 0": {
+			val:         types.StringValue("ok"),
+			minLength:   -1,
+			maxLength:   3,
+			expectError: true,
+		},
+		"invalid validator usage - maxLength < 0": {
+			val:         types.StringValue("ok"),
+			minLength:   2,
+			maxLength:   -1,
+			expectError: true,
+		},
+		"invalid validator usage - minLength > maxLength": {
+			val:         types.StringValue("ok"),
+			minLength:   2,
+			maxLength:   1,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateString - %s", name), func(t *testing.T) {
 			t.Parallel()
 			request := validator.StringRequest{
 				Path:           path.Root("test"),
@@ -91,6 +112,24 @@ func TestUTF8LengthBetweenValidator(t *testing.T) {
 
 			if response.Diagnostics.HasError() && !test.expectError {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterString - %s", name), func(t *testing.T) {
+			t.Parallel()
+			request := function.StringParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            test.val,
+			}
+			response := function.StringParameterValidatorResponse{}
+			stringvalidator.UTF8LengthBetween(test.minLength, test.maxLength).ValidateParameterString(context.Background(), request, &response)
+
+			if response.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
+			}
+
+			if response.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", response.Error)
 			}
 		})
 	}
