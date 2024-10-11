@@ -5,9 +5,11 @@ package numbervalidator_test
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -18,71 +20,82 @@ func TestNoneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        types.Number
-		validator validator.Number
-		expErrors int
+		in           types.Number
+		noneOfValues []*big.Float
+		expectError  bool
 	}
 
 	testCases := map[string]testCase{
 		"simple-match": {
 			in: types.NumberValue(big.NewFloat(123.456)),
-			validator: numbervalidator.NoneOf(
+			noneOfValues: []*big.Float{
 				big.NewFloat(123.456),
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
 				big.NewFloat(1213.1415),
-			),
-			expErrors: 1,
+			},
+			expectError: true,
 		},
 		"simple-mismatch": {
 			in: types.NumberValue(big.NewFloat(123.456)),
-			validator: numbervalidator.NoneOf(
+			noneOfValues: []*big.Float{
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
 				big.NewFloat(1213.1415),
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-null": {
 			in: types.NumberNull(),
-			validator: numbervalidator.NoneOf(
+			noneOfValues: []*big.Float{
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
 				big.NewFloat(1213.1415),
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-unknown": {
 			in: types.NumberUnknown(),
-			validator: numbervalidator.NoneOf(
+			noneOfValues: []*big.Float{
 				big.NewFloat(234.567),
 				big.NewFloat(8910.11),
 				big.NewFloat(1213.1415),
-			),
-			expErrors: 0,
+			},
 		},
 	}
 
 	for name, test := range testCases {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateNumber - %s", name), func(t *testing.T) {
 			t.Parallel()
 			req := validator.NumberRequest{
 				ConfigValue: test.in,
 			}
 			res := validator.NumberResponse{}
-			test.validator.ValidateNumber(context.TODO(), req, &res)
+			numbervalidator.NoneOf(test.noneOfValues...).ValidateNumber(context.TODO(), req, &res)
 
-			if test.expErrors > 0 && !res.Diagnostics.HasError() {
-				t.Fatalf("expected %d error(s), got none", test.expErrors)
+			if !res.Diagnostics.HasError() && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Diagnostics.HasError() && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterNumber - %s", name), func(t *testing.T) {
+			t.Parallel()
+			req := function.NumberParameterValidatorRequest{
+				Value: test.in,
+			}
+			res := function.NumberParameterValidatorResponse{}
+			numbervalidator.NoneOf(test.noneOfValues...).ValidateParameterNumber(context.TODO(), req, &res)
+
+			if res.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Error)
 			}
 		})
 	}

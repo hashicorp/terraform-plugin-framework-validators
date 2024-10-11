@@ -8,15 +8,17 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Number = noneOfValidator{}
+var _ function.NumberParameterValidator = noneOfValidator{}
 
-// noneOfValidator validates that the value does not match one of the values.
 type noneOfValidator struct {
 	values []types.Number
 }
@@ -51,9 +53,31 @@ func (v noneOfValidator) ValidateNumber(ctx context.Context, request validator.N
 	}
 }
 
-// NoneOf checks that the Number held in the attribute
+func (v noneOfValidator) ValidateParameterNumber(ctx context.Context, request function.NumberParameterValidatorRequest, response *function.NumberParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	value := request.Value
+
+	for _, otherValue := range v.values {
+		if !value.Equal(otherValue) {
+			continue
+		}
+
+		response.Error = validatorfuncerr.InvalidParameterValueMatchFuncError(
+			request.ArgumentPosition,
+			v.Description(ctx),
+			value.String(),
+		)
+
+		break
+	}
+}
+
+// NoneOf checks that the Number held in the attribute or function parameter
 // is none of the given `values`.
-func NoneOf(values ...*big.Float) validator.Number {
+func NoneOf(values ...*big.Float) noneOfValidator {
 	frameworkValues := make([]types.Number, 0, len(values))
 
 	for _, value := range values {
