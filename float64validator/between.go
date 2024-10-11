@@ -90,7 +90,7 @@ func (v betweenValidator) ValidateParameterFloat64(ctx context.Context, request 
 }
 
 // Between returns an AttributeValidator which ensures that any configured
-// attribute value:
+// attribute or function parameter value:
 //
 //   - Is a number, which can be represented by a 64-bit floating point.
 //   - Is greater than or equal to the given minimum and less than or equal to the given maximum.

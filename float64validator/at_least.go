@@ -62,7 +62,7 @@ func (validator atLeastValidator) ValidateParameterFloat64(ctx context.Context, 
 }
 
 // AtLeast returns an AttributeValidator which ensures that any configured
-// attribute value or function parameter value:
+// attribute or function parameter value:
 //
 //   - Is a number, which can be represented by a 64-bit floating point.
 //   - Is greater than or equal to the given minimum.
