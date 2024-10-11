@@ -9,6 +9,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/function"
 )
 
+func InvalidParameterValueFuncError(argumentPosition int64, description string, value string) *function.FuncError {
+	return function.NewArgumentFuncError(
+		argumentPosition,
+		fmt.Sprintf("Invalid Parameter Value: %s, got: %s", description, value),
+	)
+}
+
 func InvalidParameterValueLengthFuncError(argumentPosition int64, description string, value string) *function.FuncError {
 	return function.NewArgumentFuncError(
 		argumentPosition,

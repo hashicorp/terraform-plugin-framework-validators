@@ -5,8 +5,10 @@ package float32validator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -17,71 +19,82 @@ func TestOneOfValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in        types.Float32
-		validator validator.Float32
-		expErrors int
+		in          types.Float32
+		oneOfValues []float32
+		expectError bool
 	}
 
 	testCases := map[string]testCase{
 		"simple-match": {
 			in: types.Float32Value(123.456),
-			validator: float32validator.OneOf(
+			oneOfValues: []float32{
 				123.456,
 				234.567,
 				8910.11,
 				1213.1415,
-			),
-			expErrors: 0,
+			},
 		},
 		"simple-mismatch": {
 			in: types.Float32Value(123.456),
-			validator: float32validator.OneOf(
+			oneOfValues: []float32{
 				234.567,
 				8910.11,
 				1213.1415,
-			),
-			expErrors: 1,
+			},
+			expectError: true,
 		},
 		"skip-validation-on-null": {
 			in: types.Float32Null(),
-			validator: float32validator.OneOf(
+			oneOfValues: []float32{
 				234.567,
 				8910.11,
 				1213.1415,
-			),
-			expErrors: 0,
+			},
 		},
 		"skip-validation-on-unknown": {
 			in: types.Float32Unknown(),
-			validator: float32validator.OneOf(
+			oneOfValues: []float32{
 				234.567,
 				8910.11,
 				1213.1415,
-			),
-			expErrors: 0,
+			},
 		},
 	}
 
 	for name, test := range testCases {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateFloat32 - %s", name), func(t *testing.T) {
 			t.Parallel()
 			req := validator.Float32Request{
 				ConfigValue: test.in,
 			}
 			res := validator.Float32Response{}
-			test.validator.ValidateFloat32(context.TODO(), req, &res)
+			float32validator.OneOf(test.oneOfValues...).ValidateFloat32(context.TODO(), req, &res)
 
-			if test.expErrors > 0 && !res.Diagnostics.HasError() {
-				t.Fatalf("expected %d error(s), got none", test.expErrors)
+			if !res.Diagnostics.HasError() && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors > 0 && test.expErrors != res.Diagnostics.ErrorsCount() {
-				t.Fatalf("expected %d error(s), got %d: %v", test.expErrors, res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Diagnostics.HasError() && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterFloat32 - %s", name), func(t *testing.T) {
+			t.Parallel()
+			req := function.Float32ParameterValidatorRequest{
+				Value: test.in,
+			}
+			res := function.Float32ParameterValidatorResponse{}
+			float32validator.OneOf(test.oneOfValues...).ValidateParameterFloat32(context.TODO(), req, &res)
+
+			if res.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
 			}
 
-			if test.expErrors == 0 && res.Diagnostics.HasError() {
-				t.Fatalf("expected no error(s), got %d: %v", res.Diagnostics.ErrorsCount(), res.Diagnostics)
+			if res.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", res.Error)
 			}
 		})
 	}

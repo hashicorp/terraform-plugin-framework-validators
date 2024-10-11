@@ -7,15 +7,17 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Float32 = oneOfValidator{}
+var _ function.Float32ParameterValidator = oneOfValidator{}
 
-// oneOfValidator validates that the value matches one of expected values.
 type oneOfValidator struct {
 	values []types.Float32
 }
@@ -48,9 +50,29 @@ func (v oneOfValidator) ValidateFloat32(ctx context.Context, request validator.F
 	))
 }
 
-// OneOf checks that the float32 held in the attribute
+func (v oneOfValidator) ValidateParameterFloat32(ctx context.Context, request function.Float32ParameterValidatorRequest, response *function.Float32ParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	value := request.Value
+
+	for _, otherValue := range v.values {
+		if value.Equal(otherValue) {
+			return
+		}
+	}
+
+	response.Error = validatorfuncerr.InvalidParameterValueMatchFuncError(
+		request.ArgumentPosition,
+		v.Description(ctx),
+		value.String(),
+	)
+}
+
+// OneOf checks that the float32 held in the attribute or function parameter
 // is one of the given `values`.
-func OneOf(values ...float32) validator.Float32 {
+func OneOf(values ...float32) oneOfValidator {
 	frameworkValues := make([]types.Float32, 0, len(values))
 
 	for _, value := range values {
