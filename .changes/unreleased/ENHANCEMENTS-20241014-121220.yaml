@@ -1,0 +1,6 @@
+kind: ENHANCEMENTS
+body: 'all: Implemented parameter interfaces for all value-based validators. This
+  allows these validators to be used with provider-defined functions.'
+time: 2024-10-14T12:12:20.607373-04:00
+custom:
+  Issue: "235"

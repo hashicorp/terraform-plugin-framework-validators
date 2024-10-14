@@ -1,0 +1,7 @@
+kind: NOTES
+body: 'all: Previously, creating validators with invalid data would result in a `nil`
+  value being returned and a panic from `terraform-plugin-framework`. This has been
+  updated to return an implementation diagnostic referencing the invalid data/validator during config validation.'
+time: 2024-10-14T12:17:11.811926-04:00
+custom:
+  Issue: "235"
