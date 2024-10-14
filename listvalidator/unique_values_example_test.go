@@ -6,6 +6,7 @@ package listvalidator_test
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -18,6 +19,20 @@ func ExampleUniqueValues() {
 				ElementType: types.StringType,
 				Required:    true,
 				Validators: []validator.List{
+					// Validate this list must contain only unique values.
+					listvalidator.UniqueValues(),
+				},
+			},
+		},
+	}
+}
+
+func ExampleUniqueValues_function() {
+	_ = function.Definition{
+		Parameters: []function.Parameter{
+			function.ListParameter{
+				Name: "example_param",
+				Validators: []function.ListParameterValidator{
 					// Validate this list must contain only unique values.
 					listvalidator.UniqueValues(),
 				},
