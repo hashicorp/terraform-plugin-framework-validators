@@ -5,8 +5,10 @@ package float32validator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -66,11 +68,18 @@ func TestBetweenValidator(t *testing.T) {
 			max:         3.10,
 			expectError: true,
 		},
+		"invalid validator usage - minVal > maxVal": {
+			val:         types.Float32Value(2),
+			min:         3.20,
+			max:         3.10,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateFloat32 - %s", name), func(t *testing.T) {
 			t.Parallel()
 			request := validator.Float32Request{
 				Path:           path.Root("test"),
@@ -86,6 +95,24 @@ func TestBetweenValidator(t *testing.T) {
 
 			if response.Diagnostics.HasError() && !test.expectError {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterFloat32 - %s", name), func(t *testing.T) {
+			t.Parallel()
+			request := function.Float32ParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            test.val,
+			}
+			response := function.Float32ParameterValidatorResponse{}
+			float32validator.Between(test.min, test.max).ValidateParameterFloat32(context.TODO(), request, &response)
+
+			if response.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
+			}
+
+			if response.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", response.Error)
 			}
 		})
 	}

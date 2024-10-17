@@ -5,9 +5,11 @@ package mapvalidator
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -110,7 +112,8 @@ func TestSizeBetweenValidator(t *testing.T) {
 
 	for name, test := range tests {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateMap - %s", name), func(t *testing.T) {
 			t.Parallel()
 			request := validator.MapRequest{
 				Path:           path.Root("test"),
@@ -126,6 +129,24 @@ func TestSizeBetweenValidator(t *testing.T) {
 
 			if response.Diagnostics.HasError() && !test.expectError {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterMap - %s", name), func(t *testing.T) {
+			t.Parallel()
+			request := function.MapParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            test.val,
+			}
+			response := function.MapParameterValidatorResponse{}
+			SizeBetween(test.min, test.max).ValidateParameterMap(context.TODO(), request, &response)
+
+			if response.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
+			}
+
+			if response.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", response.Error)
 			}
 		})
 	}

@@ -5,9 +5,11 @@ package stringvalidator_test
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -45,7 +47,8 @@ func TestRegexMatchesValidator(t *testing.T) {
 
 	for name, test := range tests {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateString - %s", name), func(t *testing.T) {
 			t.Parallel()
 			request := validator.StringRequest{
 				Path:           path.Root("test"),
@@ -61,6 +64,24 @@ func TestRegexMatchesValidator(t *testing.T) {
 
 			if response.Diagnostics.HasError() && !test.expectError {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterString - %s", name), func(t *testing.T) {
+			t.Parallel()
+			request := function.StringParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            test.val,
+			}
+			response := function.StringParameterValidatorResponse{}
+			stringvalidator.RegexMatches(test.regexp, "").ValidateParameterString(context.TODO(), request, &response)
+
+			if response.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
+			}
+
+			if response.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", response.Error)
 			}
 		})
 	}
