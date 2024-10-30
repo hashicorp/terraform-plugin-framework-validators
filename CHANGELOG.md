@@ -1,3 +1,18 @@
+## 0.14.0 (October 17, 2024)
+
+NOTES:
+
+* all: This Go module has been updated to Go 1.22 per the [Go support policy](https://go.dev/doc/devel/release#policy). It is recommended to review the [Go 1.22 release notes](https://go.dev/doc/go1.22) before upgrading. Any consumers building on earlier Go versions may experience errors. ([#229](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/229))
+* all: Previously, creating validators with invalid data would result in a `nil` value being returned and a panic from `terraform-plugin-framework`. This has been updated to return an implementation diagnostic referencing the invalid data/validator during config validation. ([#235](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/235))
+
+FEATURES:
+
+* boolvalidator: Added `Equals` validator ([#232](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/232))
+
+ENHANCEMENTS:
+
+* all: Implemented parameter interfaces for all value-based validators. This allows these validators to be used with provider-defined functions. ([#235](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/235))
+
 ## 0.13.0 (July 09, 2024)
 
 NOTES:

@@ -5,12 +5,14 @@ package listvalidator_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -22,6 +24,7 @@ func TestUniqueValues(t *testing.T) {
 	testCases := map[string]struct {
 		list                types.List
 		expectedDiagnostics diag.Diagnostics
+		expectedFuncError   *function.FuncError
 	}{
 		"null-list": {
 			list:                types.ListNull(types.StringType),
@@ -50,6 +53,10 @@ func TestUniqueValues(t *testing.T) {
 					"This attribute contains duplicate values of: <null>",
 				),
 			},
+			expectedFuncError: function.NewArgumentFuncError(
+				0,
+				"Duplicate List Value: This attribute contains duplicate values of: <null>",
+			),
 		},
 		"null-values-valid": {
 			list: types.ListValueMust(
@@ -98,6 +105,38 @@ func TestUniqueValues(t *testing.T) {
 					"This attribute contains duplicate values of: \"test\"",
 				),
 			},
+			expectedFuncError: function.NewArgumentFuncError(
+				0,
+				"Duplicate List Value: This attribute contains duplicate values of: \"test\"",
+			),
+		},
+		"multiple-known-values-duplicate": {
+			list: types.ListValueMust(
+				types.StringType,
+				[]attr.Value{
+					types.StringValue("test-val-1"),
+					types.StringValue("test-val-1"),
+					types.StringValue("test-val-2"),
+					types.StringValue("test-val-2"),
+				},
+			),
+			expectedDiagnostics: diag.Diagnostics{
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test"),
+					"Duplicate List Value",
+					"This attribute contains duplicate values of: \"test-val-1\"",
+				),
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test"),
+					"Duplicate List Value",
+					"This attribute contains duplicate values of: \"test-val-2\"",
+				),
+			},
+			expectedFuncError: function.NewArgumentFuncError(
+				0,
+				"Duplicate List Value: This attribute contains duplicate values of: \"test-val-1\"\n"+
+					"Duplicate List Value: This attribute contains duplicate values of: \"test-val-2\"",
+			),
 		},
 		"known-values-valid": {
 			list: types.ListValueMust(
@@ -111,7 +150,7 @@ func TestUniqueValues(t *testing.T) {
 	for name, testCase := range testCases {
 		name, testCase := name, testCase
 
-		t.Run(name, func(t *testing.T) {
+		t.Run(fmt.Sprintf("ValidateList - %s", name), func(t *testing.T) {
 			t.Parallel()
 
 			request := validator.ListRequest{
@@ -124,6 +163,21 @@ func TestUniqueValues(t *testing.T) {
 
 			if diff := cmp.Diff(response.Diagnostics, testCase.expectedDiagnostics); diff != "" {
 				t.Errorf("unexpected diagnostics difference: %s", diff)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterList - %s", name), func(t *testing.T) {
+			t.Parallel()
+
+			request := function.ListParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            testCase.list,
+			}
+			response := function.ListParameterValidatorResponse{}
+			listvalidator.UniqueValues().ValidateParameterList(context.Background(), request, &response)
+
+			if diff := cmp.Diff(response.Error, testCase.expectedFuncError); diff != "" {
+				t.Errorf("unexpected function error difference: %s", diff)
 			}
 		})
 	}

@@ -5,9 +5,11 @@ package setvalidator
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -71,7 +73,8 @@ func TestSizeAtMostValidator(t *testing.T) {
 
 	for name, test := range tests {
 		name, test := name, test
-		t.Run(name, func(t *testing.T) {
+
+		t.Run(fmt.Sprintf("ValidateSet - %s", name), func(t *testing.T) {
 			t.Parallel()
 			request := validator.SetRequest{
 				Path:           path.Root("test"),
@@ -87,6 +90,24 @@ func TestSizeAtMostValidator(t *testing.T) {
 
 			if response.Diagnostics.HasError() && !test.expectError {
 				t.Fatalf("got unexpected error: %s", response.Diagnostics)
+			}
+		})
+
+		t.Run(fmt.Sprintf("ValidateParameterSet - %s", name), func(t *testing.T) {
+			t.Parallel()
+			request := function.SetParameterValidatorRequest{
+				ArgumentPosition: 0,
+				Value:            test.val,
+			}
+			response := function.SetParameterValidatorResponse{}
+			SizeAtMost(test.max).ValidateParameterSet(context.TODO(), request, &response)
+
+			if response.Error == nil && test.expectError {
+				t.Fatal("expected error, got no error")
+			}
+
+			if response.Error != nil && !test.expectError {
+				t.Fatalf("got unexpected error: %s", response.Error)
 			}
 		})
 	}

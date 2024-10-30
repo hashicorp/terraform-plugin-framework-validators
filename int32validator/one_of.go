@@ -7,15 +7,17 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Int32 = oneOfValidator{}
+var _ function.Int32ParameterValidator = oneOfValidator{}
 
-// oneOfValidator validates that the value matches one of expected values.
 type oneOfValidator struct {
 	values []types.Int32
 }
@@ -48,9 +50,29 @@ func (v oneOfValidator) ValidateInt32(ctx context.Context, request validator.Int
 	))
 }
 
-// OneOf checks that the Int32 held in the attribute
+func (v oneOfValidator) ValidateParameterInt32(ctx context.Context, request function.Int32ParameterValidatorRequest, response *function.Int32ParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	value := request.Value
+
+	for _, otherValue := range v.values {
+		if value.Equal(otherValue) {
+			return
+		}
+	}
+
+	response.Error = validatorfuncerr.InvalidParameterValueMatchFuncError(
+		request.ArgumentPosition,
+		v.Description(ctx),
+		value.String(),
+	)
+}
+
+// OneOf checks that the Int32 held in the attribute or function parameter
 // is one of the given `values`.
-func OneOf(values ...int32) validator.Int32 {
+func OneOf(values ...int32) oneOfValidator {
 	frameworkValues := make([]types.Int32, 0, len(values))
 
 	for _, value := range values {

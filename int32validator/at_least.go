@@ -7,29 +7,28 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Int32 = atLeastValidator{}
+var _ function.Int32ParameterValidator = atLeastValidator{}
 
-// atLeastValidator validates that an integer Attribute's value is at least a certain value.
 type atLeastValidator struct {
 	min int32
 }
 
-// Description describes the validation in plain text formatting.
 func (validator atLeastValidator) Description(_ context.Context) string {
 	return fmt.Sprintf("value must be at least %d", validator.min)
 }
 
-// MarkdownDescription describes the validation in Markdown formatting.
 func (validator atLeastValidator) MarkdownDescription(ctx context.Context) string {
 	return validator.Description(ctx)
 }
 
-// ValidateInt32 performs the validation.
 func (v atLeastValidator) ValidateInt32(ctx context.Context, request validator.Int32Request, response *validator.Int32Response) {
 	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
@@ -44,15 +43,29 @@ func (v atLeastValidator) ValidateInt32(ctx context.Context, request validator.I
 	}
 }
 
+func (v atLeastValidator) ValidateParameterInt32(ctx context.Context, request function.Int32ParameterValidatorRequest, response *function.Int32ParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	if request.Value.ValueInt32() < v.min {
+		response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+			request.ArgumentPosition,
+			v.Description(ctx),
+			fmt.Sprintf("%d", request.Value.ValueInt32()),
+		)
+	}
+}
+
 // AtLeast returns an AttributeValidator which ensures that any configured
-// attribute value:
+// attribute or function parameter value:
 //
 //   - Is a number, which can be represented by a 32-bit integer.
 //   - Is greater than or equal to the given minimum.
 //
 // Null (unconfigured) and unknown (known after apply) values are skipped.
-func AtLeast(min int32) validator.Int32 {
+func AtLeast(minVal int32) atLeastValidator {
 	return atLeastValidator{
-		min: min,
+		min: minVal,
 	}
 }

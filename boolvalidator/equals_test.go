@@ -1,76 +1,58 @@
 // Copyright (c) HashiCorp, Inc.
 // SPDX-License-Identifier: MPL-2.0
 
-package int64validator_test
+package boolvalidator_test
 
 import (
 	"context"
 	"fmt"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
-	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 )
 
-func TestOneOfValidator(t *testing.T) {
+func TestEqualsValidator(t *testing.T) {
 	t.Parallel()
 
 	type testCase struct {
-		in          types.Int64
-		oneOfValues []int64
+		in          types.Bool
+		equalsValue bool
 		expectError bool
 	}
 
 	testCases := map[string]testCase{
 		"simple-match": {
-			in: types.Int64Value(123),
-			oneOfValues: []int64{
-				123,
-				234,
-				8910,
-				1213,
-			},
+			in:          types.BoolValue(true),
+			equalsValue: true,
 		},
 		"simple-mismatch": {
-			in: types.Int64Value(123),
-			oneOfValues: []int64{
-				234,
-				8910,
-				1213,
-			},
+			in:          types.BoolValue(false),
+			equalsValue: true,
 			expectError: true,
 		},
 		"skip-validation-on-null": {
-			in: types.Int64Null(),
-			oneOfValues: []int64{
-				234,
-				8910,
-				1213,
-			},
+			in:          types.BoolNull(),
+			equalsValue: true,
 		},
 		"skip-validation-on-unknown": {
-			in: types.Int64Unknown(),
-			oneOfValues: []int64{
-				234,
-				8910,
-				1213,
-			},
+			in:          types.BoolUnknown(),
+			equalsValue: true,
 		},
 	}
 
 	for name, test := range testCases {
 		name, test := name, test
 
-		t.Run(fmt.Sprintf("ValidateInt64 - %s", name), func(t *testing.T) {
+		t.Run(fmt.Sprintf("ValidateBool - %s", name), func(t *testing.T) {
 			t.Parallel()
-			req := validator.Int64Request{
+			req := validator.BoolRequest{
 				ConfigValue: test.in,
 			}
-			res := validator.Int64Response{}
-			int64validator.OneOf(test.oneOfValues...).ValidateInt64(context.TODO(), req, &res)
+			res := validator.BoolResponse{}
+			boolvalidator.Equals(test.equalsValue).ValidateBool(context.TODO(), req, &res)
 
 			if !res.Diagnostics.HasError() && test.expectError {
 				t.Fatal("expected error, got no error")
@@ -81,13 +63,13 @@ func TestOneOfValidator(t *testing.T) {
 			}
 		})
 
-		t.Run(fmt.Sprintf("ValidateParameterInt64 - %s", name), func(t *testing.T) {
+		t.Run(fmt.Sprintf("ValidateParameterBool - %s", name), func(t *testing.T) {
 			t.Parallel()
-			req := function.Int64ParameterValidatorRequest{
+			req := function.BoolParameterValidatorRequest{
 				Value: test.in,
 			}
-			res := function.Int64ParameterValidatorResponse{}
-			int64validator.OneOf(test.oneOfValues...).ValidateParameterInt64(context.TODO(), req, &res)
+			res := function.BoolParameterValidatorResponse{}
+			boolvalidator.Equals(test.equalsValue).ValidateParameterBool(context.TODO(), req, &res)
 
 			if res.Error == nil && test.expectError {
 				t.Fatal("expected error, got no error")

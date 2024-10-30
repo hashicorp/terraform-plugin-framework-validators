@@ -8,6 +8,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/numbervalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -18,6 +19,26 @@ func ExampleOneOf() {
 			"example_attr": schema.NumberAttribute{
 				Required: true,
 				Validators: []validator.Number{
+					// Validate number value must be 1.2, 2.4, or 4.8
+					numbervalidator.OneOf(
+						[]*big.Float{
+							big.NewFloat(1.2),
+							big.NewFloat(2.4),
+							big.NewFloat(4.8),
+						}...,
+					),
+				},
+			},
+		},
+	}
+}
+
+func ExampleOneOf_function() {
+	_ = function.Definition{
+		Parameters: []function.Parameter{
+			function.NumberParameter{
+				Name: "example_param",
+				Validators: []function.NumberParameterValidator{
 					// Validate number value must be 1.2, 2.4, or 4.8
 					numbervalidator.OneOf(
 						[]*big.Float{
