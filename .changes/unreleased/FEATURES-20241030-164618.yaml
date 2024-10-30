@@ -1,0 +1,6 @@
+kind: FEATURES
+body: 'ephemeralvalidator: Introduce new package with declarative validators for ephemeral
+  resource configurations'
+time: 2024-10-30T16:46:18.935223-04:00
+custom:
+  Issue: "242"
