@@ -1,3 +1,9 @@
+## 0.15.0 (October 31, 2024)
+
+FEATURES:
+
+* ephemeralvalidator: Introduce new package with declarative validators for ephemeral resource configurations ([#242](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/242))
+
 ## 0.14.0 (October 17, 2024)
 
 NOTES:
