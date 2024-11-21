@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -30,7 +31,28 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 }
 
 func (v atMostValidator) ValidateInt64(ctx context.Context, request validator.Int64Request, response *validator.Int64Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		// Check if there is a lower bound refinement, and if that lower bound indicates the eventual value will be invalid
+		if lowerRefn, ok := request.ConfigValue.LowerBoundRefinement(); ok {
+			if lowerRefn.IsInclusive() && lowerRefn.LowerBound() > v.max {
+				response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+					request.Path,
+					"Invalid Attribute Value",
+					// TODO: improve error messaging?
+					fmt.Sprintf("Attribute %s %s, got an unknown value that will be greater than: %d", request.Path, v.Description(ctx), lowerRefn.LowerBound()),
+				))
+			} else if !lowerRefn.IsInclusive() && lowerRefn.LowerBound() >= v.max {
+				response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+					request.Path,
+					"Invalid Attribute Value",
+					fmt.Sprintf("Attribute %s %s, got an unknown value that will be at least: %d", request.Path, v.Description(ctx), lowerRefn.LowerBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -44,7 +66,25 @@ func (v atMostValidator) ValidateInt64(ctx context.Context, request validator.In
 }
 
 func (v atMostValidator) ValidateParameterInt64(ctx context.Context, request function.Int64ParameterValidatorRequest, response *function.Int64ParameterValidatorResponse) {
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		// Check if there is a lower bound refinement, and if that lower bound indicates the eventual value will be invalid
+		if lowerRefn, ok := request.Value.LowerBoundRefinement(); ok {
+			if lowerRefn.IsInclusive() && lowerRefn.LowerBound() > v.max {
+				response.Error = function.NewArgumentFuncError(
+					request.ArgumentPosition,
+					fmt.Sprintf("Invalid Parameter Value: %s, got an unknown value that will be greater than: %d", v.Description(ctx), lowerRefn.LowerBound()),
+				)
+			} else if !lowerRefn.IsInclusive() && lowerRefn.LowerBound() >= v.max {
+				response.Error = function.NewArgumentFuncError(
+					request.ArgumentPosition,
+					fmt.Sprintf("Invalid Parameter Value: %s, got an unknown value that will be at least: %d", v.Description(ctx), lowerRefn.LowerBound()),
+				)
+			}
+		}
 		return
 	}
 

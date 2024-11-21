@@ -10,6 +10,10 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.25.0
 )
 
+replace github.com/hashicorp/terraform-plugin-go => /Users/austin.valle/code/terraform-plugin-go
+
+replace github.com/hashicorp/terraform-plugin-framework => /Users/austin.valle/code/terraform-plugin-framework
+
 require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
