@@ -9,7 +9,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -52,11 +51,11 @@ func (v lengthAtMostValidator) ValidateString(ctx context.Context, request valid
 	}
 
 	if request.ConfigValue.IsUnknown() {
-		if prefixRefn, ok := request.ConfigValue.PrefixRefinement(); ok && len(prefixRefn.PrefixValue()) > v.maxLength {
-			response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+		if refn, ok := request.ConfigValue.PrefixRefinement(); ok && len(refn.PrefixValue()) > v.maxLength {
+			response.Diagnostics.Append(validatordiag.InvalidAttributeValueLengthDiagnostic(
 				request.Path,
-				"Invalid Attribute Value Length",
-				fmt.Sprintf("Attribute %s %s, got an unknown value with a prefix of length: %d", request.Path, v.Description(ctx), len(prefixRefn.PrefixValue())),
+				v.Description(ctx),
+				fmt.Sprintf("unknown value with prefix of length %d", len(refn.PrefixValue())),
 			))
 		}
 		return
@@ -92,10 +91,11 @@ func (v lengthAtMostValidator) ValidateParameterString(ctx context.Context, requ
 	}
 
 	if request.Value.IsUnknown() {
-		if prefixRefn, ok := request.Value.PrefixRefinement(); ok && len(prefixRefn.PrefixValue()) > v.maxLength {
-			response.Error = function.NewArgumentFuncError(
+		if refn, ok := request.Value.PrefixRefinement(); ok && len(refn.PrefixValue()) > v.maxLength {
+			response.Error = validatorfuncerr.InvalidParameterValueLengthFuncError(
 				request.ArgumentPosition,
-				fmt.Sprintf("Invalid Parameter Value: %s, got an unknown value with a prefix of length: %d", v.Description(ctx), len(prefixRefn.PrefixValue())),
+				v.Description(ctx),
+				fmt.Sprintf("unknown value with prefix of length %d", len(refn.PrefixValue())),
 			)
 		}
 		return

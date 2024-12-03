@@ -37,9 +37,18 @@ func TestUTF8LengthAtMostValidator(t *testing.T) {
 			val:       types.StringValue("ok"),
 			maxLength: 3,
 		},
+		"valid unknown prefix single byte characters": {
+			val:       types.StringUnknown().RefineWithPrefix("ok"),
+			maxLength: 3,
+		},
 		"valid mixed byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:       types.StringValue("test⇄test"),
+			maxLength: 9,
+		},
+		"valid unknown prefix mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("test⇄test"),
 			maxLength: 9,
 		},
 		"valid multiple byte characters": {
@@ -47,8 +56,18 @@ func TestUTF8LengthAtMostValidator(t *testing.T) {
 			val:       types.StringValue("⇄"),
 			maxLength: 1,
 		},
+		"valid unknown prefix multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("⇄"),
+			maxLength: 1,
+		},
 		"invalid single byte characters": {
 			val:         types.StringValue("ok"),
+			maxLength:   1,
+			expectError: true,
+		},
+		"invalid unknown prefix single byte characters": {
+			val:         types.StringUnknown().RefineWithPrefix("ok"),
 			maxLength:   1,
 			expectError: true,
 		},
@@ -58,9 +77,21 @@ func TestUTF8LengthAtMostValidator(t *testing.T) {
 			maxLength:   8,
 			expectError: true,
 		},
+		"invalid unknown prefix mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringUnknown().RefineWithPrefix("test⇄test"),
+			maxLength:   8,
+			expectError: true,
+		},
 		"invalid multiple byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:         types.StringValue("⇄⇄"),
+			maxLength:   1,
+			expectError: true,
+		},
+		"invalid unknown prefix multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringUnknown().RefineWithPrefix("⇄⇄"),
 			maxLength:   1,
 			expectError: true,
 		},
