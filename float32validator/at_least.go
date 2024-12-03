@@ -30,7 +30,26 @@ func (validator atLeastValidator) MarkdownDescription(ctx context.Context) strin
 }
 
 func (validator atLeastValidator) ValidateFloat32(ctx context.Context, request validator.Float32Request, response *validator.Float32Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < validator.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					validator.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %f", refn.UpperBound()),
+				))
+			} else if !refn.IsInclusive() && refn.UpperBound() <= validator.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					validator.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %f", refn.UpperBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -46,7 +65,26 @@ func (validator atLeastValidator) ValidateFloat32(ctx context.Context, request v
 }
 
 func (validator atLeastValidator) ValidateParameterFloat32(ctx context.Context, request function.Float32ParameterValidatorRequest, response *function.Float32ParameterValidatorResponse) {
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < validator.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					validator.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %f", refn.UpperBound()),
+				)
+			} else if !refn.IsInclusive() && refn.UpperBound() <= validator.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					validator.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %f", refn.UpperBound()),
+				)
+			}
+		}
 		return
 	}
 
