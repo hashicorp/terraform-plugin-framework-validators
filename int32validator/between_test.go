@@ -69,6 +69,76 @@ func TestBetweenValidator(t *testing.T) {
 			max:         1,
 			expectError: true,
 		},
+		// Unknown value will be > 2
+		"unknown lower bound exclusive - invalid less than bound": {
+			val:         types.Int32Unknown().RefineWithLowerBound(2, false),
+			min:         1,
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - invalid matches bound": {
+			val:         types.Int32Unknown().RefineWithLowerBound(2, false),
+			min:         1,
+			max:         2,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - valid greater than bound": {
+			val: types.Int32Unknown().RefineWithLowerBound(2, false),
+			min: 1,
+			max: 3,
+		},
+		// Unknown value will be >= 2
+		"unknown lower bound inclusive - invalid less than bound": {
+			val:         types.Int32Unknown().RefineWithLowerBound(2, true),
+			min:         1,
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound inclusive - valid matches bound": {
+			val: types.Int32Unknown().RefineWithLowerBound(2, true),
+			min: 1,
+			max: 2,
+		},
+		"unknown lower bound inclusive - valid greater than bound": {
+			val: types.Int32Unknown().RefineWithLowerBound(2, true),
+			min: 1,
+			max: 3,
+		},
+		// Unknown value will be < 2
+		"unknown upper bound exclusive - valid less than bound": {
+			val: types.Int32Unknown().RefineWithUpperBound(2, false),
+			min: 1,
+			max: 5,
+		},
+		"unknown upper bound exclusive - invalid matches bound": {
+			val:         types.Int32Unknown().RefineWithUpperBound(2, false),
+			min:         2,
+			max:         5,
+			expectError: true,
+		},
+		"unknown upper bound exclusive - invalid greater than bound": {
+			val:         types.Int32Unknown().RefineWithUpperBound(2, false),
+			min:         3,
+			max:         5,
+			expectError: true,
+		},
+		// Unknown value will be <= 2
+		"unknown upper bound inclusive - valid less than bound": {
+			val: types.Int32Unknown().RefineWithUpperBound(2, true),
+			min: 1,
+			max: 5,
+		},
+		"unknown upper bound inclusive - valid matches bound": {
+			val: types.Int32Unknown().RefineWithUpperBound(2, true),
+			min: 2,
+			max: 5,
+		},
+		"unknown upper bound inclusive - invalid greater than bound": {
+			val:         types.Int32Unknown().RefineWithUpperBound(2, true),
+			min:         3,
+			max:         5,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {
