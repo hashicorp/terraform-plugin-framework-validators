@@ -76,17 +76,27 @@ func (v ExactlyOneOfValidator) Validate(ctx context.Context, config tfsdk.Config
 				continue
 			}
 
-			// If value is unknown, it may be null or a value, so we cannot
-			// know if the validator should succeed or not. Collect the path
-			// path so we use it to skip the validation later and continue to
-			// collect all path matching diagnostics.
-			if value.IsUnknown() {
-				unknownPaths.Append(matchedPath)
+			// If value is null, move onto the next one.
+			if value.IsNull() {
 				continue
 			}
 
-			// If value is null, move onto the next one.
-			if value.IsNull() {
+			if value.IsUnknown() {
+				// If the unknown value will eventually be not null, we add it to the
+				// configured paths to potentially trigger a validation error
+				val, ok := value.(attr.ValueWithNotNullRefinement)
+				if ok {
+					if _, notNull := val.NotNullRefinement(); notNull {
+						configuredPaths.Append(matchedPath)
+						continue
+					}
+				}
+
+				// If value is fully unknown, it may be null or a value, so we cannot
+				// know if the validator should succeed or not. Collect the path
+				// path so we use it to skip the validation later and continue to
+				// collect all path matching diagnostics.
+				unknownPaths.Append(matchedPath)
 				continue
 			}
 

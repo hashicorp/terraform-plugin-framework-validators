@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	tfrefinement "github.com/hashicorp/terraform-plugin-go/tftypes/refinement"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/internal/schemavalidator"
 )
@@ -81,6 +82,63 @@ func TestExactlyOneOfValidator(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
+		"self-is-fully-unknown": {
+			req: schemavalidator.ExactlyOneOfValidatorRequest{
+				ConfigValue:    types.StringUnknown(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.Number,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.Number, 42),
+						"bar": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+		},
+		"self-is-notnull-unknown": {
+			req: schemavalidator.ExactlyOneOfValidatorRequest{
+				ConfigValue:    types.StringUnknown().RefineAsNotNull(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.Number,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.Number, 42),
+						"bar": tftypes.NewValue(tftypes.String, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+			expErrors: 1,
+		},
 		"error_too-many": {
 			req: schemavalidator.ExactlyOneOfValidatorRequest{
 				ConfigValue:    types.StringValue("bar value"),
@@ -104,6 +162,42 @@ func TestExactlyOneOfValidator(t *testing.T) {
 						"foo": tftypes.NewValue(tftypes.Number, 42),
 						"bar": tftypes.NewValue(tftypes.String, "bar value"),
 						"baz": tftypes.NewValue(tftypes.Number, 4.2),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+				path.MatchRoot("baz"),
+			},
+			expErrors: 1,
+		},
+		"error_too-many-notnull-unknowns": {
+			req: schemavalidator.ExactlyOneOfValidatorRequest{
+				ConfigValue:    types.StringValue("bar value"),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+							"baz": schema.Float64Attribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.Number,
+							"bar": tftypes.String,
+							"baz": tftypes.Number,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
+						"bar": tftypes.NewValue(tftypes.String, "bar value"),
+						"baz": tftypes.NewValue(tftypes.Number, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
 					}),
 				},
 			},
