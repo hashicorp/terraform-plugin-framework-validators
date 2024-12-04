@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	tfrefinement "github.com/hashicorp/terraform-plugin-go/tftypes/refinement"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/internal/configvalidator"
 )
@@ -329,6 +330,52 @@ func TestConflictingValidatorValidate(t *testing.T) {
 			},
 			expected: nil,
 		},
+		"two-matching-path-expression-one-notnull-unknown-one-value": {
+			validator: configvalidator.ConflictingValidator{
+				PathExpressions: path.Expressions{
+					path.MatchRoot("test1"),
+					path.MatchRoot("test2"),
+				},
+			},
+			config: tfsdk.Config{
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
+							Optional: true,
+						},
+						"test2": schema.StringAttribute{
+							Optional: true,
+						},
+						"other": schema.StringAttribute{
+							Optional: true,
+						},
+					},
+				},
+				Raw: tftypes.NewValue(
+					tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"test1": tftypes.String,
+							"test2": tftypes.String,
+							"other": tftypes.String,
+						},
+					},
+					map[string]tftypes.Value{
+						"test1": tftypes.NewValue(tftypes.String, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
+						"test2": tftypes.NewValue(tftypes.String, "test-value"),
+						"other": tftypes.NewValue(tftypes.String, "test-value"),
+					},
+				),
+			},
+			expected: diag.Diagnostics{
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test1"),
+					"Invalid Attribute Combination",
+					"These attributes cannot be configured together: [test1,test2]",
+				),
+			},
+		},
 		"two-matching-path-expression-two-null": {
 			validator: configvalidator.ConflictingValidator{
 				PathExpressions: path.Expressions{
@@ -404,6 +451,54 @@ func TestConflictingValidatorValidate(t *testing.T) {
 				),
 			},
 			expected: nil,
+		},
+		"two-matching-path-expression-two-notnull-unknown": {
+			validator: configvalidator.ConflictingValidator{
+				PathExpressions: path.Expressions{
+					path.MatchRoot("test1"),
+					path.MatchRoot("test2"),
+				},
+			},
+			config: tfsdk.Config{
+				Schema: schema.Schema{
+					Attributes: map[string]schema.Attribute{
+						"test1": schema.StringAttribute{
+							Optional: true,
+						},
+						"test2": schema.StringAttribute{
+							Optional: true,
+						},
+						"other": schema.StringAttribute{
+							Optional: true,
+						},
+					},
+				},
+				Raw: tftypes.NewValue(
+					tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"test1": tftypes.String,
+							"test2": tftypes.String,
+							"other": tftypes.String,
+						},
+					},
+					map[string]tftypes.Value{
+						"test1": tftypes.NewValue(tftypes.String, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
+						"test2": tftypes.NewValue(tftypes.String, tftypes.UnknownValue).Refine(tfrefinement.Refinements{
+							tfrefinement.KeyNullness: tfrefinement.NewNullness(false),
+						}),
+						"other": tftypes.NewValue(tftypes.String, "test-value"),
+					},
+				),
+			},
+			expected: diag.Diagnostics{
+				diag.NewAttributeErrorDiagnostic(
+					path.Root("test1"),
+					"Invalid Attribute Combination",
+					"These attributes cannot be configured together: [test1,test2]",
+				),
+			},
 		},
 		"two-matching-path-expression-two-value": {
 			validator: configvalidator.ConflictingValidator{

@@ -50,6 +50,35 @@ func TestAtMostValidator(t *testing.T) {
 			max:         2.00,
 			expectError: true,
 		},
+		// Unknown value will be > 2.1
+		"unknown lower bound exclusive - invalid less than bound": {
+			val:         types.Float32Unknown().RefineWithLowerBound(2.1, false),
+			max:         2,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - invalid matches bound": {
+			val:         types.Float32Unknown().RefineWithLowerBound(2.1, false),
+			max:         2.1,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - valid greater than bound": {
+			val: types.Float32Unknown().RefineWithLowerBound(2.1, false),
+			max: 3,
+		},
+		// Unknown value will be >= 2.1
+		"unknown lower bound inclusive - invalid less than bound": {
+			val:         types.Float32Unknown().RefineWithLowerBound(2.1, true),
+			max:         2,
+			expectError: true,
+		},
+		"unknown lower bound inclusive - valid matches bound": {
+			val: types.Float32Unknown().RefineWithLowerBound(2.1, true),
+			max: 2.1,
+		},
+		"unknown lower bound inclusive - valid greater than bound": {
+			val: types.Float32Unknown().RefineWithLowerBound(2.1, true),
+			max: 3,
+		},
 	}
 
 	for name, test := range tests {

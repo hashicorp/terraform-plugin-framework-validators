@@ -73,6 +73,76 @@ func TestBetweenValidator(t *testing.T) {
 			max:         3.10,
 			expectError: true,
 		},
+		// Unknown value will be > 2.1
+		"unknown lower bound exclusive - invalid less than bound": {
+			val:         types.Float64Unknown().RefineWithLowerBound(2.1, false),
+			min:         1,
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - invalid matches bound": {
+			val:         types.Float64Unknown().RefineWithLowerBound(2.1, false),
+			min:         1,
+			max:         2.1,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - valid greater than bound": {
+			val: types.Float64Unknown().RefineWithLowerBound(2.1, false),
+			min: 1,
+			max: 3,
+		},
+		// Unknown value will be >= 2.1
+		"unknown lower bound inclusive - invalid less than bound": {
+			val:         types.Float64Unknown().RefineWithLowerBound(2.1, true),
+			min:         1,
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound inclusive - valid matches bound": {
+			val: types.Float64Unknown().RefineWithLowerBound(2.1, true),
+			min: 1,
+			max: 2.1,
+		},
+		"unknown lower bound inclusive - valid greater than bound": {
+			val: types.Float64Unknown().RefineWithLowerBound(2.1, true),
+			min: 1,
+			max: 3,
+		},
+		// Unknown value will be < 2.1
+		"unknown upper bound exclusive - valid less than bound": {
+			val: types.Float64Unknown().RefineWithUpperBound(2.1, false),
+			min: 1,
+			max: 5,
+		},
+		"unknown upper bound exclusive - invalid matches bound": {
+			val:         types.Float64Unknown().RefineWithUpperBound(2.1, false),
+			min:         2.1,
+			max:         5,
+			expectError: true,
+		},
+		"unknown upper bound exclusive - invalid greater than bound": {
+			val:         types.Float64Unknown().RefineWithUpperBound(2.1, false),
+			min:         3,
+			max:         5,
+			expectError: true,
+		},
+		// Unknown value will be <= 2.1
+		"unknown upper bound inclusive - valid less than bound": {
+			val: types.Float64Unknown().RefineWithUpperBound(2.1, true),
+			min: 1,
+			max: 5,
+		},
+		"unknown upper bound inclusive - valid matches bound": {
+			val: types.Float64Unknown().RefineWithUpperBound(2.1, true),
+			min: 2.1,
+			max: 5,
+		},
+		"unknown upper bound inclusive - invalid greater than bound": {
+			val:         types.Float64Unknown().RefineWithUpperBound(2.1, true),
+			min:         3,
+			max:         5,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {

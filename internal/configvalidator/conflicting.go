@@ -76,8 +76,21 @@ func (v ConflictingValidator) Validate(ctx context.Context, config tfsdk.Config)
 				continue
 			}
 
-			// Value must not be null or unknown to trigger validation error
-			if value.IsNull() || value.IsUnknown() {
+			// Value must not be null or fully unknown to trigger validation error
+			if value.IsNull() {
+				continue
+			}
+
+			if value.IsUnknown() {
+				// If the unknown value will eventually be not null, we add it to the
+				// configured paths to potentially trigger a validation error
+				val, ok := value.(attr.ValueWithNotNullRefinement)
+				if ok {
+					if _, notNull := val.NotNullRefinement(); notNull {
+						configuredPaths.Append(matchedPath)
+					}
+				}
+
 				continue
 			}
 
