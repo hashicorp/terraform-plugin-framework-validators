@@ -20,7 +20,7 @@ func ExampleAnyWithAllWarnings() {
 					//  - "one"
 					//  - Length at least 4 characters
 					dynamicvalidator.AnyWithAllWarnings(
-						dynamicvalidator.OneOf("one"),
+						dynamicvalidator.AnyWithAllWarnings( /* ... */ ),
 					),
 				},
 			},

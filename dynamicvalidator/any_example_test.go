@@ -20,7 +20,7 @@ func ExampleAny() {
 					//  - "one"
 					//  - Length at least 4 characters
 					dynamicvalidator.Any(
-						dynamicvalidator.OneOf("one"),
+						dynamicvalidator.Any( /* ... */ ),
 					),
 				},
 			},

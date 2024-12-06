@@ -19,10 +19,8 @@ func ExampleAll() {
 					// Validate this Dynamic value must either be:
 					//  - "one"
 					dynamicvalidator.Any(
-						dynamicvalidator.OneOf("one"),
-						dynamicvalidator.All(
-							dynamicvalidator.NoneOf("three"),
-						),
+						dynamicvalidator.Any( /* ... */ ),
+						dynamicvalidator.All( /* ... */ ),
 					),
 				},
 			},
