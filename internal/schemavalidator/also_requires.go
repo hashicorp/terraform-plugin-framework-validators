@@ -29,6 +29,7 @@ var (
 	_ validator.Object  = AlsoRequiresValidator{}
 	_ validator.Set     = AlsoRequiresValidator{}
 	_ validator.String  = AlsoRequiresValidator{}
+	_ validator.Dynamic = AlsoRequiresValidator{}
 )
 
 // AlsoRequiresValidator is the underlying struct implementing AlsoRequires.
@@ -245,6 +246,20 @@ func (av AlsoRequiresValidator) ValidateSet(ctx context.Context, req validator.S
 }
 
 func (av AlsoRequiresValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	validateReq := AlsoRequiresValidatorRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &AlsoRequiresValidatorResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
+func (av AlsoRequiresValidator) ValidateDynamic(ctx context.Context, req validator.DynamicRequest, resp *validator.DynamicResponse) {
 	validateReq := AlsoRequiresValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
