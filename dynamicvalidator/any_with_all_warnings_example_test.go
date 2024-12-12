@@ -16,9 +16,6 @@ func ExampleAnyWithAllWarnings() {
 			"example_attr": schema.DynamicAttribute{
 				Required: true,
 				Validators: []validator.Dynamic{
-					// Validate this Dynamic value must either be:
-					//  - "one"
-					//  - Length at least 4 characters
 					dynamicvalidator.AnyWithAllWarnings(
 						dynamicvalidator.AnyWithAllWarnings( /* ... */ ),
 					),

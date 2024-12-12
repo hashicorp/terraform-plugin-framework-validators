@@ -16,8 +16,6 @@ func ExampleAll() {
 			"example_attr": schema.DynamicAttribute{
 				Required: true,
 				Validators: []validator.Dynamic{
-					// Validate this Dynamic value must either be:
-					//  - "one"
 					dynamicvalidator.Any(
 						dynamicvalidator.Any( /* ... */ ),
 						dynamicvalidator.All( /* ... */ ),
