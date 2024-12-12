@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'dynamicvalidator: New package which contains `types.Dynamic` specific validators'
-time: 2024-12-12T14:42:10.189818-05:00
-custom:
-  Issue: "249"

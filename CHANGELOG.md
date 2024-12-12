@@ -1,3 +1,16 @@
+## 0.16.0 (December 12, 2024)
+
+FEATURES:
+
+* listvalidator: Added `NoNullValues` validator ([#245](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/245))
+* mapvalidator:  Added `NoNullValues` validator ([#245](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/245))
+* setvalidator:  Added `NoNullValues` validator ([#245](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/245))
+* dynamicvalidator: New package which contains `types.Dynamic` specific validators ([#249](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/249))
+
+BUG FIXES:
+
+* Fixed bug with `ConflictsWith` and `AlsoRequires` validators where unknown values would raise invalid diagnostics during `terraform validate`. ([#251](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/251))
+
 ## 0.15.0 (October 31, 2024)
 
 FEATURES:

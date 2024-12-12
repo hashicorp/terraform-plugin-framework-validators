@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'setvalidator:  Added `NoNullValues` validator'
-time: 2024-12-12T14:06:24.967598-05:00
-custom:
-  Issue: "245"

@@ -1,6 +1,0 @@
-kind: BUG FIXES
-body: Fixed bug with `ConflictsWith` and `AlsoRequires` validators where unknown values
-  would raise invalid diagnostics during `terraform validate`.
-time: 2024-12-12T15:21:25.964001-05:00
-custom:
-  Issue: "251"
