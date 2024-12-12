@@ -29,6 +29,7 @@ var (
 	_ validator.Object  = ConflictsWithValidator{}
 	_ validator.Set     = ConflictsWithValidator{}
 	_ validator.String  = ConflictsWithValidator{}
+	_ validator.Dynamic = ConflictsWithValidator{}
 )
 
 // ConflictsWithValidator is the underlying struct implementing ConflictsWith.
@@ -245,6 +246,20 @@ func (av ConflictsWithValidator) ValidateSet(ctx context.Context, req validator.
 }
 
 func (av ConflictsWithValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	validateReq := ConflictsWithValidatorRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &ConflictsWithValidatorResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
+func (av ConflictsWithValidator) ValidateDynamic(ctx context.Context, req validator.DynamicRequest, resp *validator.DynamicResponse) {
 	validateReq := ConflictsWithValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,

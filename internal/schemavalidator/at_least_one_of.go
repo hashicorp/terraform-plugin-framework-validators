@@ -29,6 +29,7 @@ var (
 	_ validator.Object  = AtLeastOneOfValidator{}
 	_ validator.Set     = AtLeastOneOfValidator{}
 	_ validator.String  = AtLeastOneOfValidator{}
+	_ validator.Dynamic = AtLeastOneOfValidator{}
 )
 
 // AtLeastOneOfValidator is the underlying struct implementing AtLeastOneOf.
@@ -245,6 +246,20 @@ func (av AtLeastOneOfValidator) ValidateSet(ctx context.Context, req validator.S
 }
 
 func (av AtLeastOneOfValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	validateReq := AtLeastOneOfValidatorRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &AtLeastOneOfValidatorResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
+func (av AtLeastOneOfValidator) ValidateDynamic(ctx context.Context, req validator.DynamicRequest, resp *validator.DynamicResponse) {
 	validateReq := AtLeastOneOfValidatorRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
