@@ -60,9 +60,19 @@ func (av ExactlyOneOfValidator) Validate(ctx context.Context, req ExactlyOneOfVa
 	count := 0
 	expressions := req.PathExpression.MergeExpressions(av.PathExpressions...)
 
-	// If current attribute is unknown, delay validation
 	if req.ConfigValue.IsUnknown() {
-		return
+		val, ok := req.ConfigValue.(attr.ValueWithNotNullRefinement)
+		if !ok {
+			// The value is fully unknown (doesn't support value refinements), delay validation.
+			return
+		}
+		if _, notNull := val.NotNullRefinement(); !notNull {
+			// The value doesn't have a "not null" refinement, delay validation.
+			return
+		}
+
+		// The unknown value will eventually be not null, we can increment the count and continue validating
+		count++
 	}
 
 	// Now that we know the current attribute is known, check whether it is
@@ -99,8 +109,17 @@ func (av ExactlyOneOfValidator) Validate(ctx context.Context, req ExactlyOneOfVa
 				continue
 			}
 
-			// Delay validation until all involved attribute have a known value
+			// If value is fully unknown, delay validation until all involved attributes have a known value
 			if mpVal.IsUnknown() {
+				// If the unknown value will eventually be not null, we can increment the count and continue looping
+				val, ok := mpVal.(attr.ValueWithNotNullRefinement)
+				if ok {
+					if _, notNull := val.NotNullRefinement(); notNull {
+						count++
+						continue
+					}
+				}
+
 				return
 			}
 

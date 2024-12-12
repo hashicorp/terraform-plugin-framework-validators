@@ -30,7 +30,26 @@ func (validator atLeastValidator) MarkdownDescription(ctx context.Context) strin
 }
 
 func (v atLeastValidator) ValidateInt32(ctx context.Context, request validator.Int32Request, response *validator.Int32Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < v.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %d", refn.UpperBound()),
+				))
+			} else if !refn.IsInclusive() && refn.UpperBound() <= v.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %d", refn.UpperBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -44,7 +63,26 @@ func (v atLeastValidator) ValidateInt32(ctx context.Context, request validator.I
 }
 
 func (v atLeastValidator) ValidateParameterInt32(ctx context.Context, request function.Int32ParameterValidatorRequest, response *function.Int32ParameterValidatorResponse) {
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < v.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %d", refn.UpperBound()),
+				)
+			} else if !refn.IsInclusive() && refn.UpperBound() <= v.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %d", refn.UpperBound()),
+				)
+			}
+		}
 		return
 	}
 

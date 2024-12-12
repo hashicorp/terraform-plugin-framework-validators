@@ -49,7 +49,18 @@ func (v utf8LengthBetweenValidator) ValidateString(ctx context.Context, request 
 		return
 	}
 
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.PrefixRefinement(); ok && utf8.RuneCountInString(refn.PrefixValue()) > v.maxLength {
+			response.Diagnostics.Append(validatordiag.InvalidAttributeValueLengthDiagnostic(
+				request.Path,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value with prefix UTF-8 character count of %d", utf8.RuneCountInString(refn.PrefixValue())),
+			))
+		}
 		return
 	}
 
@@ -80,7 +91,18 @@ func (v utf8LengthBetweenValidator) ValidateParameterString(ctx context.Context,
 		return
 	}
 
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.PrefixRefinement(); ok && utf8.RuneCountInString(refn.PrefixValue()) > v.maxLength {
+			response.Error = validatorfuncerr.InvalidParameterValueLengthFuncError(
+				request.ArgumentPosition,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value with prefix UTF-8 character count of %d", utf8.RuneCountInString(refn.PrefixValue())),
+			)
+		}
 		return
 	}
 

@@ -31,7 +31,26 @@ func (v sizeBetweenValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v sizeBetweenValidator) ValidateMap(ctx context.Context, req validator.MapRequest, resp *validator.MapResponse) {
-	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+	if req.ConfigValue.IsNull() {
+		return
+	}
+
+	if req.ConfigValue.IsUnknown() {
+		if refn, ok := req.ConfigValue.LengthLowerBoundRefinement(); ok && refn.LowerBound() > int64(v.max) {
+			resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+				req.Path,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at least %d elements", refn.LowerBound()),
+			))
+		}
+
+		if refn, ok := req.ConfigValue.LengthUpperBoundRefinement(); ok && refn.UpperBound() < int64(v.min) {
+			resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+				req.Path,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at most %d elements", refn.UpperBound()),
+			))
+		}
 		return
 	}
 
@@ -47,7 +66,26 @@ func (v sizeBetweenValidator) ValidateMap(ctx context.Context, req validator.Map
 }
 
 func (v sizeBetweenValidator) ValidateParameterMap(ctx context.Context, req function.MapParameterValidatorRequest, resp *function.MapParameterValidatorResponse) {
-	if req.Value.IsNull() || req.Value.IsUnknown() {
+	if req.Value.IsNull() {
+		return
+	}
+
+	if req.Value.IsUnknown() {
+		if refn, ok := req.Value.LengthLowerBoundRefinement(); ok && refn.LowerBound() > int64(v.max) {
+			resp.Error = validatorfuncerr.InvalidParameterValueFuncError(
+				req.ArgumentPosition,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at least %d elements", refn.LowerBound()),
+			)
+		}
+
+		if refn, ok := req.Value.LengthUpperBoundRefinement(); ok && refn.UpperBound() < int64(v.min) {
+			resp.Error = validatorfuncerr.InvalidParameterValueFuncError(
+				req.ArgumentPosition,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at most %d elements", refn.UpperBound()),
+			)
+		}
 		return
 	}
 

@@ -41,11 +41,35 @@ func TestUTF8LengthBetweenValidator(t *testing.T) {
 			minLength: 2,
 			maxLength: 3,
 		},
+		"valid unknown prefix single byte characters": {
+			val:       types.StringUnknown().RefineWithPrefix("ok"),
+			minLength: 2,
+			maxLength: 3,
+		},
+		// Even if the refinement is too short, it's possible the final value could be longer, so no validation error.
+		"valid unknown prefix single byte characters - too short": {
+			val:       types.StringUnknown().RefineWithPrefix("ok"),
+			minLength: 5,
+			maxLength: 6,
+		},
 		"valid mixed byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:       types.StringValue("test⇄test"),
 			minLength: 8,
 			maxLength: 9,
+		},
+		"valid unknown prefix mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("test⇄test"),
+			minLength: 8,
+			maxLength: 9,
+		},
+		// Even if the refinement is too short, it's possible the final value could be longer, so no validation error.
+		"valid unknown prefix mixed byte characters - too short": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("test⇄test"),
+			minLength: 12,
+			maxLength: 14,
 		},
 		"valid multiple byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
@@ -53,8 +77,27 @@ func TestUTF8LengthBetweenValidator(t *testing.T) {
 			minLength: 1,
 			maxLength: 1,
 		},
+		"valid unknown prefix multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("⇄"),
+			minLength: 1,
+			maxLength: 1,
+		},
+		// Even if the refinement is too short, it's possible the final value could be longer, so no validation error.
+		"valid unknown prefix multiple byte characters - too short": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:       types.StringUnknown().RefineWithPrefix("⇄"),
+			minLength: 3,
+			maxLength: 4,
+		},
 		"invalid single byte characters": {
 			val:         types.StringValue("ok"),
+			minLength:   1,
+			maxLength:   1,
+			expectError: true,
+		},
+		"invalid unknown prefix single byte characters": {
+			val:         types.StringUnknown().RefineWithPrefix("ok"),
 			minLength:   1,
 			maxLength:   1,
 			expectError: true,
@@ -66,9 +109,23 @@ func TestUTF8LengthBetweenValidator(t *testing.T) {
 			maxLength:   8,
 			expectError: true,
 		},
+		"invalid unknown prefix mixed byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringUnknown().RefineWithPrefix("test⇄test"),
+			minLength:   8,
+			maxLength:   8,
+			expectError: true,
+		},
 		"invalid multiple byte characters": {
 			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
 			val:         types.StringValue("⇄⇄"),
+			minLength:   1,
+			maxLength:   1,
+			expectError: true,
+		},
+		"invalid unknown prefix multiple byte characters": {
+			// Rightwards Arrow Over Leftwards Arrow (U+21C4; 3 bytes)
+			val:         types.StringUnknown().RefineWithPrefix("⇄⇄"),
 			minLength:   1,
 			maxLength:   1,
 			expectError: true,
