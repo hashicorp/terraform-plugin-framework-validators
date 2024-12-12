@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'mapvalidator:  Added `NoNullValues` validator'
+time: 2024-12-12T14:06:13.229216-05:00
+custom:
+  Issue: "245"
