@@ -16,7 +16,7 @@ var _ function.SetParameterValidator = noNullValuesValidator{}
 type noNullValuesValidator struct{}
 
 func (v noNullValuesValidator) Description(_ context.Context) string {
-	return "null values are not permitted"
+	return "All values in the set must be configured"
 }
 
 func (v noNullValuesValidator) MarkdownDescription(ctx context.Context) string {
