@@ -58,7 +58,8 @@ func (av ConflictsWithValidator) MarkdownDescription(_ context.Context) string {
 
 func (av ConflictsWithValidator) Validate(ctx context.Context, req ConflictsWithValidatorRequest, res *ConflictsWithValidatorResponse) {
 	// If attribute configuration is null, it cannot conflict with others
-	if req.ConfigValue.IsNull() {
+	// If attribute configuration is unknown, delay the validation until it is known.
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
