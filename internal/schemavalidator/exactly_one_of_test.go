@@ -81,6 +81,33 @@ func TestExactlyOneOfValidator(t *testing.T) {
 				path.MatchRoot("foo"),
 			},
 		},
+		"self-is-unknown": {
+			req: schemavalidator.ExactlyOneOfValidatorRequest{
+				ConfigValue:    types.StringUnknown(),
+				Path:           path.Root("bar"),
+				PathExpression: path.MatchRoot("bar"),
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"foo": schema.Int64Attribute{},
+							"bar": schema.StringAttribute{},
+						},
+					},
+					Raw: tftypes.NewValue(tftypes.Object{
+						AttributeTypes: map[string]tftypes.Type{
+							"foo": tftypes.Number,
+							"bar": tftypes.String,
+						},
+					}, map[string]tftypes.Value{
+						"foo": tftypes.NewValue(tftypes.Number, 42),
+						"bar": tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
+					}),
+				},
+			},
+			in: path.Expressions{
+				path.MatchRoot("foo"),
+			},
+		},
 		"error_too-many": {
 			req: schemavalidator.ExactlyOneOfValidatorRequest{
 				ConfigValue:    types.StringValue("bar value"),

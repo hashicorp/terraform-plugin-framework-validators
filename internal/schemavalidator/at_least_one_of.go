@@ -58,6 +58,7 @@ func (av AtLeastOneOfValidator) MarkdownDescription(_ context.Context) string {
 
 func (av AtLeastOneOfValidator) Validate(ctx context.Context, req AtLeastOneOfValidatorRequest, res *AtLeastOneOfValidatorResponse) {
 	// If attribute configuration is not null, validator already succeeded.
+	// If attribute configuration is unknown, delay the validation until it is known.
 	if !req.ConfigValue.IsNull() {
 		return
 	}

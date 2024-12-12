@@ -58,7 +58,8 @@ func (av AlsoRequiresValidator) MarkdownDescription(_ context.Context) string {
 
 func (av AlsoRequiresValidator) Validate(ctx context.Context, req AlsoRequiresValidatorRequest, res *AlsoRequiresValidatorResponse) {
 	// If attribute configuration is null, there is nothing else to validate
-	if req.ConfigValue.IsNull() {
+	// If attribute configuration is unknown, delay the validation until it is known.
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
