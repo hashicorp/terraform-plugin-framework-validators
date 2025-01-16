@@ -6,8 +6,8 @@ toolchain go1.22.7
 
 require (
 	github.com/google/go-cmp v0.6.0
-	github.com/hashicorp/terraform-plugin-framework v1.13.1-0.20241203155412-a2d406602012
-	github.com/hashicorp/terraform-plugin-go v0.25.1-0.20241126200214-bd716fcfe407
+	github.com/hashicorp/terraform-plugin-framework v1.13.1-0.20250116190529-2e147507972f
+	github.com/hashicorp/terraform-plugin-go v0.25.1-0.20250116190359-f977ddce3f6c
 )
 
 require (
@@ -19,5 +19,5 @@ require (
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 )
