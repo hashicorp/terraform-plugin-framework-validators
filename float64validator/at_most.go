@@ -30,7 +30,26 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 }
 
 func (v atMostValidator) ValidateFloat64(ctx context.Context, request validator.Float64Request, response *validator.Float64Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %f", refn.LowerBound()),
+				))
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %f", refn.LowerBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -46,7 +65,26 @@ func (v atMostValidator) ValidateFloat64(ctx context.Context, request validator.
 }
 
 func (v atMostValidator) ValidateParameterFloat64(ctx context.Context, request function.Float64ParameterValidatorRequest, response *function.Float64ParameterValidatorResponse) {
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %f", refn.LowerBound()),
+				)
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %f", refn.LowerBound()),
+				)
+			}
+		}
 		return
 	}
 

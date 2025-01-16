@@ -29,6 +29,15 @@ func TestLengthAtMostValidator(t *testing.T) {
 			val:       types.StringUnknown(),
 			maxLength: 1,
 		},
+		"unknown-prefix-valid": {
+			val:       types.StringUnknown().RefineWithPrefix("ok"),
+			maxLength: 2,
+		},
+		"unknown-prefix-too-long": {
+			val:         types.StringUnknown().RefineWithPrefix("not ok"),
+			maxLength:   5,
+			expectError: true,
+		},
 		"null": {
 			val:       types.StringNull(),
 			maxLength: 1,

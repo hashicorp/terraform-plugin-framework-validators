@@ -108,6 +108,40 @@ func TestSizeBetweenValidator(t *testing.T) {
 			max:         3,
 			expectError: true,
 		},
+		// Unknown value will have >= 2 elements
+		"unknown length lower bound - invalid less than bound": {
+			val:         types.SetUnknown(types.StringType).RefineWithLengthLowerBound(2),
+			min:         1,
+			max:         1,
+			expectError: true,
+		},
+		"unknown length lower bound - valid matches bound": {
+			val: types.SetUnknown(types.StringType).RefineWithLengthLowerBound(2),
+			min: 1,
+			max: 2,
+		},
+		"unknown length lower bound - valid greater than bound": {
+			val: types.SetUnknown(types.StringType).RefineWithLengthLowerBound(2),
+			min: 1,
+			max: 3,
+		},
+		// Unknown value will have <= 2 elements
+		"unknown length upper bound - valid less than bound": {
+			val: types.SetUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min: 1,
+			max: 5,
+		},
+		"unknown length upper bound - valid matches bound": {
+			val: types.SetUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min: 2,
+			max: 5,
+		},
+		"unknown length upper bound - invalid greater than bound": {
+			val:         types.SetUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min:         3,
+			max:         5,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {

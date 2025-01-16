@@ -30,7 +30,26 @@ func (validator atMostValidator) MarkdownDescription(ctx context.Context) string
 }
 
 func (v atMostValidator) ValidateInt32(ctx context.Context, request validator.Int32Request, response *validator.Int32Response) {
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %d", refn.LowerBound()),
+				))
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %d", refn.LowerBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -44,7 +63,26 @@ func (v atMostValidator) ValidateInt32(ctx context.Context, request validator.In
 }
 
 func (v atMostValidator) ValidateParameterInt32(ctx context.Context, request function.Int32ParameterValidatorRequest, response *function.Int32ParameterValidatorResponse) {
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %d", refn.LowerBound()),
+				)
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %d", refn.LowerBound()),
+				)
+			}
+		}
 		return
 	}
 

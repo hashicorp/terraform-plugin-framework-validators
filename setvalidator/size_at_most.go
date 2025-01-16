@@ -30,7 +30,18 @@ func (v sizeAtMostValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v sizeAtMostValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
-	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+	if req.ConfigValue.IsNull() {
+		return
+	}
+
+	if req.ConfigValue.IsUnknown() {
+		if refn, ok := req.ConfigValue.LengthLowerBoundRefinement(); ok && refn.LowerBound() > int64(v.max) {
+			resp.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+				req.Path,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at least %d elements", refn.LowerBound()),
+			))
+		}
 		return
 	}
 
@@ -46,7 +57,18 @@ func (v sizeAtMostValidator) ValidateSet(ctx context.Context, req validator.SetR
 }
 
 func (v sizeAtMostValidator) ValidateParameterSet(ctx context.Context, req function.SetParameterValidatorRequest, resp *function.SetParameterValidatorResponse) {
-	if req.Value.IsNull() || req.Value.IsUnknown() {
+	if req.Value.IsNull() {
+		return
+	}
+
+	if req.Value.IsUnknown() {
+		if refn, ok := req.Value.LengthLowerBoundRefinement(); ok && refn.LowerBound() > int64(v.max) {
+			resp.Error = validatorfuncerr.InvalidParameterValueFuncError(
+				req.ArgumentPosition,
+				v.Description(ctx),
+				fmt.Sprintf("unknown value that will have at least %d elements", refn.LowerBound()),
+			)
+		}
 		return
 	}
 

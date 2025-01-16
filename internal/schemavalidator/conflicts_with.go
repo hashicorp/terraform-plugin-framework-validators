@@ -91,8 +91,21 @@ func (av ConflictsWithValidator) Validate(ctx context.Context, req ConflictsWith
 				continue
 			}
 
-			// Delay validation until all involved attribute have a known value
+			// If value is fully unknown, delay validation until all involved attributes have a known value
 			if mpVal.IsUnknown() {
+				// If the unknown value will eventually be not null, we can add the diagnostic and continue looping
+				val, ok := mpVal.(attr.ValueWithNotNullRefinement)
+				if ok {
+					if _, notNull := val.NotNullRefinement(); notNull {
+						res.Diagnostics.Append(validatordiag.InvalidAttributeCombinationDiagnostic(
+							req.Path,
+							fmt.Sprintf("Attribute %q cannot be specified when %q is specified", mp, req.Path),
+						))
+
+						continue
+					}
+				}
+
 				return
 			}
 

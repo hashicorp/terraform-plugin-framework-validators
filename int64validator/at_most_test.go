@@ -46,6 +46,35 @@ func TestAtMostValidator(t *testing.T) {
 			max:         2,
 			expectError: true,
 		},
+		// Unknown value will be > 2
+		"unknown lower bound exclusive - invalid less than bound": {
+			val:         types.Int64Unknown().RefineWithLowerBound(2, false),
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - invalid matches bound": {
+			val:         types.Int64Unknown().RefineWithLowerBound(2, false),
+			max:         2,
+			expectError: true,
+		},
+		"unknown lower bound exclusive - valid greater than bound": {
+			val: types.Int64Unknown().RefineWithLowerBound(2, false),
+			max: 3,
+		},
+		// Unknown value will be >= 2
+		"unknown lower bound inclusive - invalid less than bound": {
+			val:         types.Int64Unknown().RefineWithLowerBound(2, true),
+			max:         1,
+			expectError: true,
+		},
+		"unknown lower bound inclusive - valid matches bound": {
+			val: types.Int64Unknown().RefineWithLowerBound(2, true),
+			max: 2,
+		},
+		"unknown lower bound inclusive - valid greater than bound": {
+			val: types.Int64Unknown().RefineWithLowerBound(2, true),
+			max: 3,
+		},
 	}
 
 	for name, test := range tests {

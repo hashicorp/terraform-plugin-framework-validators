@@ -31,6 +31,23 @@ func TestLengthBetweenValidator(t *testing.T) {
 			minLength: 1,
 			maxLength: 3,
 		},
+		// Even if the refinement is too short, it's possible the final value could be longer, so no validation error.
+		"unknown-prefix-valid-short": {
+			val:       types.StringUnknown().RefineWithPrefix("o"),
+			minLength: 2,
+			maxLength: 5,
+		},
+		"unknown-prefix-valid": {
+			val:       types.StringUnknown().RefineWithPrefix("ok"),
+			minLength: 1,
+			maxLength: 2,
+		},
+		"unknown-prefix-too-long": {
+			val:         types.StringUnknown().RefineWithPrefix("not ok"),
+			minLength:   1,
+			maxLength:   5,
+			expectError: true,
+		},
 		"null": {
 			val:       types.StringNull(),
 			minLength: 1,

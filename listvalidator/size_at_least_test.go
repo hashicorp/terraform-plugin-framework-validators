@@ -65,6 +65,20 @@ func TestSizeAtLeastValidator(t *testing.T) {
 			min:         1,
 			expectError: true,
 		},
+		// Unknown value will have <= 2 elements
+		"unknown length upper bound - valid less than bound": {
+			val: types.ListUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min: 1,
+		},
+		"unknown length upper bound - valid matches bound": {
+			val: types.ListUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min: 2,
+		},
+		"unknown length upper bound - invalid greater than bound": {
+			val:         types.ListUnknown(types.StringType).RefineWithLengthUpperBound(2),
+			min:         3,
+			expectError: true,
+		},
 	}
 
 	for name, test := range tests {

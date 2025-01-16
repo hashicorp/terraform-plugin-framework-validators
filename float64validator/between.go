@@ -47,7 +47,42 @@ func (v betweenValidator) ValidateFloat64(ctx context.Context, request validator
 		return
 	}
 
-	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+	if request.ConfigValue.IsNull() {
+		return
+	}
+
+	if request.ConfigValue.IsUnknown() {
+		if refn, ok := request.ConfigValue.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %f", refn.LowerBound()),
+				))
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %f", refn.LowerBound()),
+				))
+			}
+		}
+
+		if refn, ok := request.ConfigValue.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < v.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %f", refn.UpperBound()),
+				))
+			} else if !refn.IsInclusive() && refn.UpperBound() <= v.min {
+				response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+					request.Path,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %f", refn.UpperBound()),
+				))
+			}
+		}
 		return
 	}
 
@@ -74,7 +109,42 @@ func (v betweenValidator) ValidateParameterFloat64(ctx context.Context, request 
 		return
 	}
 
-	if request.Value.IsNull() || request.Value.IsUnknown() {
+	if request.Value.IsNull() {
+		return
+	}
+
+	if request.Value.IsUnknown() {
+		if refn, ok := request.Value.LowerBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.LowerBound() > v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at least %f", refn.LowerBound()),
+				)
+			} else if !refn.IsInclusive() && refn.LowerBound() >= v.max {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be greater than %f", refn.LowerBound()),
+				)
+			}
+		}
+
+		if refn, ok := request.Value.UpperBoundRefinement(); ok {
+			if refn.IsInclusive() && refn.UpperBound() < v.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be at most %f", refn.UpperBound()),
+				)
+			} else if !refn.IsInclusive() && refn.UpperBound() <= v.min {
+				response.Error = validatorfuncerr.InvalidParameterValueFuncError(
+					request.ArgumentPosition,
+					v.Description(ctx),
+					fmt.Sprintf("unknown value that will be less than %f", refn.UpperBound()),
+				)
+			}
+		}
 		return
 	}
 
