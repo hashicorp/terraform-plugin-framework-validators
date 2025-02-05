@@ -8,15 +8,17 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Number = oneOfValidator{}
+var _ function.NumberParameterValidator = oneOfValidator{}
 
-// oneOfValidator validates that the value matches one of expected values.
 type oneOfValidator struct {
 	values []types.Number
 }
@@ -49,9 +51,29 @@ func (v oneOfValidator) ValidateNumber(ctx context.Context, request validator.Nu
 	))
 }
 
-// OneOf checks that the Number held in the attribute
+func (v oneOfValidator) ValidateParameterNumber(ctx context.Context, request function.NumberParameterValidatorRequest, response *function.NumberParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	value := request.Value
+
+	for _, otherValue := range v.values {
+		if value.Equal(otherValue) {
+			return
+		}
+	}
+
+	response.Error = validatorfuncerr.InvalidParameterValueMatchFuncError(
+		request.ArgumentPosition,
+		v.Description(ctx),
+		value.String(),
+	)
+}
+
+// OneOf checks that the Number held in the attribute or function parameter
 // is one of the given `values`.
-func OneOf(values ...*big.Float) validator.Number {
+func OneOf(values ...*big.Float) oneOfValidator {
 	frameworkValues := make([]types.Number, 0, len(values))
 
 	for _, value := range values {

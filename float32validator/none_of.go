@@ -7,15 +7,17 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatorfuncerr"
 )
 
 var _ validator.Float32 = noneOfValidator{}
+var _ function.Float32ParameterValidator = noneOfValidator{}
 
-// noneOfValidator validates that the value does not match one of the values.
 type noneOfValidator struct {
 	values []types.Float32
 }
@@ -50,9 +52,31 @@ func (v noneOfValidator) ValidateFloat32(ctx context.Context, request validator.
 	}
 }
 
-// NoneOf checks that the float32 held in the attribute
+func (v noneOfValidator) ValidateParameterFloat32(ctx context.Context, request function.Float32ParameterValidatorRequest, response *function.Float32ParameterValidatorResponse) {
+	if request.Value.IsNull() || request.Value.IsUnknown() {
+		return
+	}
+
+	value := request.Value
+
+	for _, otherValue := range v.values {
+		if !value.Equal(otherValue) {
+			continue
+		}
+
+		response.Error = validatorfuncerr.InvalidParameterValueMatchFuncError(
+			request.ArgumentPosition,
+			v.Description(ctx),
+			value.String(),
+		)
+
+		break
+	}
+}
+
+// NoneOf checks that the float32 held in the attribute or function parameter
 // is none of the given `values`.
-func NoneOf(values ...float32) validator.Float32 {
+func NoneOf(values ...float32) noneOfValidator {
 	frameworkValues := make([]types.Float32, 0, len(values))
 
 	for _, value := range values {
