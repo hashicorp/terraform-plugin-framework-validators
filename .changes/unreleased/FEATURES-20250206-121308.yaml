@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'int64validator: Added `PreferWriteOnlyAttribute` validator'
+time: 2025-02-06T12:13:08.483387-05:00
+custom:
+    Issue: "263"
