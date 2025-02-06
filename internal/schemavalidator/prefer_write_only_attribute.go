@@ -109,6 +109,20 @@ func (av PreferWriteOnlyAttribute) ValidateBool(ctx context.Context, req validat
 	resp.Diagnostics.Append(validateResp.Diagnostics...)
 }
 
+func (av PreferWriteOnlyAttribute) ValidateDynamic(ctx context.Context, req validator.DynamicRequest, resp *validator.DynamicResponse) {
+	validateReq := PreferWriteOnlyAttributeRequest{
+		Config:         req.Config,
+		ConfigValue:    req.ConfigValue,
+		Path:           req.Path,
+		PathExpression: req.PathExpression,
+	}
+	validateResp := &PreferWriteOnlyAttributeResponse{}
+
+	av.Validate(ctx, validateReq, validateResp)
+
+	resp.Diagnostics.Append(validateResp.Diagnostics...)
+}
+
 func (av PreferWriteOnlyAttribute) ValidateFloat32(ctx context.Context, req validator.Float32Request, resp *validator.Float32Response) {
 	validateReq := PreferWriteOnlyAttributeRequest{
 		Config:         req.Config,
