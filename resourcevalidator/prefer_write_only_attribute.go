@@ -28,7 +28,7 @@ type preferWriteOnlyAttributeValidator struct {
 
 // Description describes the validation in plain text formatting.
 func (v preferWriteOnlyAttributeValidator) Description(ctx context.Context) string {
-	return fmt.Sprintf("The write-only attribute %s should be prefered over the regular attribute %s", v.writeOnlyAttribute, v.oldAttribute)
+	return fmt.Sprintf("The write-only attribute %s should be preferred over the regular attribute %s", v.writeOnlyAttribute, v.oldAttribute)
 }
 
 // MarkdownDescription describes the validation in Markdown formatting.

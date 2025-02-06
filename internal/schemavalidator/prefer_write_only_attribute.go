@@ -51,7 +51,7 @@ func (av PreferWriteOnlyAttribute) Description(ctx context.Context) string {
 }
 
 func (av PreferWriteOnlyAttribute) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("The write-only attribute %s should be prefered over this attribute", av.WriteOnlyAttribute)
+	return fmt.Sprintf("The write-only attribute %s should be preferred over this attribute", av.WriteOnlyAttribute)
 }
 
 func (av PreferWriteOnlyAttribute) Validate(ctx context.Context, req PreferWriteOnlyAttributeRequest, resp *PreferWriteOnlyAttributeResponse) {
