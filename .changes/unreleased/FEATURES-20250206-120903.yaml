@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'boolvalidator: Added `PreferWriteOnlyAttribute` validator'
+time: 2025-02-06T12:09:03.733715-05:00
+custom:
+    Issue: "263"

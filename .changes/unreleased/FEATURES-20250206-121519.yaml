@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'resourcevalidator: Added `PreferWriteOnlyAttribute` validator'
+time: 2025-02-06T12:15:19.618622-05:00
+custom:
+    Issue: "263"
