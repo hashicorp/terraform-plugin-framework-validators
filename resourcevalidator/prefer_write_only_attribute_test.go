@@ -46,13 +46,15 @@ func TestPreferWriteOnlyAttribute(t *testing.T) {
 								Optional: true,
 							},
 							"writeOnlyAttribute1": schema.StringAttribute{
-								Optional: true,
+								Optional:  true,
+								WriteOnly: true,
 							},
 							"oldAttribute2": schema.StringAttribute{
 								Optional: true,
 							},
 							"writeOnlyAttribute2": schema.StringAttribute{
-								Optional: true,
+								Optional:  true,
+								WriteOnly: true,
 							},
 						},
 					},
