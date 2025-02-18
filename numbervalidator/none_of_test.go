@@ -63,7 +63,6 @@ func TestNoneOfValidator(t *testing.T) {
 	}
 
 	for name, test := range testCases {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateNumber - %s", name), func(t *testing.T) {
 			t.Parallel()

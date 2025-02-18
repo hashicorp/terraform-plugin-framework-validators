@@ -8,11 +8,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 )
 
 func TestBetweenValidator(t *testing.T) {
@@ -76,7 +77,6 @@ func TestBetweenValidator(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateFloat64 - %s", name), func(t *testing.T) {
 			t.Parallel()

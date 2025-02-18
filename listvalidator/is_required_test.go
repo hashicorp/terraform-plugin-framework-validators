@@ -7,11 +7,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 )
 
 func TestIsRequiredValidator(t *testing.T) {
@@ -53,7 +54,7 @@ func TestIsRequiredValidator(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		name, test := name, test
+
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			request := validator.ListRequest{

@@ -8,10 +8,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
 )
 
 func TestOneOfValidator(t *testing.T) {
@@ -61,7 +62,6 @@ func TestOneOfValidator(t *testing.T) {
 	}
 
 	for name, test := range testCases {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateInt32 - %s", name), func(t *testing.T) {
 			t.Parallel()
