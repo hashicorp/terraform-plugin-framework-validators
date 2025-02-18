@@ -8,10 +8,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
 )
 
 func TestEqualsValidator(t *testing.T) {
@@ -44,7 +45,6 @@ func TestEqualsValidator(t *testing.T) {
 	}
 
 	for name, test := range testCases {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateBool - %s", name), func(t *testing.T) {
 			t.Parallel()

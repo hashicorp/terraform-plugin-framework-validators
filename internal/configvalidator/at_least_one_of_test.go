@@ -598,7 +598,6 @@ func TestAtLeastOneOfValidatorValidate(t *testing.T) {
 	}
 
 	for name, testCase := range testCases {
-		name, testCase := name, testCase
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -704,7 +703,6 @@ func TestAtLeastOneOfValidatorValidateDataSource(t *testing.T) {
 	}
 
 	for name, testCase := range testCases {
-		name, testCase := name, testCase
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -812,7 +810,6 @@ func TestAtLeastOneOfValidatorValidateProvider(t *testing.T) {
 	}
 
 	for name, testCase := range testCases {
-		name, testCase := name, testCase
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -920,7 +917,6 @@ func TestAtLeastOneOfValidatorValidateResource(t *testing.T) {
 	}
 
 	for name, testCase := range testCases {
-		name, testCase := name, testCase
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -1028,7 +1024,6 @@ func TestAtLeastOneOfValidatorValidateEphemeralResource(t *testing.T) {
 	}
 
 	for name, testCase := range testCases {
-		name, testCase := name, testCase
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()

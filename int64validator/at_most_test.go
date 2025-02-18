@@ -49,7 +49,6 @@ func TestAtMostValidator(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateInt64 - %s", name), func(t *testing.T) {
 			t.Parallel()
