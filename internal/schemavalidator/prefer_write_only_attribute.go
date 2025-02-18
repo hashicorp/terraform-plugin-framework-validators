@@ -25,7 +25,6 @@ var (
 	_ validator.Map     = PreferWriteOnlyAttribute{}
 	_ validator.Number  = PreferWriteOnlyAttribute{}
 	_ validator.Object  = PreferWriteOnlyAttribute{}
-	_ validator.Set     = PreferWriteOnlyAttribute{}
 	_ validator.String  = PreferWriteOnlyAttribute{}
 )
 
@@ -222,20 +221,6 @@ func (av PreferWriteOnlyAttribute) ValidateNumber(ctx context.Context, req valid
 }
 
 func (av PreferWriteOnlyAttribute) ValidateObject(ctx context.Context, req validator.ObjectRequest, resp *validator.ObjectResponse) {
-	validateReq := PreferWriteOnlyAttributeRequest{
-		Config:         req.Config,
-		ConfigValue:    req.ConfigValue,
-		Path:           req.Path,
-		PathExpression: req.PathExpression,
-	}
-	validateResp := &PreferWriteOnlyAttributeResponse{}
-
-	av.Validate(ctx, validateReq, validateResp)
-
-	resp.Diagnostics.Append(validateResp.Diagnostics...)
-}
-
-func (av PreferWriteOnlyAttribute) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
 	validateReq := PreferWriteOnlyAttributeRequest{
 		Config:         req.Config,
 		ConfigValue:    req.ConfigValue,
