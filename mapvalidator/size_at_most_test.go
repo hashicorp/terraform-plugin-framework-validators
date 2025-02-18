@@ -72,7 +72,6 @@ func TestSizeAtMostValidator(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateMap - %s", name), func(t *testing.T) {
 			t.Parallel()

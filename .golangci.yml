@@ -7,7 +7,7 @@ linters:
   enable:
     - durationcheck
     - errcheck
-    - exportloopref
+    - copyloopvar
     - forcetypeassert
     - gofmt
     - gosimple
@@ -18,7 +18,7 @@ linters:
     - paralleltest
     - predeclared
     - staticcheck
-    - tenv
+    - usetesting
     - unconvert
     - unparam
     - unused

@@ -68,7 +68,6 @@ func TestSizeAtLeastValidator(t *testing.T) {
 	}
 
 	for name, test := range tests {
-		name, test := name, test
 
 		t.Run(fmt.Sprintf("ValidateList - %s", name), func(t *testing.T) {
 			t.Parallel()
