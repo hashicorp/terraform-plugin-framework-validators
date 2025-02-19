@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'mapvalidator: Added `PreferWriteOnlyAttribute` validator'
-time: 2025-02-06T12:14:18.324953-05:00
-custom:
-    Issue: "263"

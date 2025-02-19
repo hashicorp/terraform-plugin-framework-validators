@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'dynamicvalidator: Added `PreferWriteOnlyAttribute` validator'
-time: 2025-02-06T12:11:30.572285-05:00
-custom:
-    Issue: "263"

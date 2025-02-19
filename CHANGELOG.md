@@ -1,3 +1,21 @@
+## 0.17.0 (February 19, 2025)
+
+FEATURES:
+
+* boolvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* dynamicvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* float32validator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* float64validator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* int32validator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* int64validator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* listvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* mapvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* numbervalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* objectvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* resourcevalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* setvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+* stringvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
+
 ## 0.16.0 (December 12, 2024)
 
 FEATURES:

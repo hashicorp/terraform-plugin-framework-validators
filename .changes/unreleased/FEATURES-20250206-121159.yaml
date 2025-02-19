@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'float32validator: Added `PreferWriteOnlyAttribute` validator'
-time: 2025-02-06T12:11:59.137017-05:00
-custom:
-    Issue: "263"
