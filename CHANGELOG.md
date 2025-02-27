@@ -13,7 +13,6 @@ FEATURES:
 * numbervalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
 * objectvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
 * resourcevalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
-* setvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
 * stringvalidator: Added `PreferWriteOnlyAttribute` validator ([#263](https://github.com/hashicorp/terraform-plugin-framework-validators/issues/263))
 
 ## 0.16.0 (December 12, 2024)
