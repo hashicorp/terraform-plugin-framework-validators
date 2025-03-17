@@ -18,7 +18,7 @@ This Go module is typically kept up to date with the latest `terraform-plugin-fr
 
 This Go module follows `terraform-plugin-framework` Go compatibility.
 
-Currently that means Go **1.22** must be used when developing and testing code.
+Currently that means Go **1.23** must be used when developing and testing code.
 
 ## Contributing
 
