@@ -1,0 +1,5 @@
+kind: BUG FIXES
+body: Added client capabilities into the validator request for write only attributes
+time: 2025-04-21T11:21:24.306898-04:00
+custom:
+    Issue: "286"
