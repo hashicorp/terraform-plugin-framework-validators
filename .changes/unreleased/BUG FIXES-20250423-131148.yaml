@@ -1,0 +1,5 @@
+kind: BUG FIXES
+body: Fixed the way client capabilities are passed into PreferWriteOnlyAttribute validator
+time: 2025-04-23T13:11:48.261943+03:00
+custom:
+    Issue: "282"
