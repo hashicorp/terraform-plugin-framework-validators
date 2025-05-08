@@ -1,0 +1,5 @@
+kind: BUG FIXES
+body: 'all: Fixed bug with PreferWriteOnlyAttribute validator not running when client is capable of using write-only attributes.'
+time: 2025-05-08T11:35:37.746658-04:00
+custom:
+    Issue: "287"
