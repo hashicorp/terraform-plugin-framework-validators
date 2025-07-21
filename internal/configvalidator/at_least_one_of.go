@@ -6,6 +6,7 @@ package configvalidator
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -47,6 +48,10 @@ func (v AtLeastOneOfValidator) ValidateResource(ctx context.Context, req resourc
 }
 
 func (v AtLeastOneOfValidator) ValidateEphemeralResource(ctx context.Context, req ephemeral.ValidateConfigRequest, resp *ephemeral.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v AtLeastOneOfValidator) ValidateListResourceConfig(ctx context.Context, req list.ValidateConfigRequest, resp *list.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 

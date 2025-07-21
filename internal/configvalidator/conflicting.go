@@ -6,6 +6,7 @@ package configvalidator
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -48,6 +49,10 @@ func (v ConflictingValidator) ValidateResource(ctx context.Context, req resource
 }
 
 func (v ConflictingValidator) ValidateEphemeralResource(ctx context.Context, req ephemeral.ValidateConfigRequest, resp *ephemeral.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v ConflictingValidator) ValidateListResourceConfig(ctx context.Context, req list.ValidateConfigRequest, resp *list.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
