@@ -6,6 +6,7 @@ package configvalidator
 import (
 	"context"
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -39,19 +40,19 @@ func (v RequiredTogetherValidator) ValidateDataSource(ctx context.Context, req d
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
-func (v RequiredTogetherValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
-}
-
-func (v RequiredTogetherValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
-}
-
 func (v RequiredTogetherValidator) ValidateEphemeralResource(ctx context.Context, req ephemeral.ValidateConfigRequest, resp *ephemeral.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
 func (v RequiredTogetherValidator) ValidateListResourceConfig(ctx context.Context, req list.ValidateConfigRequest, resp *list.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v RequiredTogetherValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v RequiredTogetherValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 

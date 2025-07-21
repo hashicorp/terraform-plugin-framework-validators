@@ -6,13 +6,13 @@ package configvalidator
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/list"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -40,19 +40,19 @@ func (v ExactlyOneOfValidator) ValidateDataSource(ctx context.Context, req datas
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
-func (v ExactlyOneOfValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
-}
-
-func (v ExactlyOneOfValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	resp.Diagnostics = v.Validate(ctx, req.Config)
-}
-
 func (v ExactlyOneOfValidator) ValidateEphemeralResource(ctx context.Context, req ephemeral.ValidateConfigRequest, resp *ephemeral.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
 func (v ExactlyOneOfValidator) ValidateListResourceConfig(ctx context.Context, req list.ValidateConfigRequest, resp *list.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v ExactlyOneOfValidator) ValidateProvider(ctx context.Context, req provider.ValidateConfigRequest, resp *provider.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
+func (v ExactlyOneOfValidator) ValidateResource(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 

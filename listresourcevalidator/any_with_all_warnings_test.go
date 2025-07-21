@@ -5,11 +5,11 @@ package listresourcevalidator_test
 
 import (
 	"context"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listresourcevalidator"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/internal/testvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listresourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/list/schema"
