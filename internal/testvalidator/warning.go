@@ -5,6 +5,7 @@ package testvalidator
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -63,6 +64,14 @@ func WarningInt64(summary string, detail string) validator.Int64 {
 
 // WarningList returns a validator which returns a warning diagnostic.
 func WarningList(summary string, detail string) validator.List {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
+// WarningListResourceConfig returns a validator which returns a warning diagnostic.
+func WarningListResourceConfig(summary string, detail string) list.ConfigValidator {
 	return WarningValidator{
 		Summary: summary,
 		Detail:  detail,
@@ -171,6 +180,10 @@ func (v WarningValidator) ValidateDataSource(ctx context.Context, request dataso
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
+func (v WarningValidator) ValidateEphemeralResource(ctx context.Context, request ephemeral.ValidateConfigRequest, response *ephemeral.ValidateConfigResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
 func (v WarningValidator) ValidateFloat32(ctx context.Context, request validator.Float32Request, response *validator.Float32Response) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
@@ -191,6 +204,10 @@ func (v WarningValidator) ValidateList(ctx context.Context, request validator.Li
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
+func (v WarningValidator) ValidateListResourceConfig(ctx context.Context, request list.ValidateConfigRequest, response *list.ValidateConfigResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
 func (v WarningValidator) ValidateMap(ctx context.Context, request validator.MapRequest, response *validator.MapResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
@@ -208,10 +225,6 @@ func (v WarningValidator) ValidateProvider(ctx context.Context, request provider
 }
 
 func (v WarningValidator) ValidateResource(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	response.Diagnostics.AddWarning(v.Summary, v.Detail)
-}
-
-func (v WarningValidator) ValidateEphemeralResource(ctx context.Context, request ephemeral.ValidateConfigRequest, response *ephemeral.ValidateConfigResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
