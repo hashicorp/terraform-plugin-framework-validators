@@ -3,4 +3,4 @@ body: 'listresourcevalidator: Introduce new package with declarative validators 
   resource configurations'
 time: 2025-08-15T10:39:17.521201-04:00
 custom:
-    Issue: "302"
+    Issue: "298"
