@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -33,6 +34,10 @@ func (v AtLeastOneOfValidator) Description(ctx context.Context) string {
 
 func (v AtLeastOneOfValidator) MarkdownDescription(_ context.Context) string {
 	return fmt.Sprintf("At least one of these attributes must be configured: %s", v.PathExpressions)
+}
+
+func (v AtLeastOneOfValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
 func (v AtLeastOneOfValidator) ValidateDataSource(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {
