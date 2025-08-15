@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -34,6 +35,10 @@ func (v ExactlyOneOfValidator) Description(ctx context.Context) string {
 
 func (v ExactlyOneOfValidator) MarkdownDescription(_ context.Context) string {
 	return fmt.Sprintf("Exactly one of these attributes must be configured: %s", v.PathExpressions)
+}
+
+func (v ExactlyOneOfValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
 func (v ExactlyOneOfValidator) ValidateDataSource(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {

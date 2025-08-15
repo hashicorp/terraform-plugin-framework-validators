@@ -8,6 +8,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -34,6 +35,10 @@ func (v ConflictingValidator) Description(ctx context.Context) string {
 
 func (v ConflictingValidator) MarkdownDescription(_ context.Context) string {
 	return fmt.Sprintf("These attributes cannot be configured together: %s", v.PathExpressions)
+}
+
+func (v ConflictingValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
 func (v ConflictingValidator) ValidateDataSource(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {

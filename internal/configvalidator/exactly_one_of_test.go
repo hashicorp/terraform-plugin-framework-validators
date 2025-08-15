@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -1059,6 +1060,114 @@ func TestExactlyOneOfValidatorValidateEphemeralResource(t *testing.T) {
 			got := &ephemeral.ValidateConfigResponse{}
 
 			testCase.validator.ValidateEphemeralResource(context.Background(), testCase.req, got)
+
+			if diff := cmp.Diff(got, testCase.expected); diff != "" {
+				t.Errorf("unexpected difference: %s", diff)
+			}
+		})
+	}
+}
+
+func TestExactlyOneOfValidatorValidateAction(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		validator configvalidator.ExactlyOneOfValidator
+		req       action.ValidateConfigRequest
+		expected  *action.ValidateConfigResponse
+	}{
+		"no-diagnostics": {
+			validator: configvalidator.ExactlyOneOfValidator{
+				PathExpressions: path.Expressions{
+					path.MatchRoot("test"),
+				},
+			},
+			req: action.ValidateConfigRequest{
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test": schema.StringAttribute{
+								Optional: true,
+							},
+							"other": schema.StringAttribute{
+								Optional: true,
+							},
+						},
+					},
+					Raw: tftypes.NewValue(
+						tftypes.Object{
+							AttributeTypes: map[string]tftypes.Type{
+								"test":  tftypes.String,
+								"other": tftypes.String,
+							},
+						},
+						map[string]tftypes.Value{
+							"test":  tftypes.NewValue(tftypes.String, "test-value"),
+							"other": tftypes.NewValue(tftypes.String, "test-value"),
+						},
+					),
+				},
+			},
+			expected: &action.ValidateConfigResponse{},
+		},
+		"diagnostics": {
+			validator: configvalidator.ExactlyOneOfValidator{
+				PathExpressions: path.Expressions{
+					path.MatchRoot("test1"),
+					path.MatchRoot("test2"),
+				},
+			},
+			req: action.ValidateConfigRequest{
+				Config: tfsdk.Config{
+					Schema: schema.Schema{
+						Attributes: map[string]schema.Attribute{
+							"test1": schema.StringAttribute{
+								Optional: true,
+							},
+							"test2": schema.StringAttribute{
+								Optional: true,
+							},
+							"other": schema.StringAttribute{
+								Optional: true,
+							},
+						},
+					},
+					Raw: tftypes.NewValue(
+						tftypes.Object{
+							AttributeTypes: map[string]tftypes.Type{
+								"test1": tftypes.String,
+								"test2": tftypes.String,
+								"other": tftypes.String,
+							},
+						},
+						map[string]tftypes.Value{
+							"test1": tftypes.NewValue(tftypes.String, "test-value"),
+							"test2": tftypes.NewValue(tftypes.String, "test-value"),
+							"other": tftypes.NewValue(tftypes.String, "test-value"),
+						},
+					),
+				},
+			},
+			expected: &action.ValidateConfigResponse{
+				Diagnostics: diag.Diagnostics{
+					diag.NewAttributeErrorDiagnostic(
+						path.Root("test1"),
+						"Invalid Attribute Combination",
+						"Exactly one of these attributes must be configured: [test1,test2]",
+					),
+				},
+			},
+		},
+	}
+
+	for name, testCase := range testCases {
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := &action.ValidateConfigResponse{}
+
+			testCase.validator.ValidateAction(context.Background(), testCase.req, got)
 
 			if diff := cmp.Diff(got, testCase.expected); diff != "" {
 				t.Errorf("unexpected difference: %s", diff)

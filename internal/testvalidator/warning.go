@@ -6,6 +6,7 @@ package testvalidator
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/list"
@@ -13,6 +14,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
+
+// WarningAction returns a validator which returns a warning diagnostic.
+func WarningAction(summary string, detail string) action.ConfigValidator {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
 
 // WarningBool returns a validator which returns a warning diagnostic.
 func WarningBool(summary string, detail string) validator.Bool {
@@ -170,6 +179,10 @@ func (v WarningValidator) Description(_ context.Context) string {
 
 func (v WarningValidator) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
+}
+
+func (v WarningValidator) ValidateAction(ctx context.Context, request action.ValidateConfigRequest, response *action.ValidateConfigResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
 func (v WarningValidator) ValidateBool(ctx context.Context, request validator.BoolRequest, response *validator.BoolResponse) {
