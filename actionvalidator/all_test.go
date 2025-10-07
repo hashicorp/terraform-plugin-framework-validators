@@ -45,7 +45,7 @@ func TestAllValidatorValidateAction(t *testing.T) {
 			},
 			req: action.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: schema.UnlinkedSchema{
+					Schema: schema.Schema{
 						Attributes: map[string]schema.Attribute{
 							"test1": schema.StringAttribute{
 								Optional: true,
@@ -105,7 +105,7 @@ func TestAllValidatorValidateAction(t *testing.T) {
 			},
 			req: action.ValidateConfigRequest{
 				Config: tfsdk.Config{
-					Schema: schema.UnlinkedSchema{
+					Schema: schema.Schema{
 						Attributes: map[string]schema.Attribute{
 							"test1": schema.StringAttribute{
 								Optional: true,
