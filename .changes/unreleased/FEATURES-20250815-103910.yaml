@@ -1,5 +1,0 @@
-kind: FEATURES
-body: 'actionvalidator: Introduce new package with declarative validators for action configurations'
-time: 2025-08-15T10:39:10.182419-04:00
-custom:
-    Issue: "302"
