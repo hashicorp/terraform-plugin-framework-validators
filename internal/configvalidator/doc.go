@@ -9,4 +9,5 @@
 //   - listresourcevalidator
 //   - providervalidator
 //   - resourcevalidator
+//   - statestorevalidator
 package configvalidator

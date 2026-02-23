@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'statestorevalidator: Introduce new package with declarative validators for statestore configurations'
+time: 2026-02-23T11:42:20.733739-05:00
+custom:
+    Issue: "326"
