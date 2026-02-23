@@ -14,8 +14,8 @@ func ExampleAll() {
 	_ = []statestore.ConfigValidator{
 		// The configuration must satisfy either All validator.
 		statestorevalidator.Any(
-			statestorevalidator.All( /* ... */),
-			statestorevalidator.All( /* ... */),
+			statestorevalidator.All( /* ... */ ),
+			statestorevalidator.All( /* ... */ ),
 		),
 	}
 }

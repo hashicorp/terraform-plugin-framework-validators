@@ -11,6 +11,6 @@ import (
 func ExampleAny() {
 	// Used inside a statestore.StateStore type ConfigValidators method
 	_ = []statestore.ConfigValidator{
-		statestorevalidator.Any( /* ... */),
+		statestorevalidator.Any( /* ... */ ),
 	}
 }
