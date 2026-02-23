@@ -61,6 +61,10 @@ func (v RequiredTogetherValidator) ValidateResource(ctx context.Context, req res
 	resp.Diagnostics = v.Validate(ctx, req.Config)
 }
 
+func (v RequiredTogetherValidator) ValidateStateStore(ctx context.Context, req statestore.ValidateConfigRequest, resp *statestore.ValidateConfigResponse) {
+	resp.Diagnostics = v.Validate(ctx, req.Config)
+}
+
 func (v RequiredTogetherValidator) Validate(ctx context.Context, config tfsdk.Config) diag.Diagnostics {
 	var configuredPaths, foundPaths, unknownPaths path.Paths
 	var diags diag.Diagnostics
