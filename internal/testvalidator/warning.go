@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/statestore"
 )
 
 // WarningAction returns a validator which returns a warning diagnostic.
@@ -143,6 +144,14 @@ func WarningSet(summary string, detail string) validator.Set {
 	}
 }
 
+// WarningStateStore returns a validator which returns a warning diagnostic.
+func WarningStateStore(summary string, detail string) statestore.ConfigValidator {
+	return WarningValidator{
+		Summary: summary,
+		Detail:  detail,
+	}
+}
+
 // WarningString returns a validator which returns a warning diagnostic.
 func WarningString(summary string, detail string) validator.String {
 	return WarningValidator{
@@ -242,6 +251,10 @@ func (v WarningValidator) ValidateResource(ctx context.Context, request resource
 }
 
 func (v WarningValidator) ValidateSet(ctx context.Context, request validator.SetRequest, response *validator.SetResponse) {
+	response.Diagnostics.AddWarning(v.Summary, v.Detail)
+}
+
+func (v WarningValidator) ValidateStateStore(ctx context.Context, request statestore.ValidateConfigRequest, response *statestore.ValidateConfigResponse) {
 	response.Diagnostics.AddWarning(v.Summary, v.Detail)
 }
 
