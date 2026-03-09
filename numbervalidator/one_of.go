@@ -24,11 +24,11 @@ type oneOfValidator struct {
 }
 
 func (v oneOfValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("value must be one of: %q", v.values)
 }
 
 func (v oneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be one of: %q", v.values)
+	return fmt.Sprintf("value must be one of: `%s`", v.values)
 }
 
 func (v oneOfValidator) ValidateNumber(ctx context.Context, request validator.NumberRequest, response *validator.NumberResponse) {

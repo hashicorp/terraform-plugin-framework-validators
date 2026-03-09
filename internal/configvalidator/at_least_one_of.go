@@ -29,11 +29,11 @@ type AtLeastOneOfValidator struct {
 }
 
 func (v AtLeastOneOfValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("At least one of these attributes must be configured: %s", v.PathExpressions)
 }
 
 func (v AtLeastOneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("At least one of these attributes must be configured: %s", v.PathExpressions)
+	return fmt.Sprintf("At least one of these attributes must be configured: `%s`", v.PathExpressions)
 }
 
 func (v AtLeastOneOfValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
