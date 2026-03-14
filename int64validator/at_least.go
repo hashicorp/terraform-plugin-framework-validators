@@ -26,7 +26,7 @@ func (validator atLeastValidator) Description(_ context.Context) string {
 }
 
 func (validator atLeastValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("value must be at least `%d`", validator.min)
 }
 
 func (v atLeastValidator) ValidateInt64(ctx context.Context, request validator.Int64Request, response *validator.Int64Response) {

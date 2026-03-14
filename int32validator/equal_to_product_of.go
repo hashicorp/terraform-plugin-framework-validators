@@ -37,7 +37,12 @@ func (av equalToProductOfValidator) Description(_ context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (av equalToProductOfValidator) MarkdownDescription(ctx context.Context) string {
-	return av.Description(ctx)
+	var attributePaths []string
+	for _, p := range av.attributesToMultiplyPathExpressions {
+		attributePaths = append(attributePaths, p.String())
+	}
+
+	return fmt.Sprintf("value must be equal to the product of `%s`", strings.Join(attributePaths, " + "))
 }
 
 // ValidateInt32 performs the validation.

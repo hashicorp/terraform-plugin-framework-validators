@@ -24,11 +24,11 @@ type oneOfCaseInsensitiveValidator struct {
 }
 
 func (v oneOfCaseInsensitiveValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("value must be one of: %s", v.values)
 }
 
 func (v oneOfCaseInsensitiveValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be one of: %s", v.values)
+	return fmt.Sprintf("value must be one of: `%s`", v.values)
 }
 
 func (v oneOfCaseInsensitiveValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

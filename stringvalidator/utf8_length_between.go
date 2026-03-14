@@ -32,7 +32,7 @@ func (v utf8LengthBetweenValidator) Description(_ context.Context) string {
 }
 
 func (v utf8LengthBetweenValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("UTF-8 character count must be between `%d` and `%d`", v.minLength, v.maxLength)
 }
 
 func (v utf8LengthBetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

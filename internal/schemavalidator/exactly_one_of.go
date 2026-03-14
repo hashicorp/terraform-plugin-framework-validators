@@ -49,11 +49,11 @@ type ExactlyOneOfValidatorResponse struct {
 }
 
 func (av ExactlyOneOfValidator) Description(ctx context.Context) string {
-	return av.MarkdownDescription(ctx)
+	return fmt.Sprintf("Ensure that one and only one attribute from this collection is set: %q", av.PathExpressions)
 }
 
 func (av ExactlyOneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that one and only one attribute from this collection is set: %q", av.PathExpressions)
+	return fmt.Sprintf("Ensure that one and only one attribute from this collection is set: `%s`", av.PathExpressions)
 }
 
 func (av ExactlyOneOfValidator) Validate(ctx context.Context, req ExactlyOneOfValidatorRequest, res *ExactlyOneOfValidatorResponse) {
