@@ -1,0 +1,5 @@
+kind: ENHANCEMENTS
+body: Changed MarkdownDescription function to follow the markdown convention to use backticks to surround code
+time: 2026-03-09T10:26:30.836329351+08:00
+custom:
+    Issue: "332"

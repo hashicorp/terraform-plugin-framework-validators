@@ -49,11 +49,11 @@ type AtLeastOneOfValidatorResponse struct {
 }
 
 func (av AtLeastOneOfValidator) Description(ctx context.Context) string {
-	return av.MarkdownDescription(ctx)
+	return fmt.Sprintf("Ensure that at least one attribute from this collection is set: %s", av.PathExpressions)
 }
 
 func (av AtLeastOneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that at least one attribute from this collection is set: %s", av.PathExpressions)
+	return fmt.Sprintf("Ensure that at least one attribute from this collection is set: `%s`", av.PathExpressions)
 }
 
 func (av AtLeastOneOfValidator) Validate(ctx context.Context, req AtLeastOneOfValidatorRequest, res *AtLeastOneOfValidatorResponse) {

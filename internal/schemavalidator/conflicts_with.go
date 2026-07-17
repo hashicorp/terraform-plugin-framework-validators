@@ -49,11 +49,11 @@ type ConflictsWithValidatorResponse struct {
 }
 
 func (av ConflictsWithValidator) Description(ctx context.Context) string {
-	return av.MarkdownDescription(ctx)
+	return fmt.Sprintf("Ensure that if an attribute is set, these are not set: %q", av.PathExpressions)
 }
 
 func (av ConflictsWithValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that if an attribute is set, these are not set: %q", av.PathExpressions)
+	return fmt.Sprintf("Ensure that if an attribute is set, these are not set: `%s`", av.PathExpressions)
 }
 
 func (av ConflictsWithValidator) Validate(ctx context.Context, req ConflictsWithValidatorRequest, res *ConflictsWithValidatorResponse) {

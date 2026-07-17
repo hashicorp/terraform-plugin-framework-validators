@@ -27,7 +27,7 @@ func (v sizeBetweenValidator) Description(_ context.Context) string {
 }
 
 func (v sizeBetweenValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("set must contain at least `%d` elements and at most `%d` elements", v.min, v.max)
 }
 
 func (v sizeBetweenValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {

@@ -30,7 +30,7 @@ func (validator lengthAtLeastValidator) Description(_ context.Context) string {
 }
 
 func (validator lengthAtLeastValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("string length must be at least `%d`", validator.minLength)
 }
 
 func (v lengthAtLeastValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
