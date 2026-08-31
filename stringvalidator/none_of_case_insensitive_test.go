@@ -130,7 +130,7 @@ func TestNoneOfCaseInsensitiveValidator_Description(t *testing.T) {
 
 			v := stringvalidator.NoneOfCaseInsensitive(test.in...)
 
-			got := v.MarkdownDescription(context.Background())
+			got := v.Description(context.Background())
 
 			if diff := cmp.Diff(got, test.expected); diff != "" {
 				t.Errorf("unexpected difference: %s", diff)

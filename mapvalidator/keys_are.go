@@ -31,7 +31,12 @@ func (v keysAreValidator) Description(ctx context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (v keysAreValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	var descriptions []string
+	for _, validator := range v.keyValidators {
+		descriptions = append(descriptions, validator.Description(ctx))
+	}
+
+	return fmt.Sprintf("key must satisfy all validations: `%s`", strings.Join(descriptions, " + "))
 }
 
 // ValidateMap performs the validation.

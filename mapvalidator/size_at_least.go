@@ -26,7 +26,7 @@ func (v sizeAtLeastValidator) Description(_ context.Context) string {
 }
 
 func (v sizeAtLeastValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("map must contain at least `%d` elements", v.min)
 }
 
 func (v sizeAtLeastValidator) ValidateMap(ctx context.Context, req validator.MapRequest, resp *validator.MapResponse) {

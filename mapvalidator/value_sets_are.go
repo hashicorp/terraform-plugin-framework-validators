@@ -42,7 +42,13 @@ func (v valueSetsAreValidator) Description(ctx context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (v valueSetsAreValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	var descriptions []string
+
+	for _, elementValidator := range v.elementValidators {
+		descriptions = append(descriptions, elementValidator.Description(ctx))
+	}
+
+	return fmt.Sprintf("element value must satisfy all validations: `%s`", strings.Join(descriptions, " + "))
 }
 
 // ValidateSet performs the validation.

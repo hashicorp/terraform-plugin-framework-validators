@@ -26,7 +26,7 @@ func (v sizeAtMostValidator) Description(_ context.Context) string {
 }
 
 func (v sizeAtMostValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("set must contain at most `%d` elements", v.max)
 }
 
 func (v sizeAtMostValidator) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {

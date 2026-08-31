@@ -29,7 +29,7 @@ func (validator lengthAtMostValidator) Description(_ context.Context) string {
 }
 
 func (validator lengthAtMostValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("string length must be at most `%d`", validator.maxLength)
 }
 
 func (v lengthAtMostValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

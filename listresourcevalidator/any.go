@@ -6,8 +6,9 @@ package listresourcevalidator
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/list"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-framework/list"
 )
 
 // Any returns a validator which ensures that any configured attribute value
@@ -43,7 +44,13 @@ func (v anyValidator) Description(ctx context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (v anyValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	var descriptions []string
+
+	for _, subValidator := range v.validators {
+		descriptions = append(descriptions, subValidator.Description(ctx))
+	}
+
+	return fmt.Sprintf("Value must satisfy at least one of the validations: `%s`", strings.Join(descriptions, " + "))
 }
 
 // ValidateListResourceConfig performs the validation.
