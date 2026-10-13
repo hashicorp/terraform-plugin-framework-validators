@@ -30,7 +30,7 @@ func (validator betweenValidator) Description(_ context.Context) string {
 }
 
 func (validator betweenValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("value must be between `%d` and `%d`", validator.min, validator.max)
 }
 
 func (v betweenValidator) ValidateInt32(ctx context.Context, request validator.Int32Request, response *validator.Int32Response) {

@@ -42,7 +42,13 @@ func (v allValidator) Description(ctx context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (v allValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	var descriptions []string
+
+	for _, subValidator := range v.validators {
+		descriptions = append(descriptions, subValidator.Description(ctx))
+	}
+
+	return fmt.Sprintf("Value must satisfy all of the validations: `%s`", strings.Join(descriptions, " + "))
 }
 
 // ValidateEphemeralResource performs the validation.

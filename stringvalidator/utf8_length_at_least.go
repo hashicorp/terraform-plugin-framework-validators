@@ -31,7 +31,7 @@ func (validator utf8LengthAtLeastValidator) Description(_ context.Context) strin
 }
 
 func (validator utf8LengthAtLeastValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("UTF-8 character count must be at least `%d`", validator.minLength)
 }
 
 func (v utf8LengthAtLeastValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

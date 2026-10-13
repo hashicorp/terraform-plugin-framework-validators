@@ -26,7 +26,7 @@ func (v equalsValidator) Description(ctx context.Context) string {
 }
 
 func (v equalsValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("Value must be `%s`", v.value)
 }
 
 func (v equalsValidator) ValidateBool(ctx context.Context, req validator.BoolRequest, resp *validator.BoolResponse) {
