@@ -30,11 +30,11 @@ type ExactlyOneOfValidator struct {
 }
 
 func (v ExactlyOneOfValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("Exactly one of these attributes must be configured: %s", v.PathExpressions)
 }
 
 func (v ExactlyOneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Exactly one of these attributes must be configured: %s", v.PathExpressions)
+	return fmt.Sprintf("Exactly one of these attributes must be configured: `%s`", v.PathExpressions)
 }
 
 func (v ExactlyOneOfValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {

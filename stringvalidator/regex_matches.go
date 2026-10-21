@@ -30,7 +30,10 @@ func (validator regexMatchesValidator) Description(_ context.Context) string {
 }
 
 func (validator regexMatchesValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	if validator.message != "" {
+		return validator.message
+	}
+	return fmt.Sprintf("value must match regular expression `%s`", validator.regexp)
 }
 
 func (v regexMatchesValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
