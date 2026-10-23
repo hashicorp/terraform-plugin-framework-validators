@@ -44,24 +44,24 @@ func TestPreferWriteOnlyAttributeIf(t *testing.T) {
 
 			req := validator.StringRequest{
 				ClientCapabilities: validator.ValidateSchemaClientCapabilities{WriteOnlyAttributesAllowed: true},
-				ConfigValue:        types.StringValue("oldAttribute value"),
-				Path:               path.Root("oldAttribute"),
-				PathExpression:     path.MatchRoot("oldAttribute"),
+				ConfigValue:        types.StringValue("configured value"),
+				Path:               path.Root("value"),
+				PathExpression:     path.MatchRoot("value"),
 				Config: tfsdk.Config{
 					Schema: schema.Schema{
 						Attributes: map[string]schema.Attribute{
-							"writeOnlyAttribute": schema.StringAttribute{WriteOnly: true},
-							"oldAttribute":       schema.StringAttribute{},
+							"value_wo": schema.StringAttribute{WriteOnly: true},
+							"value":    schema.StringAttribute{},
 						},
 					},
 					Raw: tftypes.NewValue(tftypes.Object{
 						AttributeTypes: map[string]tftypes.Type{
-							"writeOnlyAttribute": tftypes.String,
-							"oldAttribute":       tftypes.String,
+							"value_wo": tftypes.String,
+							"value":    tftypes.String,
 						},
 					}, map[string]tftypes.Value{
-						"writeOnlyAttribute": tftypes.NewValue(tftypes.String, nil),
-						"oldAttribute":       tftypes.NewValue(tftypes.String, "oldAttribute value"),
+						"value_wo": tftypes.NewValue(tftypes.String, nil),
+						"value":    tftypes.NewValue(tftypes.String, "configured value"),
 					}),
 				},
 			}
@@ -69,7 +69,7 @@ func TestPreferWriteOnlyAttributeIf(t *testing.T) {
 			conditionCalled := false
 
 			stringvalidator.PreferWriteOnlyAttributeIf(
-				path.MatchRoot("writeOnlyAttribute"),
+				path.MatchRoot("value_wo"),
 				func(ctx context.Context, gotReq validator.StringRequest, ifResp *stringvalidator.PreferWriteOnlyAttributeIfFuncResponse) {
 					conditionCalled = true
 					ifResp.Warn = testCase.condition

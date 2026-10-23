@@ -22,13 +22,13 @@ func ExamplePreferWriteOnlyAttribute() {
 				Optional: true,
 				Validators: []validator.String{
 					// Throws a warning diagnostic encouraging practitioners to use
-					// write_only_attr if example_attr has a value.
+					// example_attr_wo if example_attr has a value.
 					stringvalidator.PreferWriteOnlyAttribute(
-						path.MatchRoot("write_only_attr"),
+						path.MatchRoot("example_attr_wo"),
 					),
 				},
 			},
-			"write_only_attr": schema.StringAttribute{
+			"example_attr_wo": schema.StringAttribute{
 				WriteOnly: true,
 				Optional:  true,
 			},
@@ -44,9 +44,9 @@ func ExamplePreferWriteOnlyAttributeIf() {
 				Optional: true,
 				Validators: []validator.String{
 					// Throws a warning diagnostic encouraging practitioners to use
-					// write_only_attr if example_attr has a value and sensitive is true.
+					// example_attr_wo if example_attr has a value and sensitive is true.
 					stringvalidator.PreferWriteOnlyAttributeIf(
-						path.MatchRoot("write_only_attr"),
+						path.MatchRoot("example_attr_wo"),
 						func(ctx context.Context, req validator.StringRequest, resp *stringvalidator.PreferWriteOnlyAttributeIfFuncResponse) {
 							var sensitive types.Bool
 							diags := req.Config.GetAttribute(ctx, path.Root("sensitive"), &sensitive)
@@ -56,7 +56,7 @@ func ExamplePreferWriteOnlyAttributeIf() {
 					),
 				},
 			},
-			"write_only_attr": schema.StringAttribute{
+			"example_attr_wo": schema.StringAttribute{
 				WriteOnly: true,
 				Optional:  true,
 			},
