@@ -1,0 +1,5 @@
+kind: FEATURES
+body: 'stringvalidator: Added `MustBeUppercase` and `MustBeLowercase` validators'
+time: 2026-11-19T10:15:00.000000-04:00
+custom:
+    Issue: "349"
