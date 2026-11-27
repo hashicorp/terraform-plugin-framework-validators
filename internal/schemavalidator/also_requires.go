@@ -49,11 +49,11 @@ type AlsoRequiresValidatorResponse struct {
 }
 
 func (av AlsoRequiresValidator) Description(ctx context.Context) string {
-	return av.MarkdownDescription(ctx)
+	return fmt.Sprintf("Ensure that if an attribute is set, also these are set: %q", av.PathExpressions)
 }
 
 func (av AlsoRequiresValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("Ensure that if an attribute is set, also these are set: %q", av.PathExpressions)
+	return fmt.Sprintf("Ensure that if an attribute is set, also these are set: `%s`", av.PathExpressions)
 }
 
 func (av AlsoRequiresValidator) Validate(ctx context.Context, req AlsoRequiresValidatorRequest, res *AlsoRequiresValidatorResponse) {

@@ -26,7 +26,7 @@ func (validator atMostValidator) Description(_ context.Context) string {
 }
 
 func (validator atMostValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("value must be at most `%f`", validator.max)
 }
 
 func (v atMostValidator) ValidateFloat32(ctx context.Context, request validator.Float32Request, response *validator.Float32Response) {

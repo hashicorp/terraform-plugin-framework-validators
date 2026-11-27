@@ -30,11 +30,11 @@ type ConflictingValidator struct {
 }
 
 func (v ConflictingValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("These attributes cannot be configured together: %s", v.PathExpressions)
 }
 
 func (v ConflictingValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("These attributes cannot be configured together: %s", v.PathExpressions)
+	return fmt.Sprintf("These attributes cannot be configured together: `%s`", v.PathExpressions)
 }
 
 func (v ConflictingValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {

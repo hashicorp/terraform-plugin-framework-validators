@@ -29,7 +29,7 @@ func (validator lengthBetweenValidator) Description(_ context.Context) string {
 }
 
 func (validator lengthBetweenValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("string length must be between `%d` and `%d`", validator.minLength, validator.maxLength)
 }
 
 func (v lengthBetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

@@ -39,7 +39,7 @@ func (v preferWriteOnlyAttributeValidator) Description(ctx context.Context) stri
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (v preferWriteOnlyAttributeValidator) MarkdownDescription(ctx context.Context) string {
-	return v.Description(ctx)
+	return fmt.Sprintf("The write-only attribute `%s` should be preferred over the regular attribute `%s`", v.writeOnlyAttribute, v.oldAttribute)
 }
 
 // ValidateResource performs the validation.

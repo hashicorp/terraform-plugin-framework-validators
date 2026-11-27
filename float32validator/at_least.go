@@ -26,7 +26,7 @@ func (validator atLeastValidator) Description(_ context.Context) string {
 }
 
 func (validator atLeastValidator) MarkdownDescription(ctx context.Context) string {
-	return validator.Description(ctx)
+	return fmt.Sprintf("value must be at least `%f`", validator.min)
 }
 
 func (validator atLeastValidator) ValidateFloat32(ctx context.Context, request validator.Float32Request, response *validator.Float32Response) {

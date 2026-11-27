@@ -24,11 +24,11 @@ type noneOfCaseInsensitiveValidator struct {
 }
 
 func (v noneOfCaseInsensitiveValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("value must be none of: %s", v.values)
 }
 
 func (v noneOfCaseInsensitiveValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be none of: %s", v.values)
+	return fmt.Sprintf("value must be none of: `%s`", v.values)
 }
 
 func (v noneOfCaseInsensitiveValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

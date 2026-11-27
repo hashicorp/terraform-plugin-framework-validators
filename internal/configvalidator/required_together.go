@@ -30,11 +30,11 @@ type RequiredTogetherValidator struct {
 }
 
 func (v RequiredTogetherValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("These attributes must be configured together: %s", v.PathExpressions)
 }
 
 func (v RequiredTogetherValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("These attributes must be configured together: %s", v.PathExpressions)
+	return fmt.Sprintf("These attributes must be configured together: `%s`", v.PathExpressions)
 }
 
 func (v RequiredTogetherValidator) ValidateAction(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {

@@ -37,7 +37,12 @@ func (av equalToSumOfValidator) Description(_ context.Context) string {
 
 // MarkdownDescription describes the validation in Markdown formatting.
 func (av equalToSumOfValidator) MarkdownDescription(ctx context.Context) string {
-	return av.Description(ctx)
+	var attributePaths []string
+	for _, p := range av.attributesToSumPathExpressions {
+		attributePaths = append(attributePaths, p.String())
+	}
+
+	return fmt.Sprintf("value must be equal to the sum of `%s`", strings.Join(attributePaths, " + "))
 }
 
 // ValidateInt64 performs the validation.

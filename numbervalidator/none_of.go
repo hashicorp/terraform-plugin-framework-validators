@@ -24,11 +24,11 @@ type noneOfValidator struct {
 }
 
 func (v noneOfValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
+	return fmt.Sprintf("value must be none of: %q", v.values)
 }
 
 func (v noneOfValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be none of: %q", v.values)
+	return fmt.Sprintf("value must be none of: `%s`", v.values)
 }
 
 func (v noneOfValidator) ValidateNumber(ctx context.Context, request validator.NumberRequest, response *validator.NumberResponse) {
